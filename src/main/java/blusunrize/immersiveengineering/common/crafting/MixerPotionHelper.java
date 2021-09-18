@@ -27,33 +27,29 @@ import java.util.Set;
 /**
  * @author BluSunrize - 22.02.2017
  */
-public class MixerPotionHelper
-{
-	public static final Set<String> BLACKLIST = new HashSet<>();
+public class MixerPotionHelper {
+    public static final Set<String> BLACKLIST = new HashSet<>();
 
-	public static void registerPotionRecipe(PotionType output, PotionType input, IngredientStack reagent)
-	{
-		if(!BLACKLIST.contains(PotionType.REGISTRY.getNameForObject(output).toString()))
-		{
-			MixerRecipe recipe = new MixerRecipe(
-					getFluidStackForType(output, 1000),
-					getFluidStackForType(input, 1000),
-					new IngredientStack[]{reagent},
-					6400);
-			MixerRecipe.recipeList.add(recipe);
+    public static void registerPotionRecipe(PotionType output, PotionType input, IngredientStack reagent) {
+        if (!BLACKLIST.contains(PotionType.REGISTRY.getNameForObject(output).toString())) {
+            MixerRecipe recipe = new MixerRecipe(
+                    getFluidStackForType(output, 1000),
+                    getFluidStackForType(input, 1000),
+                    new IngredientStack[]{reagent},
+                    6400);
+            MixerRecipe.recipeList.add(recipe);
 
-			BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), output),
-					new ItemStack(Items.GLASS_BOTTLE), getFluidStackForType(output, 250));
-		}
-	}
+            BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), output),
+                    new ItemStack(Items.GLASS_BOTTLE), getFluidStackForType(output, 250));
+        }
+    }
 
-	public static FluidStack getFluidStackForType(PotionType type, int amount)
-	{
-		if(type==PotionTypes.WATER||type==null)
-			return new FluidStack(FluidRegistry.WATER, amount);
-		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
-		stack.tag = new NBTTagCompound();
-		stack.tag.setString("Potion", PotionType.REGISTRY.getNameForObject(type).toString());
-		return stack;
-	}
+    public static FluidStack getFluidStackForType(PotionType type, int amount) {
+        if (type == PotionTypes.WATER || type == null)
+            return new FluidStack(FluidRegistry.WATER, amount);
+        FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
+        stack.tag = new NBTTagCompound();
+        stack.tag.setString("Potion", PotionType.REGISTRY.getNameForObject(type).toString());
+        return stack;
+    }
 }

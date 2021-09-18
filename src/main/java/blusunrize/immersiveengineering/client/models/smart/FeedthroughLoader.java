@@ -27,52 +27,44 @@ import java.util.stream.Collectors;
 import static blusunrize.immersiveengineering.api.energy.wires.WireApi.INFOS;
 
 
-public class FeedthroughLoader implements ICustomModelLoader
-{
-	public static final String RESOURCE_LOCATION = "models/block/smartmodel/feedthrough";
+public class FeedthroughLoader implements ICustomModelLoader {
+    public static final String RESOURCE_LOCATION = "models/block/smartmodel/feedthrough";
 
-	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
-	{
-		FeedthroughModel.CACHE.invalidateAll();
-	}
+    @Override
+    public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
+        FeedthroughModel.CACHE.invalidateAll();
+    }
 
-	@Override
-	public boolean accepts(@Nonnull ResourceLocation modelLocation)
-	{
-		return modelLocation.getPath().equals(RESOURCE_LOCATION);
-	}
+    @Override
+    public boolean accepts(@Nonnull ResourceLocation modelLocation) {
+        return modelLocation.getPath().equals(RESOURCE_LOCATION);
+    }
 
-	@Nonnull
-	@Override
-	public IModel loadModel(@Nonnull ResourceLocation modelLocation)
-	{
-		return new FeedthroughModelRaw();
-	}
+    @Nonnull
+    @Override
+    public IModel loadModel(@Nonnull ResourceLocation modelLocation) {
+        return new FeedthroughModelRaw();
+    }
 
-	private class FeedthroughModelRaw implements IModel
-	{
-		@Nonnull
-		@Override
-		public Collection<ResourceLocation> getDependencies()
-		{
-			return INFOS.values().stream().map((i) -> i.modelLoc).collect(Collectors.toCollection(ArrayList::new));
-		}
+    private class FeedthroughModelRaw implements IModel {
+        @Nonnull
+        @Override
+        public Collection<ResourceLocation> getDependencies() {
+            return INFOS.values().stream().map((i) -> i.modelLoc).collect(Collectors.toCollection(ArrayList::new));
+        }
 
-		@Nonnull
-		@Override
-		public Collection<ResourceLocation> getTextures()
-		{
-			return ImmutableList.of();
-		}
+        @Nonnull
+        @Override
+        public Collection<ResourceLocation> getTextures() {
+            return ImmutableList.of();
+        }
 
-		@Nonnull
-		@Override
-		public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format,
-								@Nonnull Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
-		{
-			return new FeedthroughModel();
-		}
+        @Nonnull
+        @Override
+        public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format,
+                                @Nonnull Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+            return new FeedthroughModel();
+        }
 
-	}
+    }
 }

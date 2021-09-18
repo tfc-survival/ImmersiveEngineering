@@ -14,25 +14,21 @@ import blusunrize.immersiveengineering.common.gui.ContainerCrate;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 
-public class GuiCrate extends GuiIEContainerBase
-{
-	public GuiCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile)
-	{
-		super(new ContainerCrate(inventoryPlayer, tile));
-		this.ySize = 168;
-	}
+public class GuiCrate extends GuiIEContainerBase {
+    public GuiCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile) {
+        super(new ContainerCrate(inventoryPlayer, tile));
+        this.ySize = 168;
+    }
 
-	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-	{
-		this.fontRenderer.drawString(((ContainerCrate)this.inventorySlots).tile.getDisplayName().getUnformattedText(), 8, 6, 0x0a0a0a);
-	}
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        this.fontRenderer.drawString(((ContainerCrate) this.inventorySlots).tile.getDisplayName().getUnformattedText(), 8, 6, 0x0a0a0a);
+    }
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
-	{
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/crate.png");
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-	}
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float f, int mx, int my) {
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        ClientUtils.bindTexture("immersiveengineering:textures/gui/crate.png");
+        this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+    }
 }

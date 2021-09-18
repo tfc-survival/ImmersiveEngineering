@@ -18,25 +18,21 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
-public class BottlingQueueWalker extends Filtered
-{
-	public BottlingQueueWalker()
-	{
-		super(TileEntityBottlingMachine.class);
-	}
+public class BottlingQueueWalker extends Filtered {
+    public BottlingQueueWalker() {
+        super(TileEntityBottlingMachine.class);
+    }
 
-	@Nonnull
-	@Override
-	public NBTTagCompound filteredProcess(@Nonnull IDataFixer fixer, @Nonnull NBTTagCompound compound, int versionIn)
-	{
-		NBTTagList queue = compound.getTagList("bottlingQueue", Constants.NBT.TAG_COMPOUND);
-		for(int i = 0; i < queue.tagCount(); i++)
-		{
-			NBTTagCompound process = queue.getCompoundTagAt(i);
-			DataFixesManager.processItemStack(fixer, process, versionIn, "input");
-			if(process.hasKey("output", Constants.NBT.TAG_COMPOUND))
-				DataFixesManager.processItemStack(fixer, process, versionIn, "output");
-		}
-		return compound;
-	}
+    @Nonnull
+    @Override
+    public NBTTagCompound filteredProcess(@Nonnull IDataFixer fixer, @Nonnull NBTTagCompound compound, int versionIn) {
+        NBTTagList queue = compound.getTagList("bottlingQueue", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < queue.tagCount(); i++) {
+            NBTTagCompound process = queue.getCompoundTagAt(i);
+            DataFixesManager.processItemStack(fixer, process, versionIn, "input");
+            if (process.hasKey("output", Constants.NBT.TAG_COMPOUND))
+                DataFixesManager.processItemStack(fixer, process, versionIn, "output");
+        }
+        return compound;
+    }
 }

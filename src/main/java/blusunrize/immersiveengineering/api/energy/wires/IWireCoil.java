@@ -16,23 +16,19 @@ import net.minecraft.tileentity.TileEntity;
  * <p>
  * An Interface to be implemented by Items that can be used to connect two connectors
  */
-public interface IWireCoil
-{
-	WireType getWireType(ItemStack stack);
+public interface IWireCoil {
+    WireType getWireType(ItemStack stack);
 
-	default boolean canConnectCable(ItemStack stack, TileEntity targetEntity)
-	{
-		return true;
-	}
+    default boolean canConnectCable(ItemStack stack, TileEntity targetEntity) {
+        return true;
+    }
 
-	default int getMaxLength(ItemStack stack)
-	{
-		WireType wire = getWireType(stack);
-		return wire.getMaxLength();
-	}
+    default int getMaxLength(ItemStack stack) {
+        WireType wire = getWireType(stack);
+        return wire.getMaxLength();
+    }
 
-	default void consumeWire(ItemStack stack, int length)
-	{
-		stack.shrink(1);
-	}
+    default void consumeWire(ItemStack stack, int length) {
+        stack.shrink(1);
+    }
 }

@@ -26,66 +26,55 @@ import net.minecraft.world.World;
 /**
  * @author BluSunrize - 20.08.2016
  */
-public class ConveyorDrop extends ConveyorBasic
-{
-	@Override
-	public void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ)
-	{
-		BlockPos posDown = tile.getPos().down();
-		TileEntity inventoryTile = tile.getWorld().getTileEntity(posDown);
-		boolean contact = Math.abs(facing.getAxis()==Axis.Z?(tile.getPos().getZ()+.5-entity.posZ): (tile.getPos().getX()+.5-entity.posX)) < .2;
+public class ConveyorDrop extends ConveyorBasic {
+    @Override
+    public void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ) {
+        BlockPos posDown = tile.getPos().down();
+        TileEntity inventoryTile = tile.getWorld().getTileEntity(posDown);
+        boolean contact = Math.abs(facing.getAxis() == Axis.Z ? (tile.getPos().getZ() + .5 - entity.posZ) : (tile.getPos().getX() + .5 - entity.posX)) < .2;
 
-		if(contact&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
-		{
-			if(!tile.getWorld().isRemote)
-			{
-				ItemStack stack = entity.getItem();
-				if(!stack.isEmpty())
-				{
-					ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.UP);
-					if(ret.isEmpty())
-						entity.setDead();
-					else if(ret.getCount() < stack.getCount())
-						entity.setItem(ret);
-				}
-			}
-		}
-		else if(contact&&isEmptySpace(tile.getWorld(), posDown, inventoryTile))
-		{
-			entity.motionX = 0;
-			entity.motionZ = 0;
-			entity.setPosition(tile.getPos().getX()+.5, tile.getPos().getY()-.5, tile.getPos().getZ()+.5);
-			if(!(inventoryTile instanceof IConveyorTile))
-				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)tile);
-		}
-		else
-			super.handleInsertion(tile, entity, facing, conDir, distX, distZ);
-	}
+        if (contact && inventoryTile != null && !(inventoryTile instanceof IConveyorTile)) {
+            if (!tile.getWorld().isRemote) {
+                ItemStack stack = entity.getItem();
+                if (!stack.isEmpty()) {
+                    ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, EnumFacing.UP);
+                    if (ret.isEmpty())
+                        entity.setDead();
+                    else if (ret.getCount() < stack.getCount())
+                        entity.setItem(ret);
+                }
+            }
+        } else if (contact && isEmptySpace(tile.getWorld(), posDown, inventoryTile)) {
+            entity.motionX = 0;
+            entity.motionZ = 0;
+            entity.setPosition(tile.getPos().getX() + .5, tile.getPos().getY() - .5, tile.getPos().getZ() + .5);
+            if (!(inventoryTile instanceof IConveyorTile))
+                ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile) tile);
+        } else
+            super.handleInsertion(tile, entity, facing, conDir, distX, distZ);
+    }
 
-	boolean isEmptySpace(World world, BlockPos pos, TileEntity tile)
-	{
-		if(world.isAirBlock(pos))
-			return true;
-		if(tile instanceof IConveyorTile)
-			return true;
-		IBlockState state = world.getBlockState(pos);
-		if(state.getBlock() instanceof BlockTrapDoor)
-			return state.getValue(BlockTrapDoor.OPEN).booleanValue();
-		return false;
-	}
+    boolean isEmptySpace(World world, BlockPos pos, TileEntity tile) {
+        if (world.isAirBlock(pos))
+            return true;
+        if (tile instanceof IConveyorTile)
+            return true;
+        IBlockState state = world.getBlockState(pos);
+        if (state.getBlock() instanceof BlockTrapDoor)
+            return state.getValue(BlockTrapDoor.OPEN).booleanValue();
+        return false;
+    }
 
-	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor_dropper");
-	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:blocks/conveyor_dropper_off");
+    public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor_dropper");
+    public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:blocks/conveyor_dropper_off");
 
-	@Override
-	public ResourceLocation getActiveTexture()
-	{
-		return texture_on;
-	}
+    @Override
+    public ResourceLocation getActiveTexture() {
+        return texture_on;
+    }
 
-	@Override
-	public ResourceLocation getInactiveTexture()
-	{
-		return texture_off;
-	}
+    @Override
+    public ResourceLocation getInactiveTexture() {
+        return texture_off;
+    }
 }

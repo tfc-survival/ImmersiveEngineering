@@ -17,45 +17,37 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-public class MessageRequestBlockUpdate implements IMessage
-{
-	BlockPos pos;
+public class MessageRequestBlockUpdate implements IMessage {
+    BlockPos pos;
 
-	public MessageRequestBlockUpdate(BlockPos pos)
-	{
-		this.pos = pos;
-	}
+    public MessageRequestBlockUpdate(BlockPos pos) {
+        this.pos = pos;
+    }
 
-	public MessageRequestBlockUpdate()
-	{
-	}
+    public MessageRequestBlockUpdate() {
+    }
 
-	@Override
-	public void fromBytes(ByteBuf buf)
-	{
-		pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-	}
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+    }
 
-	@Override
-	public void toBytes(ByteBuf buf)
-	{
-		buf.writeInt(pos.getX()).writeInt(pos.getY()).writeInt(pos.getZ());
-	}
+    @Override
+    public void toBytes(ByteBuf buf) {
+        buf.writeInt(pos.getX()).writeInt(pos.getY()).writeInt(pos.getZ());
+    }
 
-	public static class Handler implements IMessageHandler<MessageRequestBlockUpdate, IMessage>
-	{
-		@Override
-		public IMessage onMessage(MessageRequestBlockUpdate message, MessageContext ctx)
-		{
-			WorldServer world = ctx.getServerHandler().player.getServerWorld();
-			world.addScheduledTask(() -> {
-				if(world.isBlockLoaded(message.pos))
-				{
-					int dim = world.provider.getDimension();
-					EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(dim, message.pos));
-				}
-			});
-			return null;
-		}
-	}
+    public static class Handler implements IMessageHandler<MessageRequestBlockUpdate, IMessage> {
+        @Override
+        public IMessage onMessage(MessageRequestBlockUpdate message, MessageContext ctx) {
+            WorldServer world = ctx.getServerHandler().player.getServerWorld();
+            world.addScheduledTask(() -> {
+                if (world.isBlockLoaded(message.pos)) {
+                    int dim = world.provider.getDimension();
+                    EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(dim, message.pos));
+                }
+            });
+            return null;
+        }
+    }
 }

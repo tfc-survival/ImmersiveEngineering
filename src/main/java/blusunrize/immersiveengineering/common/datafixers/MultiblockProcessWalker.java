@@ -18,28 +18,24 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
-public class MultiblockProcessWalker extends Filtered
-{
+public class MultiblockProcessWalker extends Filtered {
 
-	public static final String PROCESS_INPUT_ITEM = "process_inputItem";
+    public static final String PROCESS_INPUT_ITEM = "process_inputItem";
 
-	public MultiblockProcessWalker(Class<? extends TileEntity> p_i47309_1_)
-	{
-		super(p_i47309_1_);
-	}
+    public MultiblockProcessWalker(Class<? extends TileEntity> p_i47309_1_) {
+        super(p_i47309_1_);
+    }
 
-	@Nonnull
-	@Override
-	public NBTTagCompound filteredProcess(@Nonnull IDataFixer fixer, @Nonnull NBTTagCompound compound, int versionIn)
-	{
-		NBTTagList queue = compound.getTagList("processQueue", Constants.NBT.TAG_COMPOUND);
-		for(int i = 0; i < queue.tagCount(); i++)
-		{
-			NBTTagCompound process = queue.getCompoundTagAt(i);
-			if(process.hasKey("process_inputItem", Constants.NBT.TAG_COMPOUND))
-				DataFixesManager.processItemStack(fixer, process, versionIn, PROCESS_INPUT_ITEM);
+    @Nonnull
+    @Override
+    public NBTTagCompound filteredProcess(@Nonnull IDataFixer fixer, @Nonnull NBTTagCompound compound, int versionIn) {
+        NBTTagList queue = compound.getTagList("processQueue", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < queue.tagCount(); i++) {
+            NBTTagCompound process = queue.getCompoundTagAt(i);
+            if (process.hasKey("process_inputItem", Constants.NBT.TAG_COMPOUND))
+                DataFixesManager.processItemStack(fixer, process, versionIn, PROCESS_INPUT_ITEM);
 
-		}
-		return compound;
-	}
+        }
+        return compound;
+    }
 }

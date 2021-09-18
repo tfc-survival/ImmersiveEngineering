@@ -26,96 +26,80 @@ import java.util.Optional;
 
 @SuppressWarnings("deprecation")
 //T must be ItemStack for Items or IBlockState for TileEntities implementing this
-public interface IOBJModelCallback<T>
-{
-	IUnlistedProperty<IOBJModelCallback> PROPERTY = new IUnlistedProperty<IOBJModelCallback>()
-	{
-		@Override
-		public String getName()
-		{
-			return "obj_model_callback";
-		}
+public interface IOBJModelCallback<T> {
+    IUnlistedProperty<IOBJModelCallback> PROPERTY = new IUnlistedProperty<IOBJModelCallback>() {
+        @Override
+        public String getName() {
+            return "obj_model_callback";
+        }
 
-		@Override
-		public boolean isValid(IOBJModelCallback value)
-		{
-			return true;
-		}
+        @Override
+        public boolean isValid(IOBJModelCallback value) {
+            return true;
+        }
 
-		@Override
-		public Class<IOBJModelCallback> getType()
-		{
-			return IOBJModelCallback.class;
-		}
+        @Override
+        public Class<IOBJModelCallback> getType() {
+            return IOBJModelCallback.class;
+        }
 
-		@Override
-		public String valueToString(IOBJModelCallback value)
-		{
-			return value.toString();
-		}
-	};
+        @Override
+        public String valueToString(IOBJModelCallback value) {
+            return value.toString();
+        }
+    };
 
-	@SideOnly(Side.CLIENT)
-	default TextureAtlasSprite getTextureReplacement(T object, String material)
-	{
-		return null;
-	}
+    @SideOnly(Side.CLIENT)
+    default TextureAtlasSprite getTextureReplacement(T object, String material) {
+        return null;
+    }
 
-	@SideOnly(Side.CLIENT)
-	default boolean shouldRenderGroup(T object, String group)
-	{
-		return true;
-	}
+    @SideOnly(Side.CLIENT)
+    default boolean shouldRenderGroup(T object, String group) {
+        return true;
+    }
 
-	@SideOnly(Side.CLIENT)
-	default Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform)
-	{
-		return transform;
-	}
+    @SideOnly(Side.CLIENT)
+    default Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform) {
+        return transform;
+    }
 
-	@SideOnly(Side.CLIENT)
-	default Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective, @Nullable EntityLivingBase entity)
-	{
-		return perspective;
-	}
+    @SideOnly(Side.CLIENT)
+    default Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective, @Nullable EntityLivingBase entity) {
+        return perspective;
+    }
 
-	@SideOnly(Side.CLIENT)
-	default int getRenderColour(T object, String group)
-	{
-		return 0xffffffff;
-	}
+    @SideOnly(Side.CLIENT)
+    default int getRenderColour(T object, String group) {
+        return 0xffffffff;
+    }
 
-	@SideOnly(Side.CLIENT)
-	default List<BakedQuad> modifyQuads(T object, List<BakedQuad> quads)
-	{
-		return quads;
-	}
+    @SideOnly(Side.CLIENT)
+    default List<BakedQuad> modifyQuads(T object, List<BakedQuad> quads) {
+        return quads;
+    }
 
-	@SideOnly(Side.CLIENT)
-	default String getCacheKey(T object)
-	{
-		return null;
-	}
+    @SideOnly(Side.CLIENT)
+    default String getCacheKey(T object) {
+        return null;
+    }
 
-	String[][] EMPTY_STRING_A = new String[0][];
+    String[][] EMPTY_STRING_A = new String[0][];
 
-	@SideOnly(Side.CLIENT)
-	default String[][] getSpecialGroups(ItemStack stack, TransformType transform, EntityLivingBase entity)
-	{
-		return IOBJModelCallback.EMPTY_STRING_A;
-	}
+    @SideOnly(Side.CLIENT)
+    default String[][] getSpecialGroups(ItemStack stack, TransformType transform, EntityLivingBase entity) {
+        return IOBJModelCallback.EMPTY_STRING_A;
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Nonnull
-	default Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, EntityLivingBase entity,
-										  Matrix4 mat, float partialTicks)
-	{
-		return mat.setIdentity();
-	}
+    @SideOnly(Side.CLIENT)
+    @Nonnull
+    default Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, EntityLivingBase entity,
+                                          Matrix4 mat, float partialTicks) {
+        return mat.setIdentity();
+    }
 
-	@SideOnly(Side.CLIENT)
-	default boolean areGroupsFullbright(ItemStack stack, String[] groups)
-	{
-		return false;
-	}
+    @SideOnly(Side.CLIENT)
+    default boolean areGroupsFullbright(ItemStack stack, String[] groups) {
+        return false;
+    }
 }

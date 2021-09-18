@@ -32,112 +32,100 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration.FENCE;
 
-public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecoration>
-{
-	public BlockWoodenDecoration()
-	{
-		super("wooden_decoration", Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDecoration.class), ItemBlockIEBase.class, BlockFence.NORTH, BlockFence.SOUTH, BlockFence.WEST, BlockFence.EAST);
-		this.setHardness(2.0F);
-		this.setResistance(5.0F);
-		this.setBlockLayer(BlockRenderLayer.CUTOUT);
-		this.setAllNotNormalBlock();
-		lightOpacity = 0;
-	}
+public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecoration> {
+    public BlockWoodenDecoration() {
+        super("wooden_decoration", Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDecoration.class), ItemBlockIEBase.class, BlockFence.NORTH, BlockFence.SOUTH, BlockFence.WEST, BlockFence.EAST);
+        this.setHardness(2.0F);
+        this.setResistance(5.0F);
+        this.setBlockLayer(BlockRenderLayer.CUTOUT);
+        this.setAllNotNormalBlock();
+        lightOpacity = 0;
+    }
 
-	@Override
-	public boolean useCustomStateMapper()
-	{
-		return true;
-	}
+    @Override
+    public boolean useCustomStateMapper() {
+        return true;
+    }
 
-	@Override
-	public String getCustomStateMapping(int meta, boolean itemBlock)
-	{
-		if(meta==0&&!itemBlock)
-			return "fence";
-		return null;
-	}
+    @Override
+    public String getCustomStateMapping(int meta, boolean itemBlock) {
+        if (meta == 0 && !itemBlock)
+            return "fence";
+        return null;
+    }
 
-	@Override
-	public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
-	{
-		int meta = this.getMetaFromState(world.getBlockState(pos));
-		if(meta==FENCE.getMeta())
-		{
-			IBlockState connector = world.getBlockState(pos.offset(facing));
-			return connector.getBlock() instanceof BlockMetalDecoration1&&this.getMetaFromState(connector)==meta;
-		}
-		return super.canBeConnectedTo(world, pos, facing);
-	}
+    @Override
+    public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing) {
+        int meta = this.getMetaFromState(world.getBlockState(pos));
+        if (meta == FENCE.getMeta()) {
+            IBlockState connector = world.getBlockState(pos.offset(facing));
+            return connector.getBlock() instanceof BlockMetalDecoration1 && this.getMetaFromState(connector) == meta;
+        }
+        return super.canBeConnectedTo(world, pos, facing);
+    }
 
-	@Override
-	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
-	{
-		//		int meta = world.getBlockMetadata(x, y, z);
-		int meta = this.getMetaFromState(state);
-		if(meta==BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())
-			return true;
-		//		TileEntity te = world.getTileEntity(x, y, z);
-		//		if(te instanceof TileEntityStructuralArm)
-		//		{
-		//			if(side==UP)
-		//				return ((TileEntityStructuralArm)te).inverted;
-		//			else if(side==DOWN)
-		//				return !((TileEntityStructuralArm)te).inverted;
-		//			else
-		//				return ((TileEntityStructuralArm)te).facing==side.getOpposite().ordinal();
-		//		}
-		//		if(meta==META_radiator||meta==META_heavyEngineering||meta==META_generator||meta==META_lightEngineering||meta==META_sheetMetal)
-		//			return true;
-		//		if(te instanceof TileEntityWallmount)
-		//		{
-		//			if(side==UP)
-		//				return ((TileEntityWallmount)te).inverted;
-		//			else if(side==DOWN)
-		//				return !((TileEntityWallmount)te).inverted;
-		//			else
-		//				return true;
-		//		}
-		return super.isSideSolid(state, world, pos, side);
-	}
+    @Override
+    public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        //		int meta = world.getBlockMetadata(x, y, z);
+        int meta = this.getMetaFromState(state);
+        if (meta == BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())
+            return true;
+        //		TileEntity te = world.getTileEntity(x, y, z);
+        //		if(te instanceof TileEntityStructuralArm)
+        //		{
+        //			if(side==UP)
+        //				return ((TileEntityStructuralArm)te).inverted;
+        //			else if(side==DOWN)
+        //				return !((TileEntityStructuralArm)te).inverted;
+        //			else
+        //				return ((TileEntityStructuralArm)te).facing==side.getOpposite().ordinal();
+        //		}
+        //		if(meta==META_radiator||meta==META_heavyEngineering||meta==META_generator||meta==META_lightEngineering||meta==META_sheetMetal)
+        //			return true;
+        //		if(te instanceof TileEntityWallmount)
+        //		{
+        //			if(side==UP)
+        //				return ((TileEntityWallmount)te).inverted;
+        //			else if(side==DOWN)
+        //				return !((TileEntityWallmount)te).inverted;
+        //			else
+        //				return true;
+        //		}
+        return super.isSideSolid(state, world, pos, side);
+    }
 
-	@Override
-	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side)
-	{
-		int meta = this.getMetaFromState(state);
-		if(meta==FENCE.getMeta())
-			return side!=EnumFacing.UP&&side!=EnumFacing.DOWN?BlockFaceShape.MIDDLE_POLE: BlockFaceShape.CENTER;
-		return BlockFaceShape.SOLID;
-	}
+    @Override
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side) {
+        int meta = this.getMetaFromState(state);
+        if (meta == FENCE.getMeta())
+            return side != EnumFacing.UP && side != EnumFacing.DOWN ? BlockFaceShape.MIDDLE_POLE : BlockFaceShape.CENTER;
+        return BlockFaceShape.SOLID;
+    }
 
-	@Override
-	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
-	{
-		int meta = this.getMetaFromState(state);
-		if(meta==BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())
-		{
-			IBlockState state2 = world.getBlockState(pos.offset(side));
-			if(this.equals(state2.getBlock()))
-			{
-				int meta2 = this.getMetaFromState(state2);
-				return meta2!=BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta();
-			}
-		}
-		return super.shouldSideBeRendered(state, world, pos, side);
-	}
+    @Override
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        int meta = this.getMetaFromState(state);
+        if (meta == BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()) {
+            IBlockState state2 = world.getBlockState(pos.offset(side));
+            if (this.equals(state2.getBlock())) {
+                int meta2 = this.getMetaFromState(state2);
+                return meta2 != BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta();
+            }
+        }
+        return super.shouldSideBeRendered(state, world, pos, side);
+    }
 
 
-	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		state = super.getActualState(state, world, pos);
-		if(this.getMetaFromState(state)==FENCE.getMeta())
-			for(EnumFacing f : EnumFacing.HORIZONTALS)
-				state = state.withProperty(f==EnumFacing.NORTH?BlockFence.NORTH: f==EnumFacing.SOUTH?BlockFence.SOUTH: f==EnumFacing.WEST?BlockFence.WEST: BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, material));
-		return state;
-	}
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        state = super.getActualState(state, world, pos);
+        if (this.getMetaFromState(state) == FENCE.getMeta())
+            for (EnumFacing f : EnumFacing.HORIZONTALS)
+                state = state.withProperty(f == EnumFacing.NORTH ? BlockFence.NORTH : f == EnumFacing.SOUTH ? BlockFence.SOUTH : f == EnumFacing.WEST ? BlockFence.WEST : BlockFence.EAST, Utils.canFenceConnectTo(world, pos, f, material));
+        return state;
+    }
 
-	//	@Override
+    //	@Override
 //	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
 //	{
 //		//		TileEntity tileEntity = world.getTileEntity(x, y, z);
@@ -190,73 +178,65 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 //			this.setBlockBounds(0,0,0,1,1,1);
 //	}
 
-	@Override
-	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
-	{
-		state = state.getActualState(worldIn, pos);
-		if(getMetaFromState(state)==FENCE.getMeta())
-		{
-			addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.PILLAR_AABB);
-			if(state.getValue(BlockFence.NORTH))
-				addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.NORTH_AABB);
-			if(state.getValue(BlockFence.EAST))
-				addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.EAST_AABB);
-			if(state.getValue(BlockFence.SOUTH))
-				addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.SOUTH_AABB);
-			if(state.getValue(BlockFence.WEST))
-				addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.WEST_AABB);
-		}
-		else
-			addCollisionBoxToList(pos, entityBox, collidingBoxes, new AxisAlignedBB(.0625f, 0, .0625f, .9375f, 1, .9375f));
-	}
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_) {
+        state = state.getActualState(worldIn, pos);
+        if (getMetaFromState(state) == FENCE.getMeta()) {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.PILLAR_AABB);
+            if (state.getValue(BlockFence.NORTH))
+                addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.NORTH_AABB);
+            if (state.getValue(BlockFence.EAST))
+                addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.EAST_AABB);
+            if (state.getValue(BlockFence.SOUTH))
+                addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.SOUTH_AABB);
+            if (state.getValue(BlockFence.WEST))
+                addCollisionBoxToList(pos, entityBox, collidingBoxes, BlockFence.WEST_AABB);
+        } else
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, new AxisAlignedBB(.0625f, 0, .0625f, .9375f, 1, .9375f));
+    }
 
-	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		int meta = this.getMetaFromState(state);
-		if(meta==FENCE.getMeta())
-			return new AxisAlignedBB(Utils.canFenceConnectTo(world, pos, EnumFacing.WEST, material)?0: .375f, 0, Utils.canFenceConnectTo(world, pos, EnumFacing.NORTH, material)?0: .375f, Utils.canFenceConnectTo(world, pos, EnumFacing.EAST, material)?1: .625f, 1f, Utils.canFenceConnectTo(world, pos, EnumFacing.SOUTH, material)?1: .625f);
-		else if(meta==BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())
-			return FULL_BLOCK_AABB;
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+        int meta = this.getMetaFromState(state);
+        if (meta == FENCE.getMeta())
+            return new AxisAlignedBB(Utils.canFenceConnectTo(world, pos, EnumFacing.WEST, material) ? 0 : .375f, 0, Utils.canFenceConnectTo(world, pos, EnumFacing.NORTH, material) ? 0 : .375f, Utils.canFenceConnectTo(world, pos, EnumFacing.EAST, material) ? 1 : .625f, 1f, Utils.canFenceConnectTo(world, pos, EnumFacing.SOUTH, material) ? 1 : .625f);
+        else if (meta == BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())
+            return FULL_BLOCK_AABB;
 
-		return super.getBoundingBox(state, world, pos);
-	}
+        return super.getBoundingBox(state, world, pos);
+    }
 
-	private static int getBoundingBoxIdx(IBlockState state)
-	{
-		int i = 0;
-		if(state.getValue(BlockFence.NORTH))
-			i |= 1<<EnumFacing.NORTH.getHorizontalIndex();
-		if(state.getValue(BlockFence.EAST))
-			i |= 1<<EnumFacing.EAST.getHorizontalIndex();
-		if(state.getValue(BlockFence.SOUTH))
-			i |= 1<<EnumFacing.SOUTH.getHorizontalIndex();
-		if(state.getValue(BlockFence.WEST))
-			i |= 1<<EnumFacing.WEST.getHorizontalIndex();
-		return i;
-	}
+    private static int getBoundingBoxIdx(IBlockState state) {
+        int i = 0;
+        if (state.getValue(BlockFence.NORTH))
+            i |= 1 << EnumFacing.NORTH.getHorizontalIndex();
+        if (state.getValue(BlockFence.EAST))
+            i |= 1 << EnumFacing.EAST.getHorizontalIndex();
+        if (state.getValue(BlockFence.SOUTH))
+            i |= 1 << EnumFacing.SOUTH.getHorizontalIndex();
+        if (state.getValue(BlockFence.WEST))
+            i |= 1 << EnumFacing.WEST.getHorizontalIndex();
+        return i;
+    }
 
-	@Override
-	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
-	{
-		return world.getBlockState(pos).getValue(property)==BlockTypes_WoodenDecoration.SCAFFOLDING;
-	}
+    @Override
+    public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity) {
+        return world.getBlockState(pos).getValue(property) == BlockTypes_WoodenDecoration.SCAFFOLDING;
+    }
 
 
-	@Nullable
-	@Override
-	public PathNodeType getAiPathNodeType(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		if(state.getValue(property)==FENCE)
-			return PathNodeType.FENCE;
-		else
-			return super.getAiPathNodeType(state, world, pos);
-	}
+    @Nullable
+    @Override
+    public PathNodeType getAiPathNodeType(IBlockState state, IBlockAccess world, BlockPos pos) {
+        if (state.getValue(property) == FENCE)
+            return PathNodeType.FENCE;
+        else
+            return super.getAiPathNodeType(state, world, pos);
+    }
 
-	@Override
-	public boolean canPlaceTorchOnTop(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		//TODO remove in 1.13 when fences extend BlockFence (Mojang has a special case for fences)
-		return state.getValue(property)==FENCE||super.canPlaceTorchOnTop(state, world, pos);
-	}
+    @Override
+    public boolean canPlaceTorchOnTop(IBlockState state, IBlockAccess world, BlockPos pos) {
+        //TODO remove in 1.13 when fences extend BlockFence (Mojang has a special case for fences)
+        return state.getValue(property) == FENCE || super.canPlaceTorchOnTop(state, world, pos);
+    }
 }

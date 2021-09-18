@@ -40,140 +40,115 @@ import java.util.Optional;
 /**
  * @author BluSunrize - 12.08.2016
  */
-public class ModelItemDynamicOverride implements IBakedModel
-{
-	IBakedModel itemModel;
-	ImmutableList<BakedQuad> quads;
-	IBakedModel guiModel;
+public class ModelItemDynamicOverride implements IBakedModel {
+    IBakedModel itemModel;
+    ImmutableList<BakedQuad> quads;
+    IBakedModel guiModel;
 
-	public ModelItemDynamicOverride(IBakedModel itemModel, @Nullable List<ResourceLocation> textures)
-	{
-		this.itemModel = itemModel;
-		if(textures!=null)
-		{
-			ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
-			Optional<TRSRTransformation> transform = Optional.of(TRSRTransformation.identity());
-			for(int i = 0; i < textures.size(); i++)
-				builder.addAll(ItemLayerModel.getQuadsForSprite(i, ClientUtils.getSprite(textures.get(i)), DefaultVertexFormats.ITEM, transform));
-			quads = builder.build();
-			guiModel = new BakedGuiItemModel(this);
-		}
-		else
-		{
-			guiModel = itemModel;
-		}
-	}
+    public ModelItemDynamicOverride(IBakedModel itemModel, @Nullable List<ResourceLocation> textures) {
+        this.itemModel = itemModel;
+        if (textures != null) {
+            ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
+            Optional<TRSRTransformation> transform = Optional.of(TRSRTransformation.identity());
+            for (int i = 0; i < textures.size(); i++)
+                builder.addAll(ItemLayerModel.getQuadsForSprite(i, ClientUtils.getSprite(textures.get(i)), DefaultVertexFormats.ITEM, transform));
+            quads = builder.build();
+            guiModel = new BakedGuiItemModel(this);
+        } else {
+            guiModel = itemModel;
+        }
+    }
 
-	@Override
-	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
-	{
-		if(quads!=null&&side==null)
-			return quads;
-		return itemModel.getQuads(state, side, rand);
-	}
+    @Override
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+        if (quads != null && side == null)
+            return quads;
+        return itemModel.getQuads(state, side, rand);
+    }
 
-	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return itemModel.isAmbientOcclusion();
-	}
+    @Override
+    public boolean isAmbientOcclusion() {
+        return itemModel.isAmbientOcclusion();
+    }
 
-	@Override
-	public boolean isGui3d()
-	{
-		return itemModel.isGui3d();
-	}
+    @Override
+    public boolean isGui3d() {
+        return itemModel.isGui3d();
+    }
 
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return itemModel.isBuiltInRenderer();
-	}
+    @Override
+    public boolean isBuiltInRenderer() {
+        return itemModel.isBuiltInRenderer();
+    }
 
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return itemModel.getParticleTexture();
-	}
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return itemModel.getParticleTexture();
+    }
 
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return itemModel.getItemCameraTransforms();
-	}
+    @Override
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return itemModel.getItemCameraTransforms();
+    }
 
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return dynamicOverrides;
-	}
+    @Override
+    public ItemOverrideList getOverrides() {
+        return dynamicOverrides;
+    }
 
-	@Override
-	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
-	{
-		return Pair.of(cameraTransformType==TransformType.GUI?guiModel: this, itemModel.handlePerspective(cameraTransformType).getRight());
-	}
+    @Override
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
+        return Pair.of(cameraTransformType == TransformType.GUI ? guiModel : this, itemModel.handlePerspective(cameraTransformType).getRight());
+    }
 
-	public static final HashMap<String, IBakedModel> modelCache = new HashMap<>();
-	static ItemOverrideList dynamicOverrides = new ItemOverrideList(new ArrayList<>())
-	{
+    public static final HashMap<String, IBakedModel> modelCache = new HashMap<>();
+    static ItemOverrideList dynamicOverrides = new ItemOverrideList(new ArrayList<>()) {
 
-		@Override
-		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
-		{
-			if(!stack.isEmpty()&&stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
-			{
-				IEItemInterfaces.ITextureOverride texOverride = (IEItemInterfaces.ITextureOverride)stack.getItem();
-				String key = texOverride.getModelCacheKey(stack);
-				if(key!=null)
-				{
-					IBakedModel model = modelCache.get(key);
-					if(model==null)
-					{
-						model = new ModelItemDynamicOverride(originalModel instanceof ModelItemDynamicOverride?((ModelItemDynamicOverride)originalModel).itemModel:originalModel, texOverride.getTextures(stack, key));
-						modelCache.put(key, model);
-					}
-					return model;
-				}
-			}
-			return originalModel;
-		}
-	};
+        @Override
+        public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
+            if (!stack.isEmpty() && stack.getItem() instanceof IEItemInterfaces.ITextureOverride) {
+                IEItemInterfaces.ITextureOverride texOverride = (IEItemInterfaces.ITextureOverride) stack.getItem();
+                String key = texOverride.getModelCacheKey(stack);
+                if (key != null) {
+                    IBakedModel model = modelCache.get(key);
+                    if (model == null) {
+                        model = new ModelItemDynamicOverride(originalModel instanceof ModelItemDynamicOverride ? ((ModelItemDynamicOverride) originalModel).itemModel : originalModel, texOverride.getTextures(stack, key));
+                        modelCache.put(key, model);
+                    }
+                    return model;
+                }
+            }
+            return originalModel;
+        }
+    };
 
-	public static class BakedGuiItemModel extends BakedModelWrapper<ModelItemDynamicOverride>
-	{
-		private final ImmutableList<BakedQuad> quads;
+    public static class BakedGuiItemModel extends BakedModelWrapper<ModelItemDynamicOverride> {
+        private final ImmutableList<BakedQuad> quads;
 
-		public BakedGuiItemModel(ModelItemDynamicOverride originalModel)
-		{
-			super(originalModel);
-			ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
-			for(BakedQuad quad : originalModel.quads)
-			{
-				if(quad.getFace()==EnumFacing.SOUTH)
-				{
-					builder.add(quad);
-				}
-			}
-			this.quads = builder.build();
-		}
+        public BakedGuiItemModel(ModelItemDynamicOverride originalModel) {
+            super(originalModel);
+            ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
+            for (BakedQuad quad : originalModel.quads) {
+                if (quad.getFace() == EnumFacing.SOUTH) {
+                    builder.add(quad);
+                }
+            }
+            this.quads = builder.build();
+        }
 
-		@Nonnull
-		@Override
-		public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
-		{
-			if(side==null)
-			{
-				return quads;
-			}
-			return ImmutableList.of();
-		}
+        @Nonnull
+        @Override
+        public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+            if (side == null) {
+                return quads;
+            }
+            return ImmutableList.of();
+        }
 
-		@Nonnull
-		@Override
-		public Pair<? extends IBakedModel, Matrix4f> handlePerspective(@Nonnull TransformType type)
-		{
-			return this.originalModel.itemModel.handlePerspective(type);
-		}
-	}
+        @Nonnull
+        @Override
+        public Pair<? extends IBakedModel, Matrix4f> handlePerspective(@Nonnull TransformType type) {
+            return this.originalModel.itemModel.handlePerspective(type);
+        }
+    }
 }

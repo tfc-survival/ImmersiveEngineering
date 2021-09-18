@@ -18,64 +18,54 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-public class RecipePotionBullets extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
-{
-	@Override
-	public boolean matches(InventoryCrafting inv, World world)
-	{
-		ItemStack bullet = ItemStack.EMPTY;
-		ItemStack potion = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(!stackInSlot.isEmpty())
-			{
-				if(bullet.isEmpty()&&isPotionBullet(stackInSlot))
-					bullet = stackInSlot;
-				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof ItemPotion)
-					potion = stackInSlot;
-				else
-					return false;
-			}
-		}
-		return !bullet.isEmpty()&&!potion.isEmpty();
-	}
+public class RecipePotionBullets extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+    @Override
+    public boolean matches(InventoryCrafting inv, World world) {
+        ItemStack bullet = ItemStack.EMPTY;
+        ItemStack potion = ItemStack.EMPTY;
+        for (int i = 0; i < inv.getSizeInventory(); i++) {
+            ItemStack stackInSlot = inv.getStackInSlot(i);
+            if (!stackInSlot.isEmpty()) {
+                if (bullet.isEmpty() && isPotionBullet(stackInSlot))
+                    bullet = stackInSlot;
+                else if (potion.isEmpty() && stackInSlot.getItem() instanceof ItemPotion)
+                    potion = stackInSlot;
+                else
+                    return false;
+            }
+        }
+        return !bullet.isEmpty() && !potion.isEmpty();
+    }
 
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
-	{
-		ItemStack bullet = ItemStack.EMPTY;
-		ItemStack potion = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(!stackInSlot.isEmpty())
-			{
-				if(bullet.isEmpty()&&isPotionBullet(stackInSlot))
-					bullet = stackInSlot;
-				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof ItemPotion)
-					potion = stackInSlot;
-			}
-		}
-		ItemStack newBullet = Utils.copyStackWithAmount(bullet, 1);
-		ItemNBTHelper.setItemStack(newBullet, "potion", potion.copy());
-		return newBullet;
-	}
+    @Override
+    public ItemStack getCraftingResult(InventoryCrafting inv) {
+        ItemStack bullet = ItemStack.EMPTY;
+        ItemStack potion = ItemStack.EMPTY;
+        for (int i = 0; i < inv.getSizeInventory(); i++) {
+            ItemStack stackInSlot = inv.getStackInSlot(i);
+            if (!stackInSlot.isEmpty()) {
+                if (bullet.isEmpty() && isPotionBullet(stackInSlot))
+                    bullet = stackInSlot;
+                else if (potion.isEmpty() && stackInSlot.getItem() instanceof ItemPotion)
+                    potion = stackInSlot;
+            }
+        }
+        ItemStack newBullet = Utils.copyStackWithAmount(bullet, 1);
+        ItemNBTHelper.setItemStack(newBullet, "potion", potion.copy());
+        return newBullet;
+    }
 
-	@Override
-	public boolean canFit(int width, int height)
-	{
-		return width >= 2&&height >= 2;
-	}
+    @Override
+    public boolean canFit(int width, int height) {
+        return width >= 2 && height >= 2;
+    }
 
-	@Override
-	public ItemStack getRecipeOutput()
-	{
-		return BulletHandler.getBulletStack("potion");
-	}
+    @Override
+    public ItemStack getRecipeOutput() {
+        return BulletHandler.getBulletStack("potion");
+    }
 
-	public static boolean isPotionBullet(ItemStack stack)
-	{
-		return IEContent.itemBullet.equals(stack.getItem())&&"potion".equals(ItemNBTHelper.getString(stack, "bullet"));
-	}
+    public static boolean isPotionBullet(ItemStack stack) {
+        return IEContent.itemBullet.equals(stack.getItem()) && "potion".equals(ItemNBTHelper.getString(stack, "bullet"));
+    }
 }

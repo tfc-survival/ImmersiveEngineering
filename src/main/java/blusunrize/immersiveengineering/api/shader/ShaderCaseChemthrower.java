@@ -12,51 +12,45 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Collection;
 
-public class ShaderCaseChemthrower extends ShaderCase
-{
-	public boolean renderCageOnBase = true;
-	public boolean tanksUncoloured = false;
+public class ShaderCaseChemthrower extends ShaderCase {
+    public boolean renderCageOnBase = true;
+    public boolean tanksUncoloured = false;
 
-	public ShaderCaseChemthrower(ShaderLayer... layers)
-	{
-		super(layers);
-	}
+    public ShaderCaseChemthrower(ShaderLayer... layers) {
+        super(layers);
+    }
 
-	public ShaderCaseChemthrower(Collection<ShaderLayer> layers)
-	{
-		super(layers);
-	}
+    public ShaderCaseChemthrower(Collection<ShaderLayer> layers) {
+        super(layers);
+    }
 
-	@Override
-	public String getShaderType()
-	{
-		return "immersiveengineering:chemthrower";
-	}
+    @Override
+    public String getShaderType() {
+        return "immersiveengineering:chemthrower";
+    }
 
-	@Override
-	public int getLayerInsertionIndex()
-	{
-		return layers.length-1;
-	}
+    @Override
+    public int getLayerInsertionIndex() {
+        return layers.length - 1;
+    }
 
-	@Override
-	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
-	{
-		if("grip".equals(modelPart))
-			return pass==0;
-		if(pass==0)//first pass is just for the grip
-			return false;
+    @Override
+    public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass) {
+        if ("grip".equals(modelPart))
+            return pass == 0;
+        if (pass == 0)//first pass is just for the grip
+            return false;
 
-		if(pass==1&&"cage".equals(modelPart))//useful for a cage that is different from the base one
-			return renderCageOnBase;
+        if (pass == 1 && "cage".equals(modelPart))//useful for a cage that is different from the base one
+            return renderCageOnBase;
 
-		if(tanksUncoloured&&"tanks".equals(modelPart))//if tanks should be unaffected by colour and only render on overlay
-			return pass==getLayers().length-1;
-		if(!tanksUncoloured&&"tanks".equals(modelPart))//if tanks should be coloured, the uncoloured pass must be ignored
-			return pass!=getLayers().length-1;
+        if (tanksUncoloured && "tanks".equals(modelPart))//if tanks should be unaffected by colour and only render on overlay
+            return pass == getLayers().length - 1;
+        if (!tanksUncoloured && "tanks".equals(modelPart))//if tanks should be coloured, the uncoloured pass must be ignored
+            return pass != getLayers().length - 1;
 
-		return true;
-	}
+        return true;
+    }
 
 //	@Override
 //	public int getPasses(ItemStack shader, ItemStack item, String modelPart)

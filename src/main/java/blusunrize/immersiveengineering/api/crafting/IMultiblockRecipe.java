@@ -23,44 +23,39 @@ import java.util.List;
  * An interface implemented by recipes that can be handled by IE's Metal Multiblocks. <br>
  * This is only used by IE's own machines, it's just in the API because recipes have to implement it.
  */
-public interface IMultiblockRecipe
-{
-	List<IngredientStack> getItemInputs();
+public interface IMultiblockRecipe {
+    List<IngredientStack> getItemInputs();
 
-	default boolean shouldCheckItemAvailability()
-	{
-		return true;
-	}
+    default boolean shouldCheckItemAvailability() {
+        return true;
+    }
 
-	List<FluidStack> getFluidInputs();
+    List<FluidStack> getFluidInputs();
 
-	NonNullList<ItemStack> getItemOutputs();
+    NonNullList<ItemStack> getItemOutputs();
 
-	default NonNullList<ItemStack> getActualItemOutputs(TileEntity tile)
-	{
-		return getItemOutputs();
-	}
+    default NonNullList<ItemStack> getActualItemOutputs(TileEntity tile) {
+        return getItemOutputs();
+    }
 
-	List<FluidStack> getFluidOutputs();
+    List<FluidStack> getFluidOutputs();
 
-	default ItemStack getDisplayStack(ItemStack input)
-	{
-		for(IngredientStack ingr : getItemInputs())
-			if(ingr.matchesItemStack(input))
-				return Utils.copyStackWithAmount(input, ingr.inputSize);
-		return ItemStack.EMPTY;
-	}
+    default ItemStack getDisplayStack(ItemStack input) {
+        for (IngredientStack ingr : getItemInputs())
+            if (ingr.matchesItemStack(input))
+                return Utils.copyStackWithAmount(input, ingr.inputSize);
+        return ItemStack.EMPTY;
+    }
 
-	default List<FluidStack> getActualFluidOutputs(TileEntity tile)
-	{
-		return getFluidOutputs();
-	}
+    default List<FluidStack> getActualFluidOutputs(TileEntity tile) {
+        return getFluidOutputs();
+    }
 
-	int getTotalProcessTime();
+    int getTotalProcessTime();
 
-	int getTotalProcessEnergy();
+    int getTotalProcessEnergy();
 
-	int getMultipleProcessTicks();
+    int getMultipleProcessTicks();
 
-	NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound);
+    NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound);
 }

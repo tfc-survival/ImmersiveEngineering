@@ -20,14 +20,12 @@ import java.util.Map;
  * Use {@link IElectricEquipment} instead
  */
 @Deprecated
-public interface ITeslaEquipment extends IElectricEquipment
-{
-	void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource dmg);
+public interface ITeslaEquipment extends IElectricEquipment {
+    void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource dmg);
 
-	@Override
-	default void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, @Nullable DamageSource dmg, ElectricSource desc)
-	{
-		if(dmg!=null)
-			onStrike(s, eqSlot, p, cache, dmg);
-	}
+    @Override
+    default void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, @Nullable DamageSource dmg, ElectricSource desc) {
+        if (dmg != null)
+            onStrike(s, eqSlot, p, cache, dmg);
+    }
 }

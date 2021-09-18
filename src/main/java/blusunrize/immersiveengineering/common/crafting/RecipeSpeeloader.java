@@ -18,31 +18,25 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-public class RecipeSpeeloader extends ShapedOreRecipe
-{
-	public RecipeSpeeloader()
-	{
-		super(null, new ItemStack(IEContent.itemSpeedloader), CraftingHelper.parseShaped("BBB", "BSB", "BBB", 'S', IEContent.itemSpeedloader, 'B', BulletHandler.getBulletStack("casull")));
-	}
+public class RecipeSpeeloader extends ShapedOreRecipe {
+    public RecipeSpeeloader() {
+        super(null, new ItemStack(IEContent.itemSpeedloader), CraftingHelper.parseShaped("BBB", "BSB", "BBB", 'S', IEContent.itemSpeedloader, 'B', BulletHandler.getBulletStack("casull")));
+    }
 
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting matrix)
-	{
-		ItemStack speedloader = matrix.getStackInSlot(4);
+    @Override
+    public ItemStack getCraftingResult(InventoryCrafting matrix) {
+        ItemStack speedloader = matrix.getStackInSlot(4);
 
-		if(!speedloader.isEmpty()&&speedloader.getItem() instanceof ItemSpeedloader&&((ItemSpeedloader)speedloader.getItem()).isEmpty(speedloader))
-		{
-			ItemStack out = speedloader.copy();
-			NonNullList<ItemStack> fill = NonNullList.withSize(8, ItemStack.EMPTY);
-			for(int i = 0; i < 8; i++)
-			{
-				int j = i >= 4?i+1: i;
-				fill.set(i, Utils.copyStackWithAmount(matrix.getStackInSlot(j), 1));
-			}
-			((ItemSpeedloader)out.getItem()).setContainedItems(out, fill);
-			return out;
-		}
-		else
-			return ItemStack.EMPTY;
-	}
+        if (!speedloader.isEmpty() && speedloader.getItem() instanceof ItemSpeedloader && ((ItemSpeedloader) speedloader.getItem()).isEmpty(speedloader)) {
+            ItemStack out = speedloader.copy();
+            NonNullList<ItemStack> fill = NonNullList.withSize(8, ItemStack.EMPTY);
+            for (int i = 0; i < 8; i++) {
+                int j = i >= 4 ? i + 1 : i;
+                fill.set(i, Utils.copyStackWithAmount(matrix.getStackInSlot(j), 1));
+            }
+            ((ItemSpeedloader) out.getItem()).setContainedItems(out, fill);
+            return out;
+        } else
+            return ItemStack.EMPTY;
+    }
 }

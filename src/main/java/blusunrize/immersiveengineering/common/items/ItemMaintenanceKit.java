@@ -19,26 +19,22 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-public class ItemMaintenanceKit extends ItemIEBase implements IGuiItem
-{
-	public ItemMaintenanceKit()
-	{
-		super("maintenance_kit", 1);
-		this.setMaxDamage(50);
-	}
+public class ItemMaintenanceKit extends ItemIEBase implements IGuiItem {
+    public ItemMaintenanceKit() {
+        super("maintenance_kit", 1);
+        this.setMaxDamage(50);
+    }
 
-	@Override
-	public int getGuiID(ItemStack stack)
-	{
-		return Lib.GUIID_MaintenanceKit;
-	}
+    @Override
+    public int getGuiID(ItemStack stack) {
+        return Lib.GUIID_MaintenanceKit;
+    }
 
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
-	{
-		ItemStack stack = player.getHeldItem(hand);
-		if(!world.isRemote)
-			CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND?EntityEquipmentSlot.MAINHAND: EntityEquipmentSlot.OFFHAND);
-		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-	}
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        if (!world.isRemote)
+            CommonProxy.openGuiForItem(player, hand == EnumHand.MAIN_HAND ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND);
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+    }
 }

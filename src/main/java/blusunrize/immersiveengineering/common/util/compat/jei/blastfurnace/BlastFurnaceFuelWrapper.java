@@ -23,35 +23,31 @@ import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.List;
 
-public class BlastFurnaceFuelWrapper implements IRecipeWrapper
-{
-	private final List<ItemStack> fuel;
-	private static final String S_BURNTIME = I18n.format("desc.immersiveengineering.info.blastFuelTime");
-	private final String burnTime;
-	private final IDrawableAnimated flame;
+public class BlastFurnaceFuelWrapper implements IRecipeWrapper {
+    private final List<ItemStack> fuel;
+    private static final String S_BURNTIME = I18n.format("desc.immersiveengineering.info.blastFuelTime");
+    private final String burnTime;
+    private final IDrawableAnimated flame;
 
-	public BlastFurnaceFuelWrapper(IGuiHelper guiHelper, List<ItemStack> fuel, int burnTime)
-	{
-		this.fuel = fuel;
-		this.burnTime = I18n.format("desc.immersiveengineering.info.seconds", Utils.formatDouble(burnTime/20f, "0.##"));
+    public BlastFurnaceFuelWrapper(IGuiHelper guiHelper, List<ItemStack> fuel, int burnTime) {
+        this.fuel = fuel;
+        this.burnTime = I18n.format("desc.immersiveengineering.info.seconds", Utils.formatDouble(burnTime / 20f, "0.##"));
 
-		ResourceLocation furnaceBackgroundLocation = new ResourceLocation("minecraft", "textures/gui/container/furnace.png");
-		IDrawableStatic flameDrawable = guiHelper.createDrawable(furnaceBackgroundLocation, 176, 0, 14, 14);
-		this.flame = guiHelper.createAnimatedDrawable(flameDrawable, burnTime, IDrawableAnimated.StartDirection.TOP, true);
-	}
+        ResourceLocation furnaceBackgroundLocation = new ResourceLocation("minecraft", "textures/gui/container/furnace.png");
+        IDrawableStatic flameDrawable = guiHelper.createDrawable(furnaceBackgroundLocation, 176, 0, 14, 14);
+        this.flame = guiHelper.createAnimatedDrawable(flameDrawable, burnTime, IDrawableAnimated.StartDirection.TOP, true);
+    }
 
 
-	@Override
-	public void getIngredients(IIngredients ingredients)
-	{
-		ingredients.setInputs(ItemStack.class, fuel);
-	}
+    @Override
+    public void getIngredients(IIngredients ingredients) {
+        ingredients.setInputs(ItemStack.class, fuel);
+    }
 
-	@Override
-	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
-	{
-		minecraft.fontRenderer.drawString(S_BURNTIME, 24, 8, Color.gray.getRGB());
-		minecraft.fontRenderer.drawString(burnTime, 24, 18, Color.gray.getRGB());
-	}
-	//FIXME: drawAnimations was removed, is there an alternative?
+    @Override
+    public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+        minecraft.fontRenderer.drawString(S_BURNTIME, 24, 8, Color.gray.getRGB());
+        minecraft.fontRenderer.drawString(burnTime, 24, 18, Color.gray.getRGB());
+    }
+    //FIXME: drawAnimations was removed, is there an alternative?
 }

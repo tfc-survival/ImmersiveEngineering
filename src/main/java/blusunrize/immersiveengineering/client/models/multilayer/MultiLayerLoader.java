@@ -16,26 +16,22 @@ import net.minecraftforge.client.model.IModel;
 
 import javax.annotation.Nonnull;
 
-public class MultiLayerLoader implements ICustomModelLoader
-{
-	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
-	{
-	}
+public class MultiLayerLoader implements ICustomModelLoader {
+    @Override
+    public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
+    }
 
-	private static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID,
-			"models/block/multilayer");
+    private static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID,
+            "models/block/multilayer");
 
-	@Override
-	public boolean accepts(@Nonnull ResourceLocation modelLocation)
-	{
-		return LOCATION.equals(modelLocation);
-	}
+    @Override
+    public boolean accepts(@Nonnull ResourceLocation modelLocation) {
+        return LOCATION.equals(modelLocation);
+    }
 
-	@Nonnull
-	@Override
-	public IModel loadModel(@Nonnull ResourceLocation modelLocation) throws Exception
-	{
-		return MultiLayerModel.INSTANCE;
-	}
+    @Nonnull
+    @Override
+    public IModel loadModel(@Nonnull ResourceLocation modelLocation) throws Exception {
+        return MultiLayerModel.INSTANCE;
+    }
 }

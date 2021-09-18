@@ -17,43 +17,36 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class MessageChemthrowerSwitch implements IMessage
-{
-	boolean forward;
+public class MessageChemthrowerSwitch implements IMessage {
+    boolean forward;
 
-	public MessageChemthrowerSwitch(boolean forward)
-	{
-		this.forward = forward;
-	}
+    public MessageChemthrowerSwitch(boolean forward) {
+        this.forward = forward;
+    }
 
-	public MessageChemthrowerSwitch()
-	{
-	}
+    public MessageChemthrowerSwitch() {
+    }
 
-	@Override
-	public void fromBytes(ByteBuf buf)
-	{
-		this.forward = buf.readBoolean();
-	}
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        this.forward = buf.readBoolean();
+    }
 
-	@Override
-	public void toBytes(ByteBuf buf)
-	{
-		buf.writeBoolean(this.forward);
-	}
+    @Override
+    public void toBytes(ByteBuf buf) {
+        buf.writeBoolean(this.forward);
+    }
 
-	public static class Handler implements IMessageHandler<MessageChemthrowerSwitch, IMessage>
-	{
-		@Override
-		public IMessage onMessage(MessageChemthrowerSwitch message, MessageContext ctx)
-		{
-			EntityPlayerMP player = ctx.getServerHandler().player;
-			player.getServerWorld().addScheduledTask(() -> {
-				ItemStack equipped = player.getHeldItem(EnumHand.MAIN_HAND);
-				if(equipped.getItem() instanceof ItemChemthrower&&((ItemChemthrower)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
-					((ItemChemthrower)equipped.getItem()).switchTank(equipped, message.forward);
-			});
-			return null;
-		}
-	}
+    public static class Handler implements IMessageHandler<MessageChemthrowerSwitch, IMessage> {
+        @Override
+        public IMessage onMessage(MessageChemthrowerSwitch message, MessageContext ctx) {
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            player.getServerWorld().addScheduledTask(() -> {
+                ItemStack equipped = player.getHeldItem(EnumHand.MAIN_HAND);
+                if (equipped.getItem() instanceof ItemChemthrower && ((ItemChemthrower) equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
+                    ((ItemChemthrower) equipped.getItem()).switchTank(equipped, message.forward);
+            });
+            return null;
+        }
+    }
 }

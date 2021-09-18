@@ -20,69 +20,60 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockIEStairs extends BlockStairs
-{
-	public boolean hasFlavour = false;
-	public boolean isFlammable = false;
-	public String name;
-	float explosionResistance;
-	BlockRenderLayer renderLayer = BlockRenderLayer.SOLID;
+public class BlockIEStairs extends BlockStairs {
+    public boolean hasFlavour = false;
+    public boolean isFlammable = false;
+    public String name;
+    float explosionResistance;
+    BlockRenderLayer renderLayer = BlockRenderLayer.SOLID;
 
-	public BlockIEStairs(String name, IBlockState state)
-	{
-		super(state);
-		this.name = name;
-		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.creativeTab);
-		this.useNeighborBrightness = true;
-		this.explosionResistance = this.blockResistance/5f;
+    public BlockIEStairs(String name, IBlockState state) {
+        super(state);
+        this.name = name;
+        this.setTranslationKey(ImmersiveEngineering.MODID + "." + name);
+        this.setCreativeTab(ImmersiveEngineering.creativeTab);
+        this.useNeighborBrightness = true;
+        this.explosionResistance = this.blockResistance / 5f;
 //		ImmersiveEngineering.registerBlock(this, ItemBlockIEStairs.class, name);
-		IEContent.registeredIEBlocks.add(this);
-		IEContent.registeredIEItems.add(new ItemBlockIEStairs(this));
-	}
+        IEContent.registeredIEBlocks.add(this);
+        IEContent.registeredIEItems.add(new ItemBlockIEStairs(this));
+    }
 
-	public BlockIEStairs setFlammable(boolean b)
-	{
-		this.isFlammable = b;
-		return this;
-	}
+    public BlockIEStairs setFlammable(boolean b) {
+        this.isFlammable = b;
+        return this;
+    }
 
-	public BlockIEStairs setHasFlavour(boolean hasFlavour)
-	{
-		this.hasFlavour = hasFlavour;
-		return this;
-	}
+    public BlockIEStairs setHasFlavour(boolean hasFlavour) {
+        this.hasFlavour = hasFlavour;
+        return this;
+    }
 
-	@Override
-	public float getExplosionResistance(Entity exploder)
-	{
-		return explosionResistance;
-	}
+    @Override
+    public float getExplosionResistance(Entity exploder) {
+        return explosionResistance;
+    }
 
-	public BlockIEStairs setExplosionResistance(float explosionResistance)
-	{
-		this.explosionResistance = explosionResistance;
-		return this;
-	}
+    public BlockIEStairs setExplosionResistance(float explosionResistance) {
+        this.explosionResistance = explosionResistance;
+        return this;
+    }
 
-	@Override
-	public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
-	{
-		if(this.renderLayer!=BlockRenderLayer.SOLID)
-			return false;
-		return super.doesSideBlockRendering(state, world, pos, face);
-	}
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
+        if (this.renderLayer != BlockRenderLayer.SOLID)
+            return false;
+        return super.doesSideBlockRendering(state, world, pos, face);
+    }
 
-	public BlockIEStairs setRenderLayer(BlockRenderLayer layer)
-	{
-		this.renderLayer = layer;
-		return this;
-	}
+    public BlockIEStairs setRenderLayer(BlockRenderLayer layer) {
+        this.renderLayer = layer;
+        return this;
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public BlockRenderLayer getRenderLayer()
-	{
-		return renderLayer;
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        return renderLayer;
+    }
 }

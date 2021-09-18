@@ -21,28 +21,26 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 
-public class RecipeFactoryShapelessIngredient implements IRecipeFactory
-{
-	@Override
-	public IRecipe parse(JsonContext context, JsonObject json)
-	{
-		String group = JsonUtils.getString(json, "group", "");
+public class RecipeFactoryShapelessIngredient implements IRecipeFactory {
+    @Override
+    public IRecipe parse(JsonContext context, JsonObject json) {
+        String group = JsonUtils.getString(json, "group", "");
 
-		NonNullList<Ingredient> ings = NonNullList.create();
-		for(JsonElement ele : JsonUtils.getJsonArray(json, "ingredients"))
-			ings.add(CraftingHelper.getIngredient(ele, context));
+        NonNullList<Ingredient> ings = NonNullList.create();
+        for (JsonElement ele : JsonUtils.getJsonArray(json, "ingredients"))
+            ings.add(CraftingHelper.getIngredient(ele, context));
 
-		if(ings.isEmpty())
-			throw new JsonParseException("No ingredients for shapeless recipe");
+        if (ings.isEmpty())
+            throw new JsonParseException("No ingredients for shapeless recipe");
 
-		ItemStack result = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
-		RecipeShapelessIngredient recipe = new RecipeShapelessIngredient(group.isEmpty()?null: new ResourceLocation(group), result, ings);
+        ItemStack result = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
+        RecipeShapelessIngredient recipe = new RecipeShapelessIngredient(group.isEmpty() ? null : new ResourceLocation(group), result, ings);
 
-		if(JsonUtils.hasField(json, "damage_tool"))
-			recipe.setToolDamageRecipe(JsonUtils.getInt(json, "damage_tool"));
-		if(JsonUtils.hasField(json, "copy_nbt"))
-			recipe.setNBTCopyTargetRecipe(JsonUtils.getInt(json, "copy_nbt"));
+        if (JsonUtils.hasField(json, "damage_tool"))
+            recipe.setToolDamageRecipe(JsonUtils.getInt(json, "damage_tool"));
+        if (JsonUtils.hasField(json, "copy_nbt"))
+            recipe.setNBTCopyTargetRecipe(JsonUtils.getInt(json, "copy_nbt"));
 
-		return recipe;
-	}
+        return recipe;
+    }
 }

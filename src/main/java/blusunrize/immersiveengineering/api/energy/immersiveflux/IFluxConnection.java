@@ -17,11 +17,10 @@ import javax.annotation.Nullable;
  *
  * @author BluSunrize - 18.01.2016
  */
-public interface IFluxConnection
-{
-	/**
-	 * @param from The direction the check is performed from, null for unknown.
-	 * @return If the TileEntity can connect.
-	 */
-	boolean canConnectEnergy(@Nullable EnumFacing from);
+public interface IFluxConnection {
+    /**
+     * @param from The direction the check is performed from, null for unknown.
+     * @return If the TileEntity can connect.
+     */
+    boolean canConnectEnergy(@Nullable EnumFacing from);
 }

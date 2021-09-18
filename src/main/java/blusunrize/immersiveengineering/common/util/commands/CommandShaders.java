@@ -20,42 +20,36 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class CommandShaders extends CommandBase
-{
-	@Nonnull
-	@Override
-	public String getName()
-	{
-		return "clearshaders";
-	}
+public class CommandShaders extends CommandBase {
+    @Nonnull
+    @Override
+    public String getName() {
+        return "clearshaders";
+    }
 
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
-	{
-		return "/ie clearshaders [player name]";
-	}
+    @Nonnull
+    @Override
+    public String getUsage(@Nonnull ICommandSender sender) {
+        return "/ie clearshaders [player name]";
+    }
 
-	@Override
-	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args)
-	{
-		String player = args.length > 0?args[0].trim(): sender.getName();
-		if(ShaderRegistry.receivedShaders.containsKey(player))
-			ShaderRegistry.receivedShaders.get(player).clear();
-		ShaderRegistry.recalculatePlayerTotalWeight(player);
-		sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"shaders.clear.sucess", player));
-	}
+    @Override
+    public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) {
+        String player = args.length > 0 ? args[0].trim() : sender.getName();
+        if (ShaderRegistry.receivedShaders.containsKey(player))
+            ShaderRegistry.receivedShaders.get(player).clear();
+        ShaderRegistry.recalculatePlayerTotalWeight(player);
+        sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND + "shaders.clear.sucess", player));
+    }
 
-	@Nonnull
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
-	{
-		return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
-	}
+    @Nonnull
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
+    }
 
-	@Override
-	public int getRequiredPermissionLevel()
-	{
-		return 4;
-	}
+    @Override
+    public int getRequiredPermissionLevel() {
+        return 4;
+    }
 }

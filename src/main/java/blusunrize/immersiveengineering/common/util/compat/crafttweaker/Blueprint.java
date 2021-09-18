@@ -24,114 +24,96 @@ import java.util.Iterator;
 import java.util.List;
 
 @ZenClass("mods.immersiveengineering.Blueprint")
-public class Blueprint
-{
-	@ZenMethod
-	public static void addRecipe(String category, IItemStack output, IIngredient[] inputs)
-	{
-		Object[] oInputs = new Object[inputs.length];
-		for(int i = 0; i < inputs.length; i++)
-			oInputs[i] = CraftTweakerHelper.toObject(inputs[i]);
-		BlueprintCraftingRecipe r = new BlueprintCraftingRecipe(category, CraftTweakerHelper.toStack(output), oInputs);
-		CraftTweakerAPI.apply(new Add(r));
-	}
+public class Blueprint {
+    @ZenMethod
+    public static void addRecipe(String category, IItemStack output, IIngredient[] inputs) {
+        Object[] oInputs = new Object[inputs.length];
+        for (int i = 0; i < inputs.length; i++)
+            oInputs[i] = CraftTweakerHelper.toObject(inputs[i]);
+        BlueprintCraftingRecipe r = new BlueprintCraftingRecipe(category, CraftTweakerHelper.toStack(output), oInputs);
+        CraftTweakerAPI.apply(new Add(r));
+    }
 
-	private static class Add implements IAction
-	{
-		private final BlueprintCraftingRecipe recipe;
+    private static class Add implements IAction {
+        private final BlueprintCraftingRecipe recipe;
 
-		public Add(BlueprintCraftingRecipe recipe)
-		{
-			this.recipe = recipe;
-		}
+        public Add(BlueprintCraftingRecipe recipe) {
+            this.recipe = recipe;
+        }
 
-		@Override
-		public void apply()
-		{
-			if(!BlueprintCraftingRecipe.blueprintCategories.contains(recipe.blueprintCategory))
-				BlueprintCraftingRecipe.blueprintCategories.add(recipe.blueprintCategory);
-			BlueprintCraftingRecipe.recipeList.put(recipe.blueprintCategory, recipe);
+        @Override
+        public void apply() {
+            if (!BlueprintCraftingRecipe.blueprintCategories.contains(recipe.blueprintCategory))
+                BlueprintCraftingRecipe.blueprintCategories.add(recipe.blueprintCategory);
+            BlueprintCraftingRecipe.recipeList.put(recipe.blueprintCategory, recipe);
 //			CraftTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
-		}
+        }
 
-		@Override
-		public String describe()
-		{
-			return "Adding Blueprint Recipe for "+recipe.output.getDisplayName();
-		}
-	}
+        @Override
+        public String describe() {
+            return "Adding Blueprint Recipe for " + recipe.output.getDisplayName();
+        }
+    }
 
-	@ZenMethod
-	public static void removeRecipe(IItemStack output)
-	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
-	}
+    @ZenMethod
+    public static void removeRecipe(IItemStack output) {
+        CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+    }
 
-	private static class Remove implements IAction
-	{
-		private final ItemStack output;
-		List<BlueprintCraftingRecipe> removedRecipes;
+    private static class Remove implements IAction {
+        private final ItemStack output;
+        List<BlueprintCraftingRecipe> removedRecipes;
 
-		public Remove(ItemStack output)
-		{
-			this.output = output;
-		}
+        public Remove(ItemStack output) {
+            this.output = output;
+        }
 
-		@Override
-		public void apply()
-		{
-			removedRecipes = new ArrayList();
-			Iterator<String> itCat = BlueprintCraftingRecipe.blueprintCategories.iterator();
-			while(itCat.hasNext())
-			{
-				String category = itCat.next();
-				Iterator<BlueprintCraftingRecipe> it = BlueprintCraftingRecipe.recipeList.get(category).iterator();
-				while(it.hasNext())
-				{
-					BlueprintCraftingRecipe ir = it.next();
-					if(OreDictionary.itemMatches(ir.output, output, true) && ItemStack.areItemStackTagsEqual(ir.output, output))
-					{
-						removedRecipes.add(ir);
+        @Override
+        public void apply() {
+            removedRecipes = new ArrayList();
+            Iterator<String> itCat = BlueprintCraftingRecipe.blueprintCategories.iterator();
+            while (itCat.hasNext()) {
+                String category = itCat.next();
+                Iterator<BlueprintCraftingRecipe> it = BlueprintCraftingRecipe.recipeList.get(category).iterator();
+                while (it.hasNext()) {
+                    BlueprintCraftingRecipe ir = it.next();
+                    if (OreDictionary.itemMatches(ir.output, output, true) && ItemStack.areItemStackTagsEqual(ir.output, output)) {
+                        removedRecipes.add(ir);
 //						CraftTweakerAPI.getIjeiRecipeRegistry().removeRecipe(ir);
-						it.remove();
-					}
-				}
-				if(BlueprintCraftingRecipe.recipeList.get(category).isEmpty())
-					itCat.remove();
-			}
-		}
+                        it.remove();
+                    }
+                }
+                if (BlueprintCraftingRecipe.recipeList.get(category).isEmpty())
+                    itCat.remove();
+            }
+        }
 
-		@Override
-		public String describe()
-		{
-			return "Removing Blueprint Recipe for "+output.getDisplayName();
-		}
-	}
+        @Override
+        public String describe() {
+            return "Removing Blueprint Recipe for " + output.getDisplayName();
+        }
+    }
 
-	@ZenMethod
-	public static void removeAll()
-	{
-		CraftTweakerAPI.apply(new RemoveAll());
-	}
+    @ZenMethod
+    public static void removeAll() {
+        CraftTweakerAPI.apply(new RemoveAll());
+    }
 
-	private static class RemoveAll implements IAction
-	{
-		ArrayListMultimap<String, BlueprintCraftingRecipe> removedRecipes;
+    private static class RemoveAll implements IAction {
+        ArrayListMultimap<String, BlueprintCraftingRecipe> removedRecipes;
 
-		public RemoveAll(){
-		}
+        public RemoveAll() {
+        }
 
-		@Override
-		public void apply()
-		{
-			removedRecipes = ArrayListMultimap.create(BlueprintCraftingRecipe.recipeList);
-			BlueprintCraftingRecipe.recipeList.clear();
-		}
+        @Override
+        public void apply() {
+            removedRecipes = ArrayListMultimap.create(BlueprintCraftingRecipe.recipeList);
+            BlueprintCraftingRecipe.recipeList.clear();
+        }
 
-		@Override
-		public String describe()
-		{
-			return "Removing all Blueprint Recipes";
-		}
-	}
+        @Override
+        public String describe() {
+            return "Removing all Blueprint Recipes";
+        }
+    }
 }

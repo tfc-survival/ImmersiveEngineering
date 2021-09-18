@@ -12,39 +12,33 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Collection;
 
-public class ShaderCaseRevolver extends ShaderCase
-{
-	public ShaderCaseRevolver(ShaderLayer... layers)
-	{
-		super(layers);
-	}
+public class ShaderCaseRevolver extends ShaderCase {
+    public ShaderCaseRevolver(ShaderLayer... layers) {
+        super(layers);
+    }
 
-	public ShaderCaseRevolver(Collection<ShaderLayer> layers)
-	{
-		super(layers);
-	}
+    public ShaderCaseRevolver(Collection<ShaderLayer> layers) {
+        super(layers);
+    }
 
-	@Override
-	public String getShaderType()
-	{
-		return "immersiveengineering:revolver";
-	}
+    @Override
+    public String getShaderType() {
+        return "immersiveengineering:revolver";
+    }
 
-	@Override
-	public int getLayerInsertionIndex()
-	{
-		return layers.length-1;
-	}
+    @Override
+    public int getLayerInsertionIndex() {
+        return layers.length - 1;
+    }
 
-	@Override
-	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
-	{
-		if(pass==0)//first pass is just for the grip
-			return "frame".equals(modelPart)||"bayonet_attachment".equals(modelPart);
-		if(pass==2)//third pass is just for the blade of the bayonet
-			return "player_bayonet".equals(modelPart)||"dev_bayonet".equals(modelPart);
-		return true;
-	}
+    @Override
+    public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass) {
+        if (pass == 0)//first pass is just for the grip
+            return "frame".equals(modelPart) || "bayonet_attachment".equals(modelPart);
+        if (pass == 2)//third pass is just for the blade of the bayonet
+            return "player_bayonet".equals(modelPart) || "dev_bayonet".equals(modelPart);
+        return true;
+    }
 
 //	@Override
 //	public int getPasses(ItemStack shader, ItemStack item, String modelPart)

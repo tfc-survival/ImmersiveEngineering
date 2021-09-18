@@ -52,11 +52,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBl
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityShaderBanner;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorSplit;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;

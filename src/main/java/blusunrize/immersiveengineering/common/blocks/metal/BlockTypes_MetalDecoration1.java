@@ -13,44 +13,38 @@ import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_MetalDecoration1 implements IStringSerializable, BlockIEBase.IBlockEnum
-{
-	STEEL_FENCE(false),
-	STEEL_SCAFFOLDING_0(true),
-	STEEL_SCAFFOLDING_1(true),
-	STEEL_SCAFFOLDING_2(true),
-	ALUMINUM_FENCE(false),
-	ALUMINUM_SCAFFOLDING_0(true),
-	ALUMINUM_SCAFFOLDING_1(true),
-	ALUMINUM_SCAFFOLDING_2(true);
+public enum BlockTypes_MetalDecoration1 implements IStringSerializable, BlockIEBase.IBlockEnum {
+    STEEL_FENCE(false),
+    STEEL_SCAFFOLDING_0(true),
+    STEEL_SCAFFOLDING_1(true),
+    STEEL_SCAFFOLDING_2(true),
+    ALUMINUM_FENCE(false),
+    ALUMINUM_SCAFFOLDING_0(true),
+    ALUMINUM_SCAFFOLDING_1(true),
+    ALUMINUM_SCAFFOLDING_2(true);
 
-	private boolean isScaffold;
+    private boolean isScaffold;
 
-	BlockTypes_MetalDecoration1(boolean isScaffold)
-	{
-		this.isScaffold = isScaffold;
-	}
+    BlockTypes_MetalDecoration1(boolean isScaffold) {
+        this.isScaffold = isScaffold;
+    }
 
-	@Override
-	public String getName()
-	{
-		return this.toString().toLowerCase(Locale.ENGLISH);
-	}
+    @Override
+    public String getName() {
+        return this.toString().toLowerCase(Locale.ENGLISH);
+    }
 
-	@Override
-	public int getMeta()
-	{
-		return ordinal();
-	}
+    @Override
+    public int getMeta() {
+        return ordinal();
+    }
 
-	@Override
-	public boolean listForCreative()
-	{
-		return true;
-	}
+    @Override
+    public boolean listForCreative() {
+        return true;
+    }
 
-	public boolean isScaffold()
-	{
-		return isScaffold;
-	}
+    public boolean isScaffold() {
+        return isScaffold;
+    }
 }

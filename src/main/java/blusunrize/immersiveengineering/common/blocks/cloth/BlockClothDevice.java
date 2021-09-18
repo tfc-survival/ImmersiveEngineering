@@ -34,92 +34,81 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice>
-{
-	public BlockClothDevice()
-	{
-		super("cloth_device", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0], IOBJModelCallback.PROPERTY, CapabilityShader.BLOCKSTATE_PROPERTY, IEProperties.CONNECTIONS);
-		setHardness(0.8F);
-		setHasColours();
-		setMetaLightOpacity(BlockTypes_ClothDevice.BALLOON.getMeta(), 0);
-		setMetaLightOpacity(BlockTypes_ClothDevice.STRIPCURTAIN.getMeta(), 0);
-		setMetaLightOpacity(BlockTypes_ClothDevice.SHADER_BANNER.getMeta(), 0);
-		setMetaBlockLayer(BlockTypes_ClothDevice.BALLOON.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
-		setNotNormalBlock(BlockTypes_ClothDevice.BALLOON.getMeta());
-		setNotNormalBlock(BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
-		setNotNormalBlock(BlockTypes_ClothDevice.SHADER_BANNER.getMeta());
-		setMetaHidden(BlockTypes_ClothDevice.SHADER_BANNER.getMeta());
-	}
+public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice> {
+    public BlockClothDevice() {
+        super("cloth_device", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0], IOBJModelCallback.PROPERTY, CapabilityShader.BLOCKSTATE_PROPERTY, IEProperties.CONNECTIONS);
+        setHardness(0.8F);
+        setHasColours();
+        setMetaLightOpacity(BlockTypes_ClothDevice.BALLOON.getMeta(), 0);
+        setMetaLightOpacity(BlockTypes_ClothDevice.STRIPCURTAIN.getMeta(), 0);
+        setMetaLightOpacity(BlockTypes_ClothDevice.SHADER_BANNER.getMeta(), 0);
+        setMetaBlockLayer(BlockTypes_ClothDevice.BALLOON.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+        setNotNormalBlock(BlockTypes_ClothDevice.BALLOON.getMeta());
+        setNotNormalBlock(BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
+        setNotNormalBlock(BlockTypes_ClothDevice.SHADER_BANNER.getMeta());
+        setMetaHidden(BlockTypes_ClothDevice.SHADER_BANNER.getMeta());
+    }
 
-	@SideOnly(Side.CLIENT)
-	public int getRenderColor(IBlockState state)
-	{
-		return 16777215;
-	}
+    @SideOnly(Side.CLIENT)
+    public int getRenderColor(IBlockState state) {
+        return 16777215;
+    }
 
-	//    @Override
+    //    @Override
 //	@SideOnly(Side.CLIENT)
 //    public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass)
 //    {
 //        return 16777215;
 //    }
-	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag)
-	{
-		if(ItemNBTHelper.hasKey(stack, "colour"))
-		{
-			String hexCol = Integer.toHexString(ItemNBTHelper.getInt(stack, "colour"));
-			tooltip.add(I18n.translateToLocalFormatted(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
-		}
-	}
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag tooltipFlag) {
+        if (ItemNBTHelper.hasKey(stack, "colour")) {
+            String hexCol = Integer.toHexString(ItemNBTHelper.getInt(stack, "colour"));
+            tooltip.add(I18n.translateToLocalFormatted(Lib.DESC_INFO + "colour", "<hexcol=" + hexCol + ":#" + hexCol + ">"));
+        }
+    }
 
-	@Override
-	public boolean useCustomStateMapper()
-	{
-		return true;
-	}
+    @Override
+    public boolean useCustomStateMapper() {
+        return true;
+    }
 
-	@Override
-	public String getCustomStateMapping(int meta, boolean itemBlock)
-	{
-		if(meta==2)
-			return "stripcurtain";
-		return null;
-	}
+    @Override
+    public String getCustomStateMapping(int meta, boolean itemBlock) {
+        if (meta == 2)
+            return "stripcurtain";
+        return null;
+    }
 
-	@Override
-	public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance)
-	{
+    @Override
+    public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
 //        if(entityIn.isSneaking())
 //        {
 //            super.onFallenUpon(worldIn, pos, entityIn, fallDistance);
 //        }
 //        else
 //        {
-		entityIn.fall(fallDistance, 0.0F);
+        entityIn.fall(fallDistance, 0.0F);
 //        }
-	}
+    }
 
-	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		state = super.getExtendedState(state, world, pos);
-		if(state instanceof IExtendedBlockState)
-		{
-			IExtendedBlockState ext = (IExtendedBlockState)state;
-			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof TileEntityImmersiveConnectable)
-				ext = ext.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
-			state = ext;
-		}
-		return state;
-	}
+    @Override
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        state = super.getExtendedState(state, world, pos);
+        if (state instanceof IExtendedBlockState) {
+            IExtendedBlockState ext = (IExtendedBlockState) state;
+            TileEntity te = world.getTileEntity(pos);
+            if (te instanceof TileEntityImmersiveConnectable)
+                ext = ext.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable) te).genConnBlockstate());
+            state = ext;
+        }
+        return state;
+    }
 
-	@Override
-	public boolean allowHammerHarvest(IBlockState state)
-	{
-		return true;
-	}
+    @Override
+    public boolean allowHammerHarvest(IBlockState state) {
+        return true;
+    }
 //	@Override
 //	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 //	{
@@ -182,20 +171,18 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 //	}
 
 
-	@Override
-	public TileEntity createBasicTE(World world, BlockTypes_ClothDevice type)
-	{
-		switch(type)
-		{
-			case CUSHION:
-				return null;
-			case BALLOON:
-				return new TileEntityBalloon();
-			case STRIPCURTAIN:
-				return new TileEntityStripCurtain();
-			case SHADER_BANNER:
-				return new TileEntityShaderBanner();
-		}
-		return null;
-	}
+    @Override
+    public TileEntity createBasicTE(World world, BlockTypes_ClothDevice type) {
+        switch (type) {
+            case CUSHION:
+                return null;
+            case BALLOON:
+                return new TileEntityBalloon();
+            case STRIPCURTAIN:
+                return new TileEntityStripCurtain();
+            case SHADER_BANNER:
+                return new TileEntityShaderBanner();
+        }
+        return null;
+    }
 }

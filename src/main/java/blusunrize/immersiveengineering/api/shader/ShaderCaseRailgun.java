@@ -12,41 +12,35 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Collection;
 
-public class ShaderCaseRailgun extends ShaderCase
-{
-	public ShaderCaseRailgun(ShaderLayer... layers)
-	{
-		super(layers);
-	}
+public class ShaderCaseRailgun extends ShaderCase {
+    public ShaderCaseRailgun(ShaderLayer... layers) {
+        super(layers);
+    }
 
-	public ShaderCaseRailgun(Collection<ShaderLayer> layers)
-	{
-		super(layers);
-	}
+    public ShaderCaseRailgun(Collection<ShaderLayer> layers) {
+        super(layers);
+    }
 
-	@Override
-	public String getShaderType()
-	{
-		return "immersiveengineering:railgun";
-	}
+    @Override
+    public String getShaderType() {
+        return "immersiveengineering:railgun";
+    }
 
-	@Override
-	public int getLayerInsertionIndex()
-	{
-		return layers.length-1;
-	}
+    @Override
+    public int getLayerInsertionIndex() {
+        return layers.length - 1;
+    }
 
-	@Override
-	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
-	{
-		if("sled".equals(modelPart)||"wires".equals(modelPart)||"tubes".equals(modelPart))//these pieces only render on the uncoloured pass
-			return pass==getLayers().length-1;
+    @Override
+    public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass) {
+        if ("sled".equals(modelPart) || "wires".equals(modelPart) || "tubes".equals(modelPart))//these pieces only render on the uncoloured pass
+            return pass == getLayers().length - 1;
 
-		if("grip".equals(modelPart))
-			return pass==0;
-		return pass!=0;
+        if ("grip".equals(modelPart))
+            return pass == 0;
+        return pass != 0;
 
-	}
+    }
 
 //	@Override
 //	public int getPasses(ItemStack shader, ItemStack item, String modelPart)

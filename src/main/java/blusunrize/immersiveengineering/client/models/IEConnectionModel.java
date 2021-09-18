@@ -27,32 +27,27 @@ import javax.vecmath.Matrix4f;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class IEConnectionModel implements IBakedModel
-{
-	private final LoadingCache<IModelState, IEConnectionModel> cache = CacheBuilder.newBuilder().maximumSize(20).build(new CacheLoader<IModelState, IEConnectionModel>()
-	{
-		@Override
-		public IEConnectionModel load(IModelState state)
-		{
-			return new IEConnectionModel(baseModel, state);
-		}
-	});
+public class IEConnectionModel implements IBakedModel {
+    private final LoadingCache<IModelState, IEConnectionModel> cache = CacheBuilder.newBuilder().maximumSize(20).build(new CacheLoader<IModelState, IEConnectionModel>() {
+        @Override
+        public IEConnectionModel load(IModelState state) {
+            return new IEConnectionModel(baseModel, state);
+        }
+    });
 
-	IBakedModel baseModel;
-	IModelState modelState;
+    IBakedModel baseModel;
+    IModelState modelState;
 
-	public IEConnectionModel(IBakedModel baseModel, IModelState state)
-	{
-		this.baseModel = baseModel;
-		this.modelState = state;
+    public IEConnectionModel(IBakedModel baseModel, IModelState state) {
+        this.baseModel = baseModel;
+        this.modelState = state;
 //		this.format = baseModel instanceof IFlexibleBakedModel?((IFlexibleBakedModel)baseModel).getFormat():DefaultVertexFormats.BLOCK;
-	}
+    }
 
-	@Override
-	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
-	{
-		return baseModel.handlePerspective(cameraTransformType);
-	}
+    @Override
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
+        return baseModel.handlePerspective(cameraTransformType);
+    }
 
 //	@Override
 //	public IBakedModel handleItemState(ItemStack stack)
@@ -72,47 +67,40 @@ public class IEConnectionModel implements IBakedModel
 //		return baseModel.getGeneralQuads();
 //	}
 
-	@Override
-	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
-	{
-		return baseModel.getQuads(state, side, rand);
-	}
+    @Override
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+        return baseModel.getQuads(state, side, rand);
+    }
 
-	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return baseModel.isAmbientOcclusion();
-	}
+    @Override
+    public boolean isAmbientOcclusion() {
+        return baseModel.isAmbientOcclusion();
+    }
 
-	@Override
-	public boolean isGui3d()
-	{
-		return baseModel.isGui3d();
-	}
+    @Override
+    public boolean isGui3d() {
+        return baseModel.isGui3d();
+    }
 
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return baseModel.isBuiltInRenderer();
-	}
+    @Override
+    public boolean isBuiltInRenderer() {
+        return baseModel.isBuiltInRenderer();
+    }
 
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return baseModel.getParticleTexture();
-	}
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return baseModel.getParticleTexture();
+    }
 
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return baseModel.getItemCameraTransforms();
-	}
+    @Override
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return baseModel.getItemCameraTransforms();
+    }
 
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return baseModel.getOverrides();
-	}
+    @Override
+    public ItemOverrideList getOverrides() {
+        return baseModel.getOverrides();
+    }
 
 //	@Override
 //	public VertexFormat getFormat()

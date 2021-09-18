@@ -27,49 +27,43 @@ import java.util.Set;
 import static net.minecraft.util.datafix.FixTypes.BLOCK_ENTITY;
 import static net.minecraft.util.datafix.FixTypes.ITEM_INSTANCE;
 
-public class IEDataFixers
-{
-	public static void register()
-	{
-		CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
-		ModFixs fixs = fixer.init(ImmersiveEngineering.MODID,
-				ImmersiveEngineering.DATA_FIXER_VERSION);
-		fixs.registerFix(ITEM_INSTANCE, new DataFixerHammerCutterDamage());
-		fixer.registerVanillaWalker(ITEM_INSTANCE, new IEItemFixWalker());
+public class IEDataFixers {
+    public static void register() {
+        CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
+        ModFixs fixs = fixer.init(ImmersiveEngineering.MODID,
+                ImmersiveEngineering.DATA_FIXER_VERSION);
+        fixs.registerFix(ITEM_INSTANCE, new DataFixerHammerCutterDamage());
+        fixer.registerVanillaWalker(ITEM_INSTANCE, new IEItemFixWalker());
 
-		fixer.registerVanillaWalker(BLOCK_ENTITY,
-				new ItemStackData(TileEntityMetalPress.class, "mold"));
-		fixer.registerVanillaWalker(BLOCK_ENTITY,
-				new ItemStackData(TileEntityChargingStation.class, "inventory"));
-		fixer.registerVanillaWalker(BLOCK_ENTITY,
-				new ItemStackDataLists(TileEntityCrusher.class, "inputs"));
-		fixer.registerVanillaWalker(BLOCK_ENTITY, new AssemblerPatternWalker());
-		fixer.registerVanillaWalker(BLOCK_ENTITY, new BottlingQueueWalker());
-		try
-		{
-			Set<Class<? extends TileEntity>> specialCases = ImmutableSet.of(TileEntityTurretChem.class,
-					TileEntityExcavator.class,
-					TileEntityMetalPress.class,
-					TileEntityDieselGenerator.class,
-					TileEntityCrusher.class,
-					TileEntityChargingStation.class);
-			Method isInWorld = TileEntityMultiblockMetal.class.getMethod("isInWorldProcessingMachine");
+        fixer.registerVanillaWalker(BLOCK_ENTITY,
+                new ItemStackData(TileEntityMetalPress.class, "mold"));
+        fixer.registerVanillaWalker(BLOCK_ENTITY,
+                new ItemStackData(TileEntityChargingStation.class, "inventory"));
+        fixer.registerVanillaWalker(BLOCK_ENTITY,
+                new ItemStackDataLists(TileEntityCrusher.class, "inputs"));
+        fixer.registerVanillaWalker(BLOCK_ENTITY, new AssemblerPatternWalker());
+        fixer.registerVanillaWalker(BLOCK_ENTITY, new BottlingQueueWalker());
+        try {
+            Set<Class<? extends TileEntity>> specialCases = ImmutableSet.of(TileEntityTurretChem.class,
+                    TileEntityExcavator.class,
+                    TileEntityMetalPress.class,
+                    TileEntityDieselGenerator.class,
+                    TileEntityCrusher.class,
+                    TileEntityChargingStation.class);
+            Method isInWorld = TileEntityMultiblockMetal.class.getMethod("isInWorldProcessingMachine");
 
-			for(Class<? extends TileEntity> cl : IEContent.registeredIETiles)
-			{
-				if(TileEntityMultiblockMetal.class.isAssignableFrom(cl))
-				{
-					Object te = cl.newInstance();
-					if((boolean)isInWorld.invoke(te))
-						fixer.registerVanillaWalker(BLOCK_ENTITY, new MultiblockProcessWalker(cl));
-				}
-				if(IIEInventory.class.isAssignableFrom(cl)&&!specialCases.contains(cl))
-					fixer.registerVanillaWalker(BLOCK_ENTITY,
-							new ItemStackDataLists(cl, "inventory"));
-			}
-		} catch(NoSuchMethodException|IllegalAccessException|InstantiationException|InvocationTargetException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
+            for (Class<? extends TileEntity> cl : IEContent.registeredIETiles) {
+                if (TileEntityMultiblockMetal.class.isAssignableFrom(cl)) {
+                    Object te = cl.newInstance();
+                    if ((boolean) isInWorld.invoke(te))
+                        fixer.registerVanillaWalker(BLOCK_ENTITY, new MultiblockProcessWalker(cl));
+                }
+                if (IIEInventory.class.isAssignableFrom(cl) && !specialCases.contains(cl))
+                    fixer.registerVanillaWalker(BLOCK_ENTITY,
+                            new ItemStackDataLists(cl, "inventory"));
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

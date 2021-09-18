@@ -25,60 +25,51 @@ import net.minecraftforge.fluids.Fluid;
 /**
  * @author BluSunrize - 04.08.2016
  */
-public class BlockIEFluid extends BlockFluidClassic
-{
-	private int flammability = 0;
-	private int fireSpread = 0;
-	private PotionEffect[] potionEffects;
+public class BlockIEFluid extends BlockFluidClassic {
+    private int flammability = 0;
+    private int fireSpread = 0;
+    private PotionEffect[] potionEffects;
 
-	public BlockIEFluid(String name, Fluid fluid, Material material)
-	{
-		super(fluid, material);
-		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.creativeTab);
-		IEContent.registeredIEBlocks.add(this);
-	}
+    public BlockIEFluid(String name, Fluid fluid, Material material) {
+        super(fluid, material);
+        this.setTranslationKey(ImmersiveEngineering.MODID + "." + name);
+        this.setCreativeTab(ImmersiveEngineering.creativeTab);
+        IEContent.registeredIEBlocks.add(this);
+    }
 
-	public BlockIEFluid setFlammability(int flammability, int fireSpread)
-	{
-		this.flammability = flammability;
-		this.fireSpread = fireSpread;
-		return this;
-	}
+    public BlockIEFluid setFlammability(int flammability, int fireSpread) {
+        this.flammability = flammability;
+        this.fireSpread = fireSpread;
+        return this;
+    }
 
-	public BlockIEFluid setPotionEffects(PotionEffect... potionEffects)
-	{
-		this.potionEffects = potionEffects;
-		return this;
-	}
+    public BlockIEFluid setPotionEffects(PotionEffect... potionEffects) {
+        this.potionEffects = potionEffects;
+        return this;
+    }
 
-	@Override
-	public int getFlammability(IBlockAccess world, BlockPos pos, EnumFacing face)
-	{
-		return this.flammability;
-	}
+    @Override
+    public int getFlammability(IBlockAccess world, BlockPos pos, EnumFacing face) {
+        return this.flammability;
+    }
 
-	@Override
-	public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, EnumFacing face)
-	{
-		return fireSpread;
-	}
+    @Override
+    public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, EnumFacing face) {
+        return fireSpread;
+    }
 
-	@Override
-	public boolean isFlammable(IBlockAccess world, BlockPos pos, EnumFacing face)
-	{
-		return this.flammability > 0;
-	}
+    @Override
+    public boolean isFlammable(IBlockAccess world, BlockPos pos, EnumFacing face) {
+        return this.flammability > 0;
+    }
 
 
-	@Override
-	public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity)
-	{
-		if(potionEffects!=null&&entity instanceof EntityLivingBase)
-		{
-			for(PotionEffect effect : potionEffects)
-				if(effect!=null)
-					((EntityLivingBase)entity).addPotionEffect(new PotionEffect(effect));
-		}
-	}
+    @Override
+    public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
+        if (potionEffects != null && entity instanceof EntityLivingBase) {
+            for (PotionEffect effect : potionEffects)
+                if (effect != null)
+                    ((EntityLivingBase) entity).addPotionEffect(new PotionEffect(effect));
+        }
+    }
 }

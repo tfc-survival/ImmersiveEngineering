@@ -18,46 +18,38 @@ import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
-public class InspirationsHelper extends IECompatModule
-{
-	@ObjectHolder("inspirations:materials")
-	public static final Item ITEM_MATERIAL = null;
+public class InspirationsHelper extends IECompatModule {
+    @ObjectHolder("inspirations:materials")
+    public static final Item ITEM_MATERIAL = null;
 
-	@Override
-	public void preInit()
-	{
-	}
+    @Override
+    public void preInit() {
+    }
 
-	@Override
-	public void registerRecipes()
-	{
-		if(ITEM_MATERIAL!=null)
-		{
-			CreativeTabs[] tabs = ITEM_MATERIAL.getCreativeTabs();
-			//Check if Potion bottles are enabled by checking if they have a creative tab
-			if(tabs.length > 2&&tabs[2]==CreativeTabs.BREWING)
-			{
-				ItemStack splashBottle = new ItemStack(ITEM_MATERIAL, 1, 2);
-				ItemStack lingeringBottle = new ItemStack(ITEM_MATERIAL, 1, 3);
-				for(PotionType potionType : PotionType.REGISTRY)
-					if(!MixerPotionHelper.BLACKLIST.contains(potionType.getRegistryName().toString()))
-					{
-						BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potionType),
-								splashBottle, MixerPotionHelper.getFluidStackForType(potionType, 250));
-						BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.LINGERING_POTION), potionType),
-								lingeringBottle, MixerPotionHelper.getFluidStackForType(potionType, 250));
-					}
-			}
-		}
-	}
+    @Override
+    public void registerRecipes() {
+        if (ITEM_MATERIAL != null) {
+            CreativeTabs[] tabs = ITEM_MATERIAL.getCreativeTabs();
+            //Check if Potion bottles are enabled by checking if they have a creative tab
+            if (tabs.length > 2 && tabs[2] == CreativeTabs.BREWING) {
+                ItemStack splashBottle = new ItemStack(ITEM_MATERIAL, 1, 2);
+                ItemStack lingeringBottle = new ItemStack(ITEM_MATERIAL, 1, 3);
+                for (PotionType potionType : PotionType.REGISTRY)
+                    if (!MixerPotionHelper.BLACKLIST.contains(potionType.getRegistryName().toString())) {
+                        BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potionType),
+                                splashBottle, MixerPotionHelper.getFluidStackForType(potionType, 250));
+                        BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.LINGERING_POTION), potionType),
+                                lingeringBottle, MixerPotionHelper.getFluidStackForType(potionType, 250));
+                    }
+            }
+        }
+    }
 
-	@Override
-	public void init()
-	{
-	}
+    @Override
+    public void init() {
+    }
 
-	@Override
-	public void postInit()
-	{
-	}
+    @Override
+    public void postInit() {
+    }
 }

@@ -18,31 +18,26 @@ import javax.annotation.Nonnull;
 /**
  * @author BluSunrize - 05.09.2016
  */
-public class CommandResetRenders extends CommandBase
-{
-	@Nonnull
-	@Override
-	public String getName()
-	{
-		return "resetrender";
-	}
+public class CommandResetRenders extends CommandBase {
+    @Nonnull
+    @Override
+    public String getName() {
+        return "resetrender";
+    }
 
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull ICommandSender sender)
-	{
-		return "Reset the render caches of Immersive Engineering and its addons";
-	}
+    @Nonnull
+    @Override
+    public String getUsage(@Nonnull ICommandSender sender) {
+        return "Reset the render caches of Immersive Engineering and its addons";
+    }
 
-	@Override
-	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args)
-	{
-		ImmersiveEngineering.proxy.clearRenderCaches();
-	}
+    @Override
+    public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) {
+        ImmersiveEngineering.proxy.clearRenderCaches();
+    }
 
-	@Override
-	public int getRequiredPermissionLevel()
-	{
-		return 0;
-	}
+    @Override
+    public int getRequiredPermissionLevel() {
+        return 0;
+    }
 }

@@ -15,13 +15,11 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 
-public class RecipeFactoryIEItemRepair implements IRecipeFactory
-{
+public class RecipeFactoryIEItemRepair implements IRecipeFactory {
 
-	@Override
-	public IRecipe parse(JsonContext context, JsonObject json)
-	{
-		Ingredient ingred = CraftingHelper.getIngredient(json.get("tool"), context);
-		return new RecipeIEItemRepair(ingred);
-	}
+    @Override
+    public IRecipe parse(JsonContext context, JsonObject json) {
+        Ingredient ingred = CraftingHelper.getIngredient(json.get("tool"), context);
+        return new RecipeIEItemRepair(ingred);
+    }
 }

@@ -18,43 +18,37 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 
-public class ItemMaterial extends ItemIEBase
-{
-	public ItemMaterial()
-	{
-		super("material", 64,
-				"stick_treated", "stick_iron", "stick_steel", "stick_aluminum",
-				"hemp_fiber", "hemp_fabric",
-				"coal_coke", "slag",
-				"component_iron", "component_steel",
-				"waterwheel_segment", "windmill_blade", "windmill_sail",
-				"wooden_grip", "gunpart_barrel", "gunpart_drum", "gunpart_hammer",
-				"dust_coke", "dust_hop_graphite", "ingot_hop_graphite",
-				"wire_copper", "wire_electrum", "wire_aluminum", "wire_steel",
-				"dust_saltpeter", "dust_sulfur", "electron_tube", "circuit_board");
-	}
+public class ItemMaterial extends ItemIEBase {
+    public ItemMaterial() {
+        super("material", 64,
+                "stick_treated", "stick_iron", "stick_steel", "stick_aluminum",
+                "hemp_fiber", "hemp_fabric",
+                "coal_coke", "slag",
+                "component_iron", "component_steel",
+                "waterwheel_segment", "windmill_blade", "windmill_sail",
+                "wooden_grip", "gunpart_barrel", "gunpart_drum", "gunpart_hammer",
+                "dust_coke", "dust_hop_graphite", "ingot_hop_graphite",
+                "wire_copper", "wire_electrum", "wire_aluminum", "wire_steel",
+                "dust_saltpeter", "dust_sulfur", "electron_tube", "circuit_board");
+    }
 
-	@Override
-	public String getItemStackDisplayName(ItemStack stack)
-	{
-		String name = super.getItemStackDisplayName(stack);
-		if(ItemNBTHelper.hasKey(stack, "perks"))
-			return ItemRevolver.RevolverPerk.getFormattedName(name, ItemNBTHelper.getTagCompound(stack, "perks"));
-		return name;
-	}
+    @Override
+    public String getItemStackDisplayName(ItemStack stack) {
+        String name = super.getItemStackDisplayName(stack);
+        if (ItemNBTHelper.hasKey(stack, "perks"))
+            return ItemRevolver.RevolverPerk.getFormattedName(name, ItemNBTHelper.getTagCompound(stack, "perks"));
+        return name;
+    }
 
-	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag)
-	{
-		if(stack.getMetadata()>=14 && stack.getMetadata()<=16 && ItemNBTHelper.hasKey(stack, "perks"))
-		{
-			NBTTagCompound perks = ItemNBTHelper.getTagCompound(stack, "perks");
-			for(String key : perks.getKeySet())
-			{
-				ItemRevolver.RevolverPerk perk = ItemRevolver.RevolverPerk.get(key);
-				if(perk!=null)
-					list.add(" "+perk.getDisplayString(perks.getDouble(key)));
-			}
-		}
-	}
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag) {
+        if (stack.getMetadata() >= 14 && stack.getMetadata() <= 16 && ItemNBTHelper.hasKey(stack, "perks")) {
+            NBTTagCompound perks = ItemNBTHelper.getTagCompound(stack, "perks");
+            for (String key : perks.getKeySet()) {
+                ItemRevolver.RevolverPerk perk = ItemRevolver.RevolverPerk.get(key);
+                if (perk != null)
+                    list.add(" " + perk.getDisplayString(perks.getDouble(key)));
+            }
+        }
+    }
 }

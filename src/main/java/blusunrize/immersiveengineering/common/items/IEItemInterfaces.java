@@ -19,67 +19,55 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class IEItemInterfaces
-{
-	public interface IColouredItem
-	{
-		default boolean hasCustomItemColours()
-		{
-			return false;
-		}
+public class IEItemInterfaces {
+    public interface IColouredItem {
+        default boolean hasCustomItemColours() {
+            return false;
+        }
 
-		default int getColourForIEItem(ItemStack stack, int pass)
-		{
-			return 16777215;
-		}
-	}
+        default int getColourForIEItem(ItemStack stack, int pass) {
+            return 16777215;
+        }
+    }
 
-	public interface IGuiItem
-	{
-		int getGuiID(ItemStack stack);
-	}
+    public interface IGuiItem {
+        int getGuiID(ItemStack stack);
+    }
 
-	public interface IAdvancedFluidItem
-	{
-		int getCapacity(ItemStack stack, int baseCapacity);
+    public interface IAdvancedFluidItem {
+        int getCapacity(ItemStack stack, int baseCapacity);
 
-		default boolean allowFluid(ItemStack container, FluidStack fluid)
-		{
-			return true;
-		}
+        default boolean allowFluid(ItemStack container, FluidStack fluid) {
+            return true;
+        }
 
-		default FluidStack getFluid(ItemStack container)
-		{
-			return FluidUtil.getFluidContained(container);
-		}
-	}
+        default FluidStack getFluid(ItemStack container) {
+            return FluidUtil.getFluidContained(container);
+        }
+    }
 
-	public interface ITextureOverride
-	{
-		@SideOnly(Side.CLIENT)
-		String getModelCacheKey(ItemStack stack);
+    public interface ITextureOverride {
+        @SideOnly(Side.CLIENT)
+        String getModelCacheKey(ItemStack stack);
 
-		@SideOnly(Side.CLIENT)
-		List<ResourceLocation> getTextures(ItemStack stack, String key);
-	}
+        @SideOnly(Side.CLIENT)
+        List<ResourceLocation> getTextures(ItemStack stack, String key);
+    }
 
-	public interface IBulletContainer
-	{
-		NonNullList<ItemStack> getBullets(ItemStack container, boolean remote);
+    public interface IBulletContainer {
+        NonNullList<ItemStack> getBullets(ItemStack container, boolean remote);
 
-		default NonNullList<ItemStack> getBullets(ItemStack container)
-		{
-			return getBullets(container, FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT);
-		}
+        default NonNullList<ItemStack> getBullets(ItemStack container) {
+            return getBullets(container, FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT);
+        }
 
-		int getBulletCount(ItemStack container);
-	}
+        int getBulletCount(ItemStack container);
+    }
 
-	public interface IItemDamageableIE
-	{
+    public interface IItemDamageableIE {
 
-		int getMaxDamageIE(ItemStack stack);
+        int getMaxDamageIE(ItemStack stack);
 
-		int getItemDamageIE(ItemStack stack);
-	}
+        int getItemDamageIE(ItemStack stack);
+    }
 }

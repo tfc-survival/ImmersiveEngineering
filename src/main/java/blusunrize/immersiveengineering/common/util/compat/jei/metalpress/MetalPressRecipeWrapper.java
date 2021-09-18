@@ -15,22 +15,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
-public class MetalPressRecipeWrapper extends MultiblockRecipeWrapper
-{
-	public MetalPressRecipeWrapper(MetalPressRecipe recipe)
-	{
-		super(recipe);
-	}
+public class MetalPressRecipeWrapper extends MultiblockRecipeWrapper {
+    public MetalPressRecipeWrapper(MetalPressRecipe recipe) {
+        super(recipe);
+    }
 
-	@Override
-	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
-	{
-		GlStateManager.pushMatrix();
-		GlStateManager.enableDepth();
-		ClientUtils.bindAtlas();
-		GlStateManager.translate(60F, 20F, 16.5F);
-		GlStateManager.scale(50, -50, 50);
-		minecraft.getRenderItem().renderItem(MetalPressRecipeCategory.metalPressStack, ItemCameraTransforms.TransformType.GUI);
-		GlStateManager.popMatrix();
-	}
+    @Override
+    public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+        GlStateManager.pushMatrix();
+        GlStateManager.enableDepth();
+        ClientUtils.bindAtlas();
+        GlStateManager.translate(60F, 20F, 16.5F);
+        GlStateManager.scale(50, -50, 50);
+        minecraft.getRenderItem().renderItem(MetalPressRecipeCategory.metalPressStack, ItemCameraTransforms.TransformType.GUI);
+        GlStateManager.popMatrix();
+    }
 }

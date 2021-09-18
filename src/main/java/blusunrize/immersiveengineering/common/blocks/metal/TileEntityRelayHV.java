@@ -16,25 +16,21 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.MinecraftForgeClient;
 
-public class TileEntityRelayHV extends TileEntityConnectorHV implements IOBJModelCallback<IBlockState>
-{
-	@Override
-	public Vec3d getConnectionOffset(Connection con)
-	{
-		EnumFacing side = facing.getOpposite();
-		double conRadius = con.cableType.getRenderDiameter()/2;
-		return new Vec3d(.5+side.getXOffset()*(.375-conRadius), .5+side.getYOffset()*(.375-conRadius), .5+side.getZOffset()*(.375-conRadius));
-	}
+public class TileEntityRelayHV extends TileEntityConnectorHV implements IOBJModelCallback<IBlockState> {
+    @Override
+    public Vec3d getConnectionOffset(Connection con) {
+        EnumFacing side = facing.getOpposite();
+        double conRadius = con.cableType.getRenderDiameter() / 2;
+        return new Vec3d(.5 + side.getXOffset() * (.375 - conRadius), .5 + side.getYOffset() * (.375 - conRadius), .5 + side.getZOffset() * (.375 - conRadius));
+    }
 
-	@Override
-	protected boolean isRelay()
-	{
-		return true;
-	}
+    @Override
+    protected boolean isRelay() {
+        return true;
+    }
 
-	@Override
-	public boolean shouldRenderGroup(IBlockState object, String group)
-	{
-		return MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.TRANSLUCENT;
-	}
+    @Override
+    public boolean shouldRenderGroup(IBlockState object, String group) {
+        return MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT;
+    }
 }

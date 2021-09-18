@@ -19,66 +19,54 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
-public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
-{
-	@Override
-	public boolean matches(InventoryCrafting inv, World world)
-	{
-		ItemStack stack = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(!stackInSlot.isEmpty())
-				if(stack.isEmpty())
-				{
-					if(IEContent.itemShaderBag.equals(stackInSlot.getItem())&&ItemNBTHelper.hasKey(stackInSlot, "rarity"))
-						stack = stackInSlot;
-					else
-						return false;
+public class RecipeShaderBags extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+    @Override
+    public boolean matches(InventoryCrafting inv, World world) {
+        ItemStack stack = ItemStack.EMPTY;
+        for (int i = 0; i < inv.getSizeInventory(); i++) {
+            ItemStack stackInSlot = inv.getStackInSlot(i);
+            if (!stackInSlot.isEmpty())
+                if (stack.isEmpty()) {
+                    if (IEContent.itemShaderBag.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "rarity"))
+                        stack = stackInSlot;
+                    else
+                        return false;
 //					if(IEContent.itemShader.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "shader_name"))
 //						stack = stackInSlot;
-				}
-				else
-					return false;
-		}
-		return !stack.isEmpty();
-	}
+                } else
+                    return false;
+        }
+        return !stack.isEmpty();
+    }
 
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
-	{
-		for(int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
-			if(!stackInSlot.isEmpty())
-			{
-				ItemStack output = new ItemStack(IEContent.itemShaderBag, IEContent.itemShaderBag.equals(stackInSlot.getItem())?2: 1);
-				EnumRarity next = ShaderRegistry.getLowerRarity(stackInSlot.getRarity());
-				if(next!=null)
-				{
-					ItemNBTHelper.setString(output, "rarity", next.toString());
-					return output;
-				}
-			}
-		}
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public ItemStack getCraftingResult(InventoryCrafting inv) {
+        for (int i = 0; i < inv.getSizeInventory(); i++) {
+            ItemStack stackInSlot = inv.getStackInSlot(i);
+            if (!stackInSlot.isEmpty()) {
+                ItemStack output = new ItemStack(IEContent.itemShaderBag, IEContent.itemShaderBag.equals(stackInSlot.getItem()) ? 2 : 1);
+                EnumRarity next = ShaderRegistry.getLowerRarity(stackInSlot.getRarity());
+                if (next != null) {
+                    ItemNBTHelper.setString(output, "rarity", next.toString());
+                    return output;
+                }
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public boolean canFit(int width, int height)
-	{
-		return width >= 2&&height >= 2;
-	}
+    @Override
+    public boolean canFit(int width, int height) {
+        return width >= 2 && height >= 2;
+    }
 
-	@Override
-	public ItemStack getRecipeOutput()
-	{
-		return new ItemStack(IEContent.itemShaderBag, 2);
-	}
+    @Override
+    public ItemStack getRecipeOutput() {
+        return new ItemStack(IEContent.itemShaderBag, 2);
+    }
 
-	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
-	}
+    @Override
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
+        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+    }
 }

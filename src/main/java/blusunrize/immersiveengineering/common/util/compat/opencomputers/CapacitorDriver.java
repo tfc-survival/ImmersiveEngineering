@@ -15,80 +15,68 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class CapacitorDriver extends DriverSidedTileEntity
-{
+public class CapacitorDriver extends DriverSidedTileEntity {
 
-	@Override
-	public ManagedEnvironment createEnvironment(World w, BlockPos bp, EnumFacing facing)
-	{
-		TileEntity te = w.getTileEntity(bp);
-		if(te instanceof TileEntityCapacitorLV)
-		{
-			String pre = "";
-			if(te instanceof TileEntityCapacitorCreative)
-				pre = "creative";
-			else if(te instanceof TileEntityCapacitorHV)
-				pre = "hv";
-			else if(te instanceof TileEntityCapacitorMV)
-				pre = "mv";
-			else if(te instanceof TileEntityCapacitorLV)
-				pre = "lv";
-			return new CapacitorEnvironment(w, bp, pre);
-		}
-		return null;
-	}
+    @Override
+    public ManagedEnvironment createEnvironment(World w, BlockPos bp, EnumFacing facing) {
+        TileEntity te = w.getTileEntity(bp);
+        if (te instanceof TileEntityCapacitorLV) {
+            String pre = "";
+            if (te instanceof TileEntityCapacitorCreative)
+                pre = "creative";
+            else if (te instanceof TileEntityCapacitorHV)
+                pre = "hv";
+            else if (te instanceof TileEntityCapacitorMV)
+                pre = "mv";
+            else if (te instanceof TileEntityCapacitorLV)
+                pre = "lv";
+            return new CapacitorEnvironment(w, bp, pre);
+        }
+        return null;
+    }
 
-	@Override
-	public Class<?> getTileEntityClass()
-	{
-		return TileEntityCapacitorLV.class;
-	}
+    @Override
+    public Class<?> getTileEntityClass() {
+        return TileEntityCapacitorLV.class;
+    }
 
 
-	public class CapacitorEnvironment extends ManagedEnvironmentIE<TileEntityCapacitorLV>
-	{
-		String prefix;
+    public class CapacitorEnvironment extends ManagedEnvironmentIE<TileEntityCapacitorLV> {
+        String prefix;
 
-		public CapacitorEnvironment(World w, BlockPos bp, String name)
-		{
-			super(w, bp, TileEntityCapacitorLV.class);
-			prefix = name;
-		}
+        public CapacitorEnvironment(World w, BlockPos bp, String name) {
+            super(w, bp, TileEntityCapacitorLV.class);
+            prefix = name;
+        }
 
 
-		@Override
-		public String preferredName()
-		{
-			return "ie_"+prefix+"_capacitor";
-		}
+        @Override
+        public String preferredName() {
+            return "ie_" + prefix + "_capacitor";
+        }
 
-		@Override
-		public int priority()
-		{
-			return 1000;
-		}
+        @Override
+        public int priority() {
+            return 1000;
+        }
 
-		@Override
-		public void onConnect(Node node)
-		{
-		}
+        @Override
+        public void onConnect(Node node) {
+        }
 
-		@Override
-		public void onDisconnect(Node node)
-		{
-		}
+        @Override
+        public void onDisconnect(Node node) {
+        }
 
-		@Callback(doc = "function():int -- returns the amount of energy that can be stored")
-		public Object[] getMaxEnergyStored(Context context, Arguments args)
-		{
-			return new Object[]{getTileEntity().getMaxEnergyStored(EnumFacing.UP)};
-		}
+        @Callback(doc = "function():int -- returns the amount of energy that can be stored")
+        public Object[] getMaxEnergyStored(Context context, Arguments args) {
+            return new Object[]{getTileEntity().getMaxEnergyStored(EnumFacing.UP)};
+        }
 
-		@Callback(doc = "function():int -- returns the amount of energy that can be stored")
-		public Object[] getEnergyStored(Context context, Arguments args)
-		{
-			return new Object[]{getTileEntity().getEnergyStored(EnumFacing.DOWN)};
-		}
+        @Callback(doc = "function():int -- returns the amount of energy that can be stored")
+        public Object[] getEnergyStored(Context context, Arguments args) {
+            return new Object[]{getTileEntity().getEnergyStored(EnumFacing.DOWN)};
+        }
 
-	}
+    }
 }

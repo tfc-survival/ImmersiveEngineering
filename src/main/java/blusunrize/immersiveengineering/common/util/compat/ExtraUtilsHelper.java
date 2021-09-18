@@ -25,71 +25,60 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashSet;
 
-public class ExtraUtilsHelper extends IECompatModule
-{
-	@Override
-	public void preInit()
-	{
-	}
+public class ExtraUtilsHelper extends IECompatModule {
+    @Override
+    public void preInit() {
+    }
 
-	@Override
-	public void registerRecipes()
-	{
-	}
+    @Override
+    public void registerRecipes() {
+    }
 
-	@Override
-	public void init()
-	{
-		Item lillySeeds = Item.REGISTRY.getObject(new ResourceLocation("extrautils2:enderlilly"));
-		Block lillyBlock = Block.REGISTRY.getObject(new ResourceLocation("extrautils2:enderlilly"));
-		Item orchidSeeds = Item.REGISTRY.getObject(new ResourceLocation("extrautils2:redorchid"));
-		Block orchidBlock = Block.REGISTRY.getObject(new ResourceLocation("extrautils2:redorchid"));
-		if(lillySeeds!=null&&lillyBlock!=null)
-			registerXUPlant(new ItemStack(lillySeeds), lillyBlock, new ItemStack(Blocks.END_STONE), new ItemStack[]{new ItemStack(Items.ENDER_PEARL)}, 7, .0000125f, false);
-		if(orchidSeeds!=null&&orchidBlock!=null)
-			registerXUPlant(new ItemStack(orchidSeeds), orchidBlock, new ItemStack(Blocks.REDSTONE_ORE), new ItemStack[]{new ItemStack(Items.REDSTONE)}, 6, .0125f, true);
-	}
+    @Override
+    public void init() {
+        Item lillySeeds = Item.REGISTRY.getObject(new ResourceLocation("extrautils2:enderlilly"));
+        Block lillyBlock = Block.REGISTRY.getObject(new ResourceLocation("extrautils2:enderlilly"));
+        Item orchidSeeds = Item.REGISTRY.getObject(new ResourceLocation("extrautils2:redorchid"));
+        Block orchidBlock = Block.REGISTRY.getObject(new ResourceLocation("extrautils2:redorchid"));
+        if (lillySeeds != null && lillyBlock != null)
+            registerXUPlant(new ItemStack(lillySeeds), lillyBlock, new ItemStack(Blocks.END_STONE), new ItemStack[]{new ItemStack(Items.ENDER_PEARL)}, 7, .0000125f, false);
+        if (orchidSeeds != null && orchidBlock != null)
+            registerXUPlant(new ItemStack(orchidSeeds), orchidBlock, new ItemStack(Blocks.REDSTONE_ORE), new ItemStack[]{new ItemStack(Items.REDSTONE)}, 6, .0125f, true);
+    }
 
-	@Override
-	public void postInit()
-	{
-	}
+    @Override
+    public void postInit() {
+    }
 
-	static void registerXUPlant(ItemStack seed, Block block, ItemStack soil, ItemStack[] output, final int maxAge, final float growthStep, final boolean useFertilizer)
-	{
-		IProperty propGrowth = null;
-		final IBlockState state = block.getDefaultState();
-		for(IProperty prop : state.getPropertyKeys())
-			if("growth".equals(prop.getName()))
-				propGrowth = prop;
-		if(propGrowth!=null)
-		{
-			IProperty finalPropGrowth = propGrowth;
-			DefaultPlantHandler handler = new DefaultPlantHandler()
-			{
-				private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
+    static void registerXUPlant(ItemStack seed, Block block, ItemStack soil, ItemStack[] output, final int maxAge, final float growthStep, final boolean useFertilizer) {
+        IProperty propGrowth = null;
+        final IBlockState state = block.getDefaultState();
+        for (IProperty prop : state.getPropertyKeys())
+            if ("growth".equals(prop.getName()))
+                propGrowth = prop;
+        if (propGrowth != null) {
+            IProperty finalPropGrowth = propGrowth;
+            DefaultPlantHandler handler = new DefaultPlantHandler() {
+                private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
 
-				@Override
-				protected HashSet<ComparableItemStack> getSeedSet()
-				{
-					return validSeeds;
-				}
+                @Override
+                protected HashSet<ComparableItemStack> getSeedSet() {
+                    return validSeeds;
+                }
 
-				@Override
-				public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render)
-				{
-					return !useFertilizer?growthStep: (growthStep*fertilizer);
-				}
+                @Override
+                public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render) {
+                    return !useFertilizer ? growthStep : (growthStep * fertilizer);
+                }
 
-				@Override
-				@SideOnly(Side.CLIENT)
-				public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
-				{
-					return new IBlockState[]{state.withProperty(finalPropGrowth, Math.min(maxAge, Math.round(maxAge*growth)))};
-				}
-			};
-			handler.register(seed, output, soil, state);
-			BelljarHandler.registerHandler(handler);
-		}
-	}
+                @Override
+                @SideOnly(Side.CLIENT)
+                public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile) {
+                    return new IBlockState[]{state.withProperty(finalPropGrowth, Math.min(maxAge, Math.round(maxAge * growth)))};
+                }
+            };
+            handler.register(seed, output, soil, state);
+            BelljarHandler.registerHandler(handler);
+        }
+    }
 }

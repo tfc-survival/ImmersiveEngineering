@@ -32,83 +32,73 @@ import java.util.List;
 /**
  * @author BluSunrize - 17.02.2019
  */
-public class ConveyorDropCovered extends ConveyorDrop
-{
-	public ItemStack cover = ItemStack.EMPTY;
+public class ConveyorDropCovered extends ConveyorDrop {
+    public ItemStack cover = ItemStack.EMPTY;
 
-	@Override
-	public void onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing)
-	{
-		super.onEntityCollision(tile, entity, facing);
-		if(entity instanceof EntityItem)
-			((EntityItem)entity).setPickupDelay(10);
-	}
+    @Override
+    public void onEntityCollision(TileEntity tile, Entity entity, EnumFacing facing) {
+        super.onEntityCollision(tile, entity, facing);
+        if (entity instanceof EntityItem)
+            ((EntityItem) entity).setPickupDelay(10);
+    }
 
-	@Override
-	public void onItemDeployed(TileEntity tile, EntityItem entity, EnumFacing facing)
-	{
-		entity.setPickupDelay(10);
-		ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)tile);
-	}
+    @Override
+    public void onItemDeployed(TileEntity tile, EntityItem entity, EnumFacing facing) {
+        entity.setPickupDelay(10);
+        ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile) tile);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
-	{
-		baseModel = super.modifyQuads(baseModel, tile, facing);
-		ConveyorCovered.addCoverToQuads(baseModel, tile, facing, () -> cover, ConveyorDirection.HORIZONTAL, new boolean[]{
-				tile==null||this.renderWall(tile, facing, 0), tile==null||this.renderWall(tile, facing, 1)
-		});
-		return baseModel;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing) {
+        baseModel = super.modifyQuads(baseModel, tile, facing);
+        ConveyorCovered.addCoverToQuads(baseModel, tile, facing, () -> cover, ConveyorDirection.HORIZONTAL, new boolean[]{
+                tile == null || this.renderWall(tile, facing, 0), tile == null || this.renderWall(tile, facing, 1)
+        });
+        return baseModel;
+    }
 
-	@Override
-	public String getModelCacheKey(TileEntity tile, EnumFacing facing)
-	{
-		String key = super.getModelCacheKey(tile, facing);
-		if(!cover.isEmpty())
-			key += "s"+cover.getItem().getRegistryName()+cover.getMetadata();
-		return key;
-	}
+    @Override
+    public String getModelCacheKey(TileEntity tile, EnumFacing facing) {
+        String key = super.getModelCacheKey(tile, facing);
+        if (!cover.isEmpty())
+            key += "s" + cover.getItem().getRegistryName() + cover.getMetadata();
+        return key;
+    }
 
 
-	@Override
-	public boolean playerInteraction(TileEntity tile, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, EnumFacing side)
-	{
-		if(super.playerInteraction(tile, player, hand, heldItem, hitX, hitY, hitZ, side))
-			return true;
-		return ConveyorCovered.handleCoverInteraction(tile, player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
-	}
+    @Override
+    public boolean playerInteraction(TileEntity tile, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, EnumFacing side) {
+        if (super.playerInteraction(tile, player, hand, heldItem, hitX, hitY, hitZ, side))
+            return true;
+        return ConveyorCovered.handleCoverInteraction(tile, player, hand, heldItem, () -> cover, (itemStack -> cover = itemStack));
+    }
 
-	static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
+    static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
 
-	@Override
-	public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, EnumFacing facing)
-	{
-		List<AxisAlignedBB> list = Lists.newArrayList(conveyorBounds);
-		list.add(topBox);
-		return list;
-	}
+    @Override
+    public List<AxisAlignedBB> getColisionBoxes(TileEntity tile, EnumFacing facing) {
+        List<AxisAlignedBB> list = Lists.newArrayList(conveyorBounds);
+        list.add(topBox);
+        return list;
+    }
 
-	@Override
-	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, EnumFacing facing)
-	{
-		return Lists.newArrayList(Block.FULL_BLOCK_AABB);
-	}
+    @Override
+    public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, EnumFacing facing) {
+        return Lists.newArrayList(Block.FULL_BLOCK_AABB);
+    }
 
-	@Override
-	public NBTTagCompound writeConveyorNBT()
-	{
-		NBTTagCompound nbt = super.writeConveyorNBT();
-		if(cover!=null)
-			nbt.setTag("cover", cover.writeToNBT(new NBTTagCompound()));
-		return nbt;
-	}
+    @Override
+    public NBTTagCompound writeConveyorNBT() {
+        NBTTagCompound nbt = super.writeConveyorNBT();
+        if (cover != null)
+            nbt.setTag("cover", cover.writeToNBT(new NBTTagCompound()));
+        return nbt;
+    }
 
-	@Override
-	public void readConveyorNBT(NBTTagCompound nbt)
-	{
-		super.readConveyorNBT(nbt);
-		cover = new ItemStack(nbt.getCompoundTag("cover"));
-	}
+    @Override
+    public void readConveyorNBT(NBTTagCompound nbt) {
+        super.readConveyorNBT(nbt);
+        cover = new ItemStack(nbt.getCompoundTag("cover"));
+    }
 }

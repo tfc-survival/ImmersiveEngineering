@@ -35,107 +35,90 @@ import java.util.List;
 /**
  * @author BluSunrize - 22.02.2017
  */
-public class IEFluid extends Fluid
-{
-	public IEFluid(String fluidName, ResourceLocation still, ResourceLocation flowing)
-	{
-		super(fluidName, still, flowing);
-	}
+public class IEFluid extends Fluid {
+    public IEFluid(String fluidName, ResourceLocation still, ResourceLocation flowing) {
+        super(fluidName, still, flowing);
+    }
 
-	@SideOnly(Side.CLIENT)
-	public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<String> tooltip)
-	{
-	}
+    @SideOnly(Side.CLIENT)
+    public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<String> tooltip) {
+    }
 
-	public static class FluidPotion extends IEFluid
-	{
-		public FluidPotion(String fluidName, ResourceLocation still, ResourceLocation flowing)
-		{
-			super(fluidName, still, flowing);
-		}
+    public static class FluidPotion extends IEFluid {
+        public FluidPotion(String fluidName, ResourceLocation still, ResourceLocation flowing) {
+            super(fluidName, still, flowing);
+        }
 
-		@Override
-		@SideOnly(Side.CLIENT)
-		public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<String> tooltip)
-		{
-			if(fluidStack!=null&&fluidStack.tag!=null)
-			{
-				List<PotionEffect> effects = PotionUtils.getEffectsFromTag(fluidStack.tag);
-				if(effects.isEmpty())
-					tooltip.add(TextFormatting.GRAY+I18n.translateToLocal("effect.none").trim());
-				else
-				{
-					for(PotionEffect potioneffect : effects)
-					{
-						String s1 = I18n.translateToLocal(potioneffect.getEffectName()).trim();
-						Potion potion = potioneffect.getPotion();
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void addTooltipInfo(FluidStack fluidStack, @Nullable EntityPlayer player, List<String> tooltip) {
+            if (fluidStack != null && fluidStack.tag != null) {
+                List<PotionEffect> effects = PotionUtils.getEffectsFromTag(fluidStack.tag);
+                if (effects.isEmpty())
+                    tooltip.add(TextFormatting.GRAY + I18n.translateToLocal("effect.none").trim());
+                else {
+                    for (PotionEffect potioneffect : effects) {
+                        String s1 = I18n.translateToLocal(potioneffect.getEffectName()).trim();
+                        Potion potion = potioneffect.getPotion();
 
-						if(potioneffect.getAmplifier() > 0)
-							s1 = s1+" "+I18n.translateToLocal("potion.potency."+potioneffect.getAmplifier()).trim();
+                        if (potioneffect.getAmplifier() > 0)
+                            s1 = s1 + " " + I18n.translateToLocal("potion.potency." + potioneffect.getAmplifier()).trim();
 
-						if(potioneffect.getDuration() > 20)
-							s1 = s1+" ("+Potion.getPotionDurationString(potioneffect, 1)+")";
+                        if (potioneffect.getDuration() > 20)
+                            s1 = s1 + " (" + Potion.getPotionDurationString(potioneffect, 1) + ")";
 
-						if(potion.isBadEffect())
-							tooltip.add(TextFormatting.RED+s1);
-						else
-							tooltip.add(TextFormatting.BLUE+s1);
-					}
-				}
-				PotionType potionType = PotionUtils.getPotionTypeFromNBT(fluidStack.tag);
-				if(potionType!=PotionTypes.EMPTY)
-				{
-					String modID = potionType.getRegistryName().getNamespace();
-					tooltip.add(TextFormatting.DARK_GRAY+I18n.translateToLocalFormatted(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)));
-				}
-			}
-		}
+                        if (potion.isBadEffect())
+                            tooltip.add(TextFormatting.RED + s1);
+                        else
+                            tooltip.add(TextFormatting.BLUE + s1);
+                    }
+                }
+                PotionType potionType = PotionUtils.getPotionTypeFromNBT(fluidStack.tag);
+                if (potionType != PotionTypes.EMPTY) {
+                    String modID = potionType.getRegistryName().getNamespace();
+                    tooltip.add(TextFormatting.DARK_GRAY + I18n.translateToLocalFormatted(Lib.DESC_INFO + "potionMod", Utils.getModName(modID)));
+                }
+            }
+        }
 
-		@Override
-		public String getLocalizedName(FluidStack stack)
-		{
-			if(stack==null||stack.tag==null)
-				return super.getLocalizedName(stack);
-			return I18n.translateToLocal(PotionUtils.getPotionTypeFromNBT(stack.tag).getNamePrefixed("potion.effect."));
-		}
+        @Override
+        public String getLocalizedName(FluidStack stack) {
+            if (stack == null || stack.tag == null)
+                return super.getLocalizedName(stack);
+            return I18n.translateToLocal(PotionUtils.getPotionTypeFromNBT(stack.tag).getNamePrefixed("potion.effect."));
+        }
 
-		@Override
-		public int getColor(FluidStack stack)
-		{
-			if(stack==null||stack.tag!=null)
-				return 0xff000000|PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromTag(stack.tag));
-			return 0xff0000ff;
-		}
-	}
+        @Override
+        public int getColor(FluidStack stack) {
+            if (stack == null || stack.tag != null)
+                return 0xff000000 | PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromTag(stack.tag));
+            return 0xff0000ff;
+        }
+    }
 
-	public static final DataSerializer<Optional<FluidStack>> OPTIONAL_FLUID_STACK = new DataSerializer<Optional<FluidStack>>()
-	{
-		@Override
-		public void write(PacketBuffer buf, Optional<FluidStack> value)
-		{
-			buf.writeBoolean(value.isPresent());
-			FluidStack fs = value.orNull();
-			if(fs!=null)
-				buf.writeCompoundTag(fs.writeToNBT(new NBTTagCompound()));
-		}
+    public static final DataSerializer<Optional<FluidStack>> OPTIONAL_FLUID_STACK = new DataSerializer<Optional<FluidStack>>() {
+        @Override
+        public void write(PacketBuffer buf, Optional<FluidStack> value) {
+            buf.writeBoolean(value.isPresent());
+            FluidStack fs = value.orNull();
+            if (fs != null)
+                buf.writeCompoundTag(fs.writeToNBT(new NBTTagCompound()));
+        }
 
-		@Override
-		public Optional<FluidStack> read(PacketBuffer buf) throws IOException
-		{
-			FluidStack fs = !buf.readBoolean()?null: FluidStack.loadFluidStackFromNBT(buf.readCompoundTag());
-			return Optional.fromNullable(fs);
-		}
+        @Override
+        public Optional<FluidStack> read(PacketBuffer buf) throws IOException {
+            FluidStack fs = !buf.readBoolean() ? null : FluidStack.loadFluidStackFromNBT(buf.readCompoundTag());
+            return Optional.fromNullable(fs);
+        }
 
-		@Override
-		public DataParameter<Optional<FluidStack>> createKey(int id)
-		{
-			return new DataParameter(id, this);
-		}
+        @Override
+        public DataParameter<Optional<FluidStack>> createKey(int id) {
+            return new DataParameter(id, this);
+        }
 
-		@Override
-		public Optional<FluidStack> copyValue(Optional<FluidStack> value)
-		{
-			return value.isPresent()?Optional.of(value.get().copy()): Optional.absent();
-		}
-	};
+        @Override
+        public Optional<FluidStack> copyValue(Optional<FluidStack> value) {
+            return value.isPresent() ? Optional.of(value.get().copy()) : Optional.absent();
+        }
+    };
 }

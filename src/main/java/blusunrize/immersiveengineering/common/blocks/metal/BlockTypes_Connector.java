@@ -13,39 +13,35 @@ import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_Connector implements IStringSerializable, BlockIEBase.IBlockEnum
-{
-	CONNECTOR_LV,
-	RELAY_LV,
-	CONNECTOR_MV,
-	RELAY_MV,
-	CONNECTOR_HV,
-	RELAY_HV,
-	CONNECTOR_STRUCTURAL,
-	TRANSFORMER,
-	TRANSFORMER_HV,
-	BREAKERSWITCH,
-	REDSTONE_BREAKER,
-	ENERGY_METER,
-	CONNECTOR_REDSTONE,
-	CONNECTOR_PROBE,
-	FEEDTHROUGH;
+public enum BlockTypes_Connector implements IStringSerializable, BlockIEBase.IBlockEnum {
+    CONNECTOR_LV,
+    RELAY_LV,
+    CONNECTOR_MV,
+    RELAY_MV,
+    CONNECTOR_HV,
+    RELAY_HV,
+    CONNECTOR_STRUCTURAL,
+    TRANSFORMER,
+    TRANSFORMER_HV,
+    BREAKERSWITCH,
+    REDSTONE_BREAKER,
+    ENERGY_METER,
+    CONNECTOR_REDSTONE,
+    CONNECTOR_PROBE,
+    FEEDTHROUGH;
 
-	@Override
-	public String getName()
-	{
-		return this.toString().toLowerCase(Locale.ENGLISH);
-	}
+    @Override
+    public String getName() {
+        return this.toString().toLowerCase(Locale.ENGLISH);
+    }
 
-	@Override
-	public int getMeta()
-	{
-		return ordinal();
-	}
+    @Override
+    public int getMeta() {
+        return ordinal();
+    }
 
-	@Override
-	public boolean listForCreative()
-	{
-		return this!=FEEDTHROUGH;
-	}
+    @Override
+    public boolean listForCreative() {
+        return this != FEEDTHROUGH;
+    }
 }

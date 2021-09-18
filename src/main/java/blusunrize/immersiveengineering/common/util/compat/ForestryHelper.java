@@ -22,38 +22,32 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
-public class ForestryHelper extends IECompatModule
-{
-	@Override
-	public void preInit()
-	{
-	}
+public class ForestryHelper extends IECompatModule {
+    @Override
+    public void preInit() {
+    }
 
-	@Override
-	public void registerRecipes()
-	{
-		Fluid fluidHoney = FluidRegistry.getFluid("for.honey");
-		if(fluidHoney!=null)
-		{
-			SqueezerRecipe.addRecipe(new FluidStack(fluidHoney, 100), ItemStack.EMPTY, "dropHoney", 6400);
-			SqueezerRecipe.addRecipe(new FluidStack(fluidHoney, 100), ItemStack.EMPTY, "dropHoneydew", 6400);
-		}
-	}
+    @Override
+    public void registerRecipes() {
+        Fluid fluidHoney = FluidRegistry.getFluid("for.honey");
+        if (fluidHoney != null) {
+            SqueezerRecipe.addRecipe(new FluidStack(fluidHoney, 100), ItemStack.EMPTY, "dropHoney", 6400);
+            SqueezerRecipe.addRecipe(new FluidStack(fluidHoney, 100), ItemStack.EMPTY, "dropHoneydew", 6400);
+        }
+    }
 
-	@Override
-	public void init()
-	{
-		FMLInterModComms.sendMessage("forestry", "add-backpack-items", "forestry.forester@"+ImmersiveEngineering.MODID+":seed:*");
-	}
+    @Override
+    public void init() {
+        FMLInterModComms.sendMessage("forestry", "add-backpack-items", "forestry.forester@" + ImmersiveEngineering.MODID + ":seed:*");
+    }
 
-	@Override
-	public void postInit()
-	{
-		ChemthrowerHandler.registerFlammable("bio.ethanol");
-		ChemthrowerHandler.registerEffect("for.honey", new ChemthrowerEffect_Potion(null, 0, IEPotions.sticky, 60, 1));
-		ChemthrowerHandler.registerEffect("juice", new ChemthrowerEffect_Potion(null, 0, IEPotions.sticky, 40, 0));
-		Item fertilizer = Item.REGISTRY.getObject(new ResourceLocation("forestry", "fertilizer_compound"));
-		if(fertilizer!=null)
-			BelljarHandler.registerBasicItemFertilizer(new ItemStack(fertilizer), 1.5f);
-	}
+    @Override
+    public void postInit() {
+        ChemthrowerHandler.registerFlammable("bio.ethanol");
+        ChemthrowerHandler.registerEffect("for.honey", new ChemthrowerEffect_Potion(null, 0, IEPotions.sticky, 60, 1));
+        ChemthrowerHandler.registerEffect("juice", new ChemthrowerEffect_Potion(null, 0, IEPotions.sticky, 40, 0));
+        Item fertilizer = Item.REGISTRY.getObject(new ResourceLocation("forestry", "fertilizer_compound"));
+        if (fertilizer != null)
+            BelljarHandler.registerBasicItemFertilizer(new ItemStack(fertilizer), 1.5f);
+    }
 }

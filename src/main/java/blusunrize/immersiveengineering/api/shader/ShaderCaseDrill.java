@@ -12,54 +12,47 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Collection;
 
-public class ShaderCaseDrill extends ShaderCase
-{
-	private int headLayers = 1;
+public class ShaderCaseDrill extends ShaderCase {
+    private int headLayers = 1;
 
-	public ShaderCaseDrill(ShaderLayer... layers)
-	{
-		super(layers);
-	}
+    public ShaderCaseDrill(ShaderLayer... layers) {
+        super(layers);
+    }
 
-	public ShaderCaseDrill(Collection<ShaderLayer> layers)
-	{
-		super(layers);
-	}
+    public ShaderCaseDrill(Collection<ShaderLayer> layers) {
+        super(layers);
+    }
 
-	@Override
-	public String getShaderType()
-	{
-		return "immersiveengineering:drill";
-	}
+    @Override
+    public String getShaderType() {
+        return "immersiveengineering:drill";
+    }
 
-	@Override
-	public int getLayerInsertionIndex()
-	{
-		return layers.length-1;
-	}
+    @Override
+    public int getLayerInsertionIndex() {
+        return layers.length - 1;
+    }
 
-	@Override
-	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
-	{
-		if("drill_head".equals(modelPart)||"upgrade_damage0".equals(modelPart)||"upgrade_damage1".equals(modelPart)||"upgrade_damage2".equals(modelPart)||"upgrade_damage3".equals(modelPart)||"upgrade_damage4".equals(modelPart))
-			return pass >= getLayers().length-headLayers;
-		if(pass >= getLayers().length-headLayers)//Last pass on drills is just for the head and augers
-			return false;
-		if("upgrade_speed".equals(modelPart)||"upgrade_waterproof".equals(modelPart))//Upgrades only render on the uncoloured pass
-			return pass==getLayers().length-2;
+    @Override
+    public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass) {
+        if ("drill_head".equals(modelPart) || "upgrade_damage0".equals(modelPart) || "upgrade_damage1".equals(modelPart) || "upgrade_damage2".equals(modelPart) || "upgrade_damage3".equals(modelPart) || "upgrade_damage4".equals(modelPart))
+            return pass >= getLayers().length - headLayers;
+        if (pass >= getLayers().length - headLayers)//Last pass on drills is just for the head and augers
+            return false;
+        if ("upgrade_speed".equals(modelPart) || "upgrade_waterproof".equals(modelPart))//Upgrades only render on the uncoloured pass
+            return pass == getLayers().length - 2;
 
-		if("drill_grip".equals(modelPart))
-			return pass==0;
-		return pass!=0;
+        if ("drill_grip".equals(modelPart))
+            return pass == 0;
+        return pass != 0;
 
-	}
+    }
 
-	public ShaderCaseDrill addHeadLayers(ShaderLayer... addedLayers)
-	{
-		addLayers(layers.length, addedLayers);
-		headLayers += addedLayers.length;
-		return this;
-	}
+    public ShaderCaseDrill addHeadLayers(ShaderLayer... addedLayers) {
+        addLayers(layers.length, addedLayers);
+        headLayers += addedLayers.length;
+        return this;
+    }
 
 //	@Override
 //	public int getPasses(ItemStack shader, ItemStack item, String modelPart)

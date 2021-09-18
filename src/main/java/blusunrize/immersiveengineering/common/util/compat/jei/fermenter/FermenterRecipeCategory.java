@@ -27,39 +27,34 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe, FermenterRecipeWrapper>
-{
-	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/fermenter.png");
-	private final IDrawable tankOverlay;
+public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe, FermenterRecipeWrapper> {
+    public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/fermenter.png");
+    private final IDrawable tankOverlay;
 
-	public FermenterRecipeCategory(IGuiHelper helper)
-	{
-		super("fermenter", "tile.immersiveengineering.metal_multiblock.fermenter.name", helper.createDrawable(background, 6, 12, 164, 59), FermenterRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.FERMENTER.getMeta()));
-		tankOverlay = helper.createDrawable(background, 177, 31, 16, 47, -2, 2, -2, 2);
-	}
+    public FermenterRecipeCategory(IGuiHelper helper) {
+        super("fermenter", "tile.immersiveengineering.metal_multiblock.fermenter.name", helper.createDrawable(background, 6, 12, 164, 59), FermenterRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.FERMENTER.getMeta()));
+        tankOverlay = helper.createDrawable(background, 177, 31, 16, 47, -2, 2, -2, 2);
+    }
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, FermenterRecipeWrapper recipeWrapper, IIngredients ingredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 1, 6);
-		guiItemStacks.init(1, false, 84, 40);
-		guiItemStacks.set(0, ingredients.getInputs(VanillaTypes.ITEM).get(0));
-		if(ingredients.getOutputs(VanillaTypes.ITEM).size() > 0)
-			guiItemStacks.set(1, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
-		if(ingredients.getOutputs(VanillaTypes.FLUID).size() > 0)
-		{
-			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-			List<FluidStack> lfs = ingredients.getOutputs(VanillaTypes.FLUID).get(0);
-			guiFluidStacks.init(0, false, 106, 9, 16, 47, lfs.get(0).amount*4, false, tankOverlay);
-			guiFluidStacks.set(0, lfs);
-			guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
-		}
-	}
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, FermenterRecipeWrapper recipeWrapper, IIngredients ingredients) {
+        IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
+        guiItemStacks.init(0, true, 1, 6);
+        guiItemStacks.init(1, false, 84, 40);
+        guiItemStacks.set(0, ingredients.getInputs(VanillaTypes.ITEM).get(0));
+        if (ingredients.getOutputs(VanillaTypes.ITEM).size() > 0)
+            guiItemStacks.set(1, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
+        if (ingredients.getOutputs(VanillaTypes.FLUID).size() > 0) {
+            IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
+            List<FluidStack> lfs = ingredients.getOutputs(VanillaTypes.FLUID).get(0);
+            guiFluidStacks.init(0, false, 106, 9, 16, 47, lfs.get(0).amount * 4, false, tankOverlay);
+            guiFluidStacks.set(0, lfs);
+            guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+        }
+    }
 
-	@Override
-	public IRecipeWrapper getRecipeWrapper(FermenterRecipe recipe)
-	{
-		return new FermenterRecipeWrapper(recipe);
-	}
+    @Override
+    public IRecipeWrapper getRecipeWrapper(FermenterRecipe recipe) {
+        return new FermenterRecipeWrapper(recipe);
+    }
 }

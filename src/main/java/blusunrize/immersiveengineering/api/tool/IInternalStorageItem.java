@@ -18,11 +18,10 @@ import net.minecraft.util.NonNullList;
  * Deprecated in favor of capabilities
  */
 @Deprecated
-public interface IInternalStorageItem
-{
-	NonNullList<ItemStack> getContainedItems(ItemStack stack);
+public interface IInternalStorageItem {
+    NonNullList<ItemStack> getContainedItems(ItemStack stack);
 
-	void setContainedItems(ItemStack stack, NonNullList<ItemStack> stackList);
+    void setContainedItems(ItemStack stack, NonNullList<ItemStack> stackList);
 
-	int getInternalSlots(ItemStack stack);
+    int getInternalSlots(ItemStack stack);
 }

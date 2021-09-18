@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 /**
  * Items that implement this will be allowed in the toolbox
  */
-public interface ITool
-{
-	boolean isTool(ItemStack item);
+public interface ITool {
+    boolean isTool(ItemStack item);
 }

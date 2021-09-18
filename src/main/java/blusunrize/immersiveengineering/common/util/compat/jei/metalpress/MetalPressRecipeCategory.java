@@ -22,38 +22,33 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe, MetalPressRecipeWrapper>
-{
-	static ItemStack metalPressStack;
+public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe, MetalPressRecipeWrapper> {
+    static ItemStack metalPressStack;
 
-	public MetalPressRecipeCategory(IGuiHelper helper)
-	{
-		super("metalPress", "tile.immersiveengineering.metal_multiblock.metal_press.name", helper.createBlankDrawable(140, 50), MetalPressRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()));
-		metalPressStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
-	}
+    public MetalPressRecipeCategory(IGuiHelper helper) {
+        super("metalPress", "tile.immersiveengineering.metal_multiblock.metal_press.name", helper.createBlankDrawable(140, 50), MetalPressRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()));
+        metalPressStack = new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
+    }
 
-	@Override
-	public void drawExtras(Minecraft minecraft)
-	{
-	}
+    @Override
+    public void drawExtras(Minecraft minecraft) {
+    }
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, MetalPressRecipeWrapper recipeWrapper, IIngredients ingredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 20, 3);
-		guiItemStacks.init(1, true, 71, 0);
-		guiItemStacks.init(2, false, 102, 3);
-		guiItemStacks.set(0, recipeWrapper.recipeInputs[0]);
-		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
-		guiItemStacks.set(1, recipeWrapper.recipeInputs[1]);
-		guiItemStacks.set(2, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
-		guiItemStacks.setBackground(2, JEIHelper.slotDrawable);
-	}
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, MetalPressRecipeWrapper recipeWrapper, IIngredients ingredients) {
+        IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
+        guiItemStacks.init(0, true, 20, 3);
+        guiItemStacks.init(1, true, 71, 0);
+        guiItemStacks.init(2, false, 102, 3);
+        guiItemStacks.set(0, recipeWrapper.recipeInputs[0]);
+        guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
+        guiItemStacks.set(1, recipeWrapper.recipeInputs[1]);
+        guiItemStacks.set(2, ingredients.getOutputs(VanillaTypes.ITEM).get(0));
+        guiItemStacks.setBackground(2, JEIHelper.slotDrawable);
+    }
 
-	@Override
-	public IRecipeWrapper getRecipeWrapper(MetalPressRecipe recipe)
-	{
-		return new MetalPressRecipeWrapper(recipe);
-	}
+    @Override
+    public IRecipeWrapper getRecipeWrapper(MetalPressRecipe recipe) {
+        return new MetalPressRecipeWrapper(recipe);
+    }
 }

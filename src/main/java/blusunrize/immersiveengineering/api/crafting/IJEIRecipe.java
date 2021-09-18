@@ -13,18 +13,16 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public interface IJEIRecipe
-{
-	default boolean listInJEI()
-	{
-		return true;
-	}
+public interface IJEIRecipe {
+    default boolean listInJEI() {
+        return true;
+    }
 
-	List<ItemStack> getJEITotalItemInputs();
+    List<ItemStack> getJEITotalItemInputs();
 
-	List<ItemStack> getJEITotalItemOutputs();
+    List<ItemStack> getJEITotalItemOutputs();
 
-	List<FluidStack> getJEITotalFluidInputs();
+    List<FluidStack> getJEITotalFluidInputs();
 
-	List<FluidStack> getJEITotalFluidOutputs();
+    List<FluidStack> getJEITotalFluidOutputs();
 }

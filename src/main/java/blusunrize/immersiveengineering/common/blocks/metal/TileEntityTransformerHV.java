@@ -13,33 +13,28 @@ import com.google.common.collect.ImmutableSet;
 
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.HV_CATEGORY;
 
-public class TileEntityTransformerHV extends TileEntityTransformer
-{
-	{
-		acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY, WireType.MV_CATEGORY);
-	}
+public class TileEntityTransformerHV extends TileEntityTransformer {
+    {
+        acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY, WireType.MV_CATEGORY);
+    }
 
-	@Override
-	protected boolean canTakeHV()
-	{
-		return true;
-	}
+    @Override
+    protected boolean canTakeHV() {
+        return true;
+    }
 
-	@Override
-	protected float getLowerOffset()
-	{
-		return super.getHigherOffset();
-	}
+    @Override
+    protected float getLowerOffset() {
+        return super.getHigherOffset();
+    }
 
-	@Override
-	protected float getHigherOffset()
-	{
-		return .75F;
-	}
+    @Override
+    protected float getHigherOffset() {
+        return .75F;
+    }
 
-	@Override
-	public String getHigherWiretype()
-	{
-		return HV_CATEGORY;
-	}
+    @Override
+    public String getHigherWiretype() {
+        return HV_CATEGORY;
+    }
 }

@@ -12,7 +12,6 @@ import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;
 
-public interface IRotationAcceptor
-{
-	void inputRotation(double rotation, @Nonnull EnumFacing side);
+public interface IRotationAcceptor {
+    void inputRotation(double rotation, @Nonnull EnumFacing side);
 }

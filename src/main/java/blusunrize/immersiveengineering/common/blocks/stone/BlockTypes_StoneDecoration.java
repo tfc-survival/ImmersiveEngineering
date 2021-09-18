@@ -13,35 +13,31 @@ import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_StoneDecoration implements IStringSerializable, BlockIEBase.IBlockEnum
-{
-	COKEBRICK,
-	BLASTBRICK,
-	BLASTBRICK_REINFORCED,
-	COKE,
-	HEMPCRETE,
-	CONCRETE,
-	CONCRETE_TILE,
-	CONCRETE_LEADED,
-	INSULATING_GLASS,
-	CONCRETE_SPRAYED,
-	ALLOYBRICK;
+public enum BlockTypes_StoneDecoration implements IStringSerializable, BlockIEBase.IBlockEnum {
+    COKEBRICK,
+    BLASTBRICK,
+    BLASTBRICK_REINFORCED,
+    COKE,
+    HEMPCRETE,
+    CONCRETE,
+    CONCRETE_TILE,
+    CONCRETE_LEADED,
+    INSULATING_GLASS,
+    CONCRETE_SPRAYED,
+    ALLOYBRICK;
 
-	@Override
-	public String getName()
-	{
-		return this.toString().toLowerCase(Locale.ENGLISH);
-	}
+    @Override
+    public String getName() {
+        return this.toString().toLowerCase(Locale.ENGLISH);
+    }
 
-	@Override
-	public int getMeta()
-	{
-		return ordinal();
-	}
+    @Override
+    public int getMeta() {
+        return ordinal();
+    }
 
-	@Override
-	public boolean listForCreative()
-	{
-		return true;
-	}
+    @Override
+    public boolean listForCreative() {
+        return true;
+    }
 }

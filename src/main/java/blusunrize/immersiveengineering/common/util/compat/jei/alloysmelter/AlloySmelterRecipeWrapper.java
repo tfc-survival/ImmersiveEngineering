@@ -18,26 +18,22 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-public class AlloySmelterRecipeWrapper implements IRecipeWrapper
-{
-	private final List<List<ItemStack>> inputs;
-	private final ItemStack output;
+public class AlloySmelterRecipeWrapper implements IRecipeWrapper {
+    private final List<List<ItemStack>> inputs;
+    private final ItemStack output;
 
-	public AlloySmelterRecipeWrapper(AlloyRecipe recipe)
-	{
-		this.inputs = Arrays.asList(recipe.input0.getSizedStackList(), recipe.input1.getSizedStackList());
-		this.output = recipe.output;
-	}
+    public AlloySmelterRecipeWrapper(AlloyRecipe recipe) {
+        this.inputs = Arrays.asList(recipe.input0.getSizedStackList(), recipe.input1.getSizedStackList());
+        this.output = recipe.output;
+    }
 
-	@Override
-	public void getIngredients(IIngredients ingredients)
-	{
-		ingredients.setInputLists(ItemStack.class, inputs);
-		ingredients.setOutput(ItemStack.class, output);
-	}
+    @Override
+    public void getIngredients(IIngredients ingredients) {
+        ingredients.setInputLists(ItemStack.class, inputs);
+        ingredients.setOutput(ItemStack.class, output);
+    }
 
-	@Override
-	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
-	{
-	}
+    @Override
+    public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+    }
 }

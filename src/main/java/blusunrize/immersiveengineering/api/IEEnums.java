@@ -12,35 +12,29 @@ import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public class IEEnums
-{
-	public enum SideConfig implements IStringSerializable
-	{
-		NONE("none"),
-		INPUT("in"),
-		OUTPUT("out");
+public class IEEnums {
+    public enum SideConfig implements IStringSerializable {
+        NONE("none"),
+        INPUT("in"),
+        OUTPUT("out");
 
-		final String texture;
+        final String texture;
 
-		SideConfig(String texture)
-		{
-			this.texture = texture;
-		}
+        SideConfig(String texture) {
+            this.texture = texture;
+        }
 
-		@Override
-		public String getName()
-		{
-			return this.toString().toLowerCase(Locale.ENGLISH);
-		}
+        @Override
+        public String getName() {
+            return this.toString().toLowerCase(Locale.ENGLISH);
+        }
 
-		public String getTextureName()
-		{
-			return texture;
-		}
+        public String getTextureName() {
+            return texture;
+        }
 
-		public static SideConfig next(SideConfig current)
-		{
-			return current==INPUT?OUTPUT: current==OUTPUT?NONE: INPUT;
-		}
-	}
+        public static SideConfig next(SideConfig current) {
+            return current == INPUT ? OUTPUT : current == OUTPUT ? NONE : INPUT;
+        }
+    }
 }

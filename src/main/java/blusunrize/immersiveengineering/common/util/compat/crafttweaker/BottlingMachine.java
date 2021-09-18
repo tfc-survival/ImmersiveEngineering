@@ -22,94 +22,79 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ZenClass("mods.immersiveengineering.BottlingMachine")
-public class BottlingMachine
-{
-	@ZenMethod
-	public static void addRecipe(IItemStack output, IIngredient input, ILiquidStack fluid)
-	{
-		Object oInput = CraftTweakerHelper.toObject(input);
-		if(oInput==null||output==null||fluid==null)
-			return;
+public class BottlingMachine {
+    @ZenMethod
+    public static void addRecipe(IItemStack output, IIngredient input, ILiquidStack fluid) {
+        Object oInput = CraftTweakerHelper.toObject(input);
+        if (oInput == null || output == null || fluid == null)
+            return;
 
-		BottlingMachineRecipe r = new BottlingMachineRecipe(CraftTweakerHelper.toStack(output), oInput, CraftTweakerHelper.toFluidStack(fluid));
-		CraftTweakerAPI.apply(new Add(r));
-	}
+        BottlingMachineRecipe r = new BottlingMachineRecipe(CraftTweakerHelper.toStack(output), oInput, CraftTweakerHelper.toFluidStack(fluid));
+        CraftTweakerAPI.apply(new Add(r));
+    }
 
-	private static class Add implements IAction
-	{
-		private final BottlingMachineRecipe recipe;
+    private static class Add implements IAction {
+        private final BottlingMachineRecipe recipe;
 
-		public Add(BottlingMachineRecipe recipe)
-		{
-			this.recipe = recipe;
-		}
+        public Add(BottlingMachineRecipe recipe) {
+            this.recipe = recipe;
+        }
 
-		@Override
-		public void apply()
-		{
-			BottlingMachineRecipe.recipeList.add(recipe);
-		}
+        @Override
+        public void apply() {
+            BottlingMachineRecipe.recipeList.add(recipe);
+        }
 
-		@Override
-		public String describe()
-		{
-			return "Adding Bottling Machine Recipe for "+recipe.output.getDisplayName();
-		}
-	}
+        @Override
+        public String describe() {
+            return "Adding Bottling Machine Recipe for " + recipe.output.getDisplayName();
+        }
+    }
 
-	@ZenMethod
-	public static void removeRecipe(IItemStack output)
-	{
-		CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
-	}
+    @ZenMethod
+    public static void removeRecipe(IItemStack output) {
+        CraftTweakerAPI.apply(new Remove(CraftTweakerHelper.toStack(output)));
+    }
 
-	private static class Remove implements IAction
-	{
-		private final ItemStack output;
-		List<BottlingMachineRecipe> removedRecipes;
+    private static class Remove implements IAction {
+        private final ItemStack output;
+        List<BottlingMachineRecipe> removedRecipes;
 
-		public Remove(ItemStack output)
-		{
-			this.output = output;
-		}
+        public Remove(ItemStack output) {
+            this.output = output;
+        }
 
-		@Override
-		public void apply()
-		{
-			removedRecipes = BottlingMachineRecipe.removeRecipes(output);
-		}
+        @Override
+        public void apply() {
+            removedRecipes = BottlingMachineRecipe.removeRecipes(output);
+        }
 
-		@Override
-		public String describe()
-		{
-			return "Removing Bottling Machine Recipe for "+output.getDisplayName();
-		}
-	}
+        @Override
+        public String describe() {
+            return "Removing Bottling Machine Recipe for " + output.getDisplayName();
+        }
+    }
 
-	@ZenMethod
-	public static void removeAll()
-	{
-		CraftTweakerAPI.apply(new RemoveAll());
-	}
+    @ZenMethod
+    public static void removeAll() {
+        CraftTweakerAPI.apply(new RemoveAll());
+    }
 
-	private static class RemoveAll implements IAction
-	{
-		List<BottlingMachineRecipe> removedRecipes;
+    private static class RemoveAll implements IAction {
+        List<BottlingMachineRecipe> removedRecipes;
 
-		public RemoveAll(){
-		}
+        public RemoveAll() {
+        }
 
-		@Override
-		public void apply()
-		{
-			removedRecipes = new ArrayList<>(BottlingMachineRecipe.recipeList);
-			BottlingMachineRecipe.recipeList.clear();
-		}
+        @Override
+        public void apply() {
+            removedRecipes = new ArrayList<>(BottlingMachineRecipe.recipeList);
+            BottlingMachineRecipe.recipeList.clear();
+        }
 
-		@Override
-		public String describe()
-		{
-			return "Removing all Bottling Machine Recipes";
-		}
-	}
+        @Override
+        public String describe() {
+            return "Removing all Bottling Machine Recipes";
+        }
+    }
 }

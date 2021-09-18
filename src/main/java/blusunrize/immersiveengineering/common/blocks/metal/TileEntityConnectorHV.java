@@ -13,19 +13,16 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 
-public class TileEntityConnectorHV extends TileEntityConnectorMV
-{
-	@Override
-	protected boolean canTakeHV()
-	{
-		return true;
-	}
+public class TileEntityConnectorHV extends TileEntityConnectorMV {
+    @Override
+    protected boolean canTakeHV() {
+        return true;
+    }
 
-	@Override
-	protected boolean canTakeMV()
-	{
-		return false;
-	}
+    @Override
+    protected boolean canTakeMV() {
+        return false;
+    }
 
 //	@Override
 //	public boolean canConnectCable(WireType cableType, TargetingInfo target)
@@ -33,29 +30,25 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 //		return limitType==null&&super.canConnectCable(cableType, target);
 //	}
 
-	@Override
-	public Vec3d getConnectionOffset(Connection con)
-	{
-		EnumFacing side = facing.getOpposite();
-		double conRadius = con.cableType.getRenderDiameter()/2;
-		return new Vec3d(.5+side.getXOffset()*(.25-conRadius), .5+side.getYOffset()*(.25-conRadius), .5+side.getZOffset()*(.25-conRadius));
-	}
+    @Override
+    public Vec3d getConnectionOffset(Connection con) {
+        EnumFacing side = facing.getOpposite();
+        double conRadius = con.cableType.getRenderDiameter() / 2;
+        return new Vec3d(.5 + side.getXOffset() * (.25 - conRadius), .5 + side.getYOffset() * (.25 - conRadius), .5 + side.getZOffset() * (.25 - conRadius));
+    }
 
-	@Override
-	int getRenderRadiusIncrease()
-	{
-		return WireType.STEEL.getMaxLength();
-	}
+    @Override
+    int getRenderRadiusIncrease() {
+        return WireType.STEEL.getMaxLength();
+    }
 
-	@Override
-	public int getMaxInput()
-	{
-		return connectorInputValues[2];
-	}
+    @Override
+    public int getMaxInput() {
+        return connectorInputValues[2];
+    }
 
-	@Override
-	public int getMaxOutput()
-	{
-		return connectorInputValues[2];
-	}
+    @Override
+    public int getMaxOutput() {
+        return connectorInputValues[2];
+    }
 }

@@ -26,92 +26,78 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFluxConnector, IDirectionalTile, IRotationAcceptor
-{
-	public EnumFacing facing = EnumFacing.NORTH;
+public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFluxConnector, IDirectionalTile, IRotationAcceptor {
+    public EnumFacing facing = EnumFacing.NORTH;
 
-	@Override
-	public void inputRotation(double rotation, @Nonnull EnumFacing side)
-	{
-		if(side!=this.facing.getOpposite())
-			return;
-		int output = (int)(IEConfig.Machines.dynamo_output*rotation);
-		for(EnumFacing fd : EnumFacing.VALUES)
-		{
-			BlockPos outputPos = getPos().offset(fd);
-			TileEntity te = Utils.getExistingTileEntity(world, outputPos);
-			output -= EnergyHelper.insertFlux(te, fd.getOpposite(), output, false);
-		}
-	}
+    @Override
+    public void inputRotation(double rotation, @Nonnull EnumFacing side) {
+        if (side != this.facing.getOpposite())
+            return;
+        int output = (int) (IEConfig.Machines.dynamo_output * rotation);
+        for (EnumFacing fd : EnumFacing.VALUES) {
+            BlockPos outputPos = getPos().offset(fd);
+            TileEntity te = Utils.getExistingTileEntity(world, outputPos);
+            output -= EnergyHelper.insertFlux(te, fd.getOpposite(), output, false);
+        }
+    }
 
-	@Override
-	public EnumFacing getFacing()
-	{
-		return facing;
-	}
+    @Override
+    public EnumFacing getFacing() {
+        return facing;
+    }
 
-	@Override
-	public void setFacing(EnumFacing facing)
-	{
-		this.facing = facing;
-	}
+    @Override
+    public void setFacing(EnumFacing facing) {
+        this.facing = facing;
+    }
 
-	@Override
-	public int getFacingLimitation()
-	{
-		return 2;
-	}
+    @Override
+    public int getFacingLimitation() {
+        return 2;
+    }
 
-	@Override
-	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
-	{
-		return true;
-	}
+    @Override
+    public boolean mirrorFacingOnPlacement(EntityLivingBase placer) {
+        return true;
+    }
 
-	@Override
-	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
-	{
-		return true;
-	}
+    @Override
+    public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity) {
+        return true;
+    }
 
-	@Override
-	public boolean canRotate(EnumFacing axis)
-	{
-		return true;
-	}
+    @Override
+    public boolean canRotate(EnumFacing axis) {
+        return true;
+    }
 
-	@Override
-	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
-	{
-		facing = EnumFacing.byIndex(nbt.getInteger("facing"));
+    @Override
+    public void readCustomNBT(NBTTagCompound nbt, boolean descPacket) {
+        facing = EnumFacing.byIndex(nbt.getInteger("facing"));
 //		if(descPacket && world!=null)
 //			world.markBlockForUpdate(getPos());
-	}
+    }
 
-	@Override
-	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
-	{
-		nbt.setInteger("facing", facing.ordinal());
-	}
+    @Override
+    public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket) {
+        nbt.setInteger("facing", facing.ordinal());
+    }
 
-	@Nonnull
-	@Override
-	public SideConfig getEnergySideConfig(@Nullable EnumFacing facing)
-	{
-		return SideConfig.OUTPUT;
-	}
+    @Nonnull
+    @Override
+    public SideConfig getEnergySideConfig(@Nullable EnumFacing facing) {
+        return SideConfig.OUTPUT;
+    }
 
-	@Override
-	public boolean canConnectEnergy(EnumFacing from)
-	{
-		return true;
-	}
+    @Override
+    public boolean canConnectEnergy(EnumFacing from) {
+        return true;
+    }
 
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
+    IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
 
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
-	{
-		return wrapper;
-	}
+    @Override
+    public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing) {
+        return wrapper;
+    }
 }

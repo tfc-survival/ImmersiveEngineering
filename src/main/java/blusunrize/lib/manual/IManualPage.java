@@ -14,29 +14,26 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public interface IManualPage
-{
-	ManualInstance getManualHelper();
+public interface IManualPage {
+    ManualInstance getManualHelper();
 
-	void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons);
+    void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons);
 
-	void renderPage(GuiManual gui, int x, int y, int mx, int my);
+    void renderPage(GuiManual gui, int x, int y, int mx, int my);
 
-	void buttonPressed(GuiManual gui, GuiButton button);
+    void buttonPressed(GuiManual gui, GuiButton button);
 
-	void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button);
+    void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button);
 
-	boolean listForSearch(String searchTag);
+    boolean listForSearch(String searchTag);
 
-	void recalculateCraftingRecipes();
+    void recalculateCraftingRecipes();
 
-	default ItemStack[] getProvidedRecipes()
-	{
-		return new ItemStack[0];
-	}
+    default ItemStack[] getProvidedRecipes() {
+        return new ItemStack[0];
+    }
 
-	default ItemStack getHighlightedStack()
-	{
-		return ItemStack.EMPTY;
-	}
+    default ItemStack getHighlightedStack() {
+        return ItemStack.EMPTY;
+    }
 }

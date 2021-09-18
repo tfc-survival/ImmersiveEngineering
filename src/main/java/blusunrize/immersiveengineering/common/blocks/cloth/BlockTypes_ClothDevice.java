@@ -13,28 +13,24 @@ import net.minecraft.util.IStringSerializable;
 
 import java.util.Locale;
 
-public enum BlockTypes_ClothDevice implements IStringSerializable, BlockIEBase.IBlockEnum
-{
-	CUSHION,
-	BALLOON,
-	STRIPCURTAIN,
-	SHADER_BANNER;
+public enum BlockTypes_ClothDevice implements IStringSerializable, BlockIEBase.IBlockEnum {
+    CUSHION,
+    BALLOON,
+    STRIPCURTAIN,
+    SHADER_BANNER;
 
-	@Override
-	public String getName()
-	{
-		return this.toString().toLowerCase(Locale.ENGLISH);
-	}
+    @Override
+    public String getName() {
+        return this.toString().toLowerCase(Locale.ENGLISH);
+    }
 
-	@Override
-	public int getMeta()
-	{
-		return ordinal();
-	}
+    @Override
+    public int getMeta() {
+        return ordinal();
+    }
 
-	@Override
-	public boolean listForCreative()
-	{
-		return true;
-	}
+    @Override
+    public boolean listForCreative() {
+        return true;
+    }
 }

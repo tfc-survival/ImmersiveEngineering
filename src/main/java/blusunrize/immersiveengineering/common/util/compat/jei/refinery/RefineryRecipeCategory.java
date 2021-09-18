@@ -26,44 +26,38 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe, RefineryRecipeWrapper>
-{
-	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/refinery.png");
-	private final IDrawable tankOverlay;
+public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe, RefineryRecipeWrapper> {
+    public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/refinery.png");
+    private final IDrawable tankOverlay;
 
-	public RefineryRecipeCategory(IGuiHelper helper)
-	{
-		super("refinery", "tile.immersiveengineering.metal_multiblock.refinery.name", helper.createDrawable(background, 6, 10, 164, 62), RefineryRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.REFINERY.getMeta()));
-		tankOverlay = helper.createDrawable(background, 177, 31, 16, 47, -2, 2, -2, 2);
-	}
+    public RefineryRecipeCategory(IGuiHelper helper) {
+        super("refinery", "tile.immersiveengineering.metal_multiblock.refinery.name", helper.createDrawable(background, 6, 10, 164, 62), RefineryRecipe.class, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.REFINERY.getMeta()));
+        tankOverlay = helper.createDrawable(background, 177, 31, 16, 47, -2, 2, -2, 2);
+    }
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, RefineryRecipeWrapper recipeWrapper, IIngredients ingredients)
-	{
-		List<List<FluidStack>> inputs = ingredients.getInputs(VanillaTypes.FLUID);
-		List<FluidStack> output = ingredients.getOutputs(VanillaTypes.FLUID).get(0);
-		int tankAmount = Math.max(inputs.get(0).get(0).amount,output.get(0).amount)*4;
-		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-		if(inputs.size() > 0)
-		{
-			guiFluidStacks.init(0, true, 7, 10, 16, 47, tankAmount, false, tankOverlay);
-			guiFluidStacks.set(0, inputs.get(0));
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, RefineryRecipeWrapper recipeWrapper, IIngredients ingredients) {
+        List<List<FluidStack>> inputs = ingredients.getInputs(VanillaTypes.FLUID);
+        List<FluidStack> output = ingredients.getOutputs(VanillaTypes.FLUID).get(0);
+        int tankAmount = Math.max(inputs.get(0).get(0).amount, output.get(0).amount) * 4;
+        IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
+        if (inputs.size() > 0) {
+            guiFluidStacks.init(0, true, 7, 10, 16, 47, tankAmount, false, tankOverlay);
+            guiFluidStacks.set(0, inputs.get(0));
 
-			if(inputs.size() > 1)
-			{
-				guiFluidStacks.init(1, true, 55, 10, 16, 47, tankAmount, false, tankOverlay);
-				guiFluidStacks.set(1, inputs.get(1));
-			}
-		}
-		guiFluidStacks.init(2, false, 103, 10, 16, 47, tankAmount, false, tankOverlay);
-		guiFluidStacks.set(2, output);
+            if (inputs.size() > 1) {
+                guiFluidStacks.init(1, true, 55, 10, 16, 47, tankAmount, false, tankOverlay);
+                guiFluidStacks.set(1, inputs.get(1));
+            }
+        }
+        guiFluidStacks.init(2, false, 103, 10, 16, 47, tankAmount, false, tankOverlay);
+        guiFluidStacks.set(2, output);
 
-		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
-	}
+        guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+    }
 
-	@Override
-	public IRecipeWrapper getRecipeWrapper(RefineryRecipe recipe)
-	{
-		return new RefineryRecipeWrapper(recipe);
-	}
+    @Override
+    public IRecipeWrapper getRecipeWrapper(RefineryRecipe recipe) {
+        return new RefineryRecipeWrapper(recipe);
+    }
 }

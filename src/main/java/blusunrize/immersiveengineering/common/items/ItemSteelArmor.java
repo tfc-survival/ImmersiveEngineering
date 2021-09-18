@@ -18,29 +18,25 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Locale;
 
-public class ItemSteelArmor extends ItemArmor
-{
-	public static ArmorMaterial mat;
+public class ItemSteelArmor extends ItemArmor {
+    public static ArmorMaterial mat;
 
-	public ItemSteelArmor(EntityEquipmentSlot type)
-	{
-		super(mat, 0, type);
-		String name = "steel_armor_"+type.getName().toLowerCase(Locale.ENGLISH);
-		this.setTranslationKey(ImmersiveEngineering.MODID+"."+name);
-		this.setCreativeTab(ImmersiveEngineering.creativeTab);
-		this.setMaxStackSize(1);
-		IEContent.registeredIEItems.add(this);
-	}
+    public ItemSteelArmor(EntityEquipmentSlot type) {
+        super(mat, 0, type);
+        String name = "steel_armor_" + type.getName().toLowerCase(Locale.ENGLISH);
+        this.setTranslationKey(ImmersiveEngineering.MODID + "." + name);
+        this.setCreativeTab(ImmersiveEngineering.creativeTab);
+        this.setMaxStackSize(1);
+        IEContent.registeredIEItems.add(this);
+    }
 
-	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
-	{
-		return "immersiveengineering:textures/models/armor_steel"+(slot==EntityEquipmentSlot.LEGS?"_legs": "")+".png";
-	}
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+        return "immersiveengineering:textures/models/armor_steel" + (slot == EntityEquipmentSlot.LEGS ? "_legs" : "") + ".png";
+    }
 
-	@Override
-	public boolean getIsRepairable(ItemStack itemToRepair, ItemStack stack)
-	{
-		return Utils.compareToOreName(stack, "ingotSteel")||Utils.compareToOreName(stack, "plateSteel");
-	}
+    @Override
+    public boolean getIsRepairable(ItemStack itemToRepair, ItemStack stack) {
+        return Utils.compareToOreName(stack, "ingotSteel") || Utils.compareToOreName(stack, "plateSteel");
+    }
 }

@@ -14,31 +14,27 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerBlastFurnace extends ContainerIEBase<TileEntityBlastFurnace>
-{
-	public ContainerBlastFurnace(InventoryPlayer inventoryPlayer, TileEntityBlastFurnace tile)
-	{
-		super(inventoryPlayer, tile);
+public class ContainerBlastFurnace extends ContainerIEBase<TileEntityBlastFurnace> {
+    public ContainerBlastFurnace(InventoryPlayer inventoryPlayer, TileEntityBlastFurnace tile) {
+        super(inventoryPlayer, tile);
 
-		this.addSlotToContainer(new IESlot(this, this.inv, 0, 52, 17)
-		{
-			@Override
-			public boolean isItemValid(ItemStack itemStack)
-			{
-				return BlastFurnaceRecipe.findRecipe(itemStack)!=null;
-			}
-		});
-		this.addSlotToContainer(new IESlot.BlastFuel(this, this.inv, 1, 52, 53));
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 2, 112, 17));
-		this.addSlotToContainer(new IESlot.Output(this, this.inv, 3, 112, 53));
-		slotCount = 4;
+        this.addSlotToContainer(new IESlot(this, this.inv, 0, 52, 17) {
+            @Override
+            public boolean isItemValid(ItemStack itemStack) {
+                return BlastFurnaceRecipe.findRecipe(itemStack) != null;
+            }
+        });
+        this.addSlotToContainer(new IESlot.BlastFuel(this, this.inv, 1, 52, 53));
+        this.addSlotToContainer(new IESlot.Output(this, this.inv, 2, 112, 17));
+        this.addSlotToContainer(new IESlot.Output(this, this.inv, 3, 112, 53));
+        slotCount = 4;
 
-		for(int i = 0; i < 3; i++)
-			for(int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 84+i*18));
-		for(int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 142));
-	}
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 9; j++)
+                addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+        for (int i = 0; i < 9; i++)
+            addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
+    }
 //
 //	@Override
 //	public ItemStack transferStackInSlot(EntityPlayer player, int slot)

@@ -23,65 +23,56 @@ import net.minecraft.item.ItemStack;
 import java.awt.*;
 import java.util.List;
 
-public class IEGhostItemHandler implements IGhostIngredientHandler<GuiIEContainerBase>
-{
-	@Override
-	public <I> List<Target<I>> getTargets(GuiIEContainerBase gui, I ingredient, boolean doStart)
-	{
-		if(ingredient instanceof ItemStack)
-		{
-			ImmutableList.Builder<Target<I>> builder = ImmutableList.builder();
-			for(Slot s : gui.inventorySlots.inventorySlots)
-				if(s instanceof Ghost)
-					builder.add((Target<I>)new GhostSlotTarget((Ghost)s, gui));
-			return builder.build();
-		}
-		return ImmutableList.of();
-	}
+public class IEGhostItemHandler implements IGhostIngredientHandler<GuiIEContainerBase> {
+    @Override
+    public <I> List<Target<I>> getTargets(GuiIEContainerBase gui, I ingredient, boolean doStart) {
+        if (ingredient instanceof ItemStack) {
+            ImmutableList.Builder<Target<I>> builder = ImmutableList.builder();
+            for (Slot s : gui.inventorySlots.inventorySlots)
+                if (s instanceof Ghost)
+                    builder.add((Target<I>) new GhostSlotTarget((Ghost) s, gui));
+            return builder.build();
+        }
+        return ImmutableList.of();
+    }
 
-	@Override
-	public void onComplete()
-	{
+    @Override
+    public void onComplete() {
 
-	}
+    }
 
-	private static class GhostSlotTarget implements Target<ItemStack>
-	{
-		final Ghost slot;
-		final GuiIEContainerBase gui;
-		final ContainerIEBase<?> container;
-		Rectangle area;
-		int lastGuiLeft, lastGuiTop;
+    private static class GhostSlotTarget implements Target<ItemStack> {
+        final Ghost slot;
+        final GuiIEContainerBase gui;
+        final ContainerIEBase<?> container;
+        Rectangle area;
+        int lastGuiLeft, lastGuiTop;
 
-		public GhostSlotTarget(Ghost slot, GuiIEContainerBase gui)
-		{
-			this.slot = slot;
-			this.container = (ContainerIEBase<?>)gui.inventorySlots;
-			this.gui = gui;
-			initRectangle();
-		}
+        public GhostSlotTarget(Ghost slot, GuiIEContainerBase gui) {
+            this.slot = slot;
+            this.container = (ContainerIEBase<?>) gui.inventorySlots;
+            this.gui = gui;
+            initRectangle();
+        }
 
-		private void initRectangle()
-		{
-			area = new Rectangle(gui.getGuiLeft()+slot.xPos, gui.getGuiTop()+slot.yPos, 16, 16);
-			lastGuiLeft = gui.getGuiLeft();
-			lastGuiTop = gui.getGuiTop();
-		}
+        private void initRectangle() {
+            area = new Rectangle(gui.getGuiLeft() + slot.xPos, gui.getGuiTop() + slot.yPos, 16, 16);
+            lastGuiLeft = gui.getGuiLeft();
+            lastGuiTop = gui.getGuiTop();
+        }
 
-		@Override
-		public Rectangle getArea()
-		{
-			if(lastGuiLeft!=gui.getGuiLeft()||lastGuiTop!=gui.getGuiTop())
-				initRectangle();
-			return area;
-		}
+        @Override
+        public Rectangle getArea() {
+            if (lastGuiLeft != gui.getGuiLeft() || lastGuiTop != gui.getGuiTop())
+                initRectangle();
+            return area;
+        }
 
-		@Override
-		public void accept(ItemStack ingredient)
-		{
-			Int2ObjectMap<ItemStack> change = new Int2ObjectOpenHashMap<>();
-			change.put(slot.slotNumber, ingredient);
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageSetGhostSlots(change));
-		}
-	}
+        @Override
+        public void accept(ItemStack ingredient) {
+            Int2ObjectMap<ItemStack> change = new Int2ObjectOpenHashMap<>();
+            change.put(slot.slotNumber, ingredient);
+            ImmersiveEngineering.packetHandler.sendToServer(new MessageSetGhostSlots(change));
+        }
+    }
 }

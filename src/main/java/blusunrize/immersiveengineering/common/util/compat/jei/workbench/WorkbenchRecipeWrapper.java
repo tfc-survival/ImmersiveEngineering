@@ -14,24 +14,20 @@ import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nonnull;
 
-public class WorkbenchRecipeWrapper extends MultiblockRecipeWrapper
-{
-	String blueprintCategory;
+public class WorkbenchRecipeWrapper extends MultiblockRecipeWrapper {
+    String blueprintCategory;
 
-	public WorkbenchRecipeWrapper(BlueprintCraftingRecipe recipe)
-	{
-		super(recipe);
-		blueprintCategory = recipe.blueprintCategory;
-	}
+    public WorkbenchRecipeWrapper(BlueprintCraftingRecipe recipe) {
+        super(recipe);
+        blueprintCategory = recipe.blueprintCategory;
+    }
 
-	@Override
-	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
-	{
-	}
+    @Override
+    public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+    }
 
-	@Override
-	public boolean handleClick(@Nonnull Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
-	{
-		return false;
-	}
+    @Override
+    public boolean handleClick(@Nonnull Minecraft minecraft, int mouseX, int mouseY, int mouseButton) {
+        return false;
+    }
 }

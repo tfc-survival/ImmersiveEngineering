@@ -12,35 +12,29 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Collection;
 
-public class ShaderCaseBalloon extends ShaderCase
-{
-	public ShaderCaseBalloon(ShaderLayer... layers)
-	{
-		super(layers);
-	}
+public class ShaderCaseBalloon extends ShaderCase {
+    public ShaderCaseBalloon(ShaderLayer... layers) {
+        super(layers);
+    }
 
-	public ShaderCaseBalloon(Collection<ShaderLayer> layers)
-	{
-		super(layers);
-	}
+    public ShaderCaseBalloon(Collection<ShaderLayer> layers) {
+        super(layers);
+    }
 
-	@Override
-	public String getShaderType()
-	{
-		return "immersiveengineering:balloon";
-	}
+    @Override
+    public String getShaderType() {
+        return "immersiveengineering:balloon";
+    }
 
-	@Override
-	public int getLayerInsertionIndex()
-	{
-		return layers.length-1;
-	}
+    @Override
+    public int getLayerInsertionIndex() {
+        return layers.length - 1;
+    }
 
-	@Override
-	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
-	{
-		return true;
-	}
+    @Override
+    public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass) {
+        return true;
+    }
 }
 //package blusunrize.immersiveengineering.api.shader;
 //

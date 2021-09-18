@@ -22,86 +22,73 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements IRecipeCategory<W>, IRecipeWrapperFactory<T>
-{
-	public String uniqueName;
-	public String localizedName;
-	private final IDrawable background;
-	private final Class<T> recipeClass;
-	private final ItemStack[] displayStacks;
+public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements IRecipeCategory<W>, IRecipeWrapperFactory<T> {
+    public String uniqueName;
+    public String localizedName;
+    private final IDrawable background;
+    private final Class<T> recipeClass;
+    private final ItemStack[] displayStacks;
 
-	public IERecipeCategory(String uniqueName, String localKey, IDrawable background, Class<T> recipeClass, ItemStack... displayStacks)
-	{
-		this.uniqueName = uniqueName;
-		this.localizedName = I18n.format(localKey);
-		this.background = background;
-		this.recipeClass = recipeClass;
-		this.displayStacks = displayStacks;
-	}
+    public IERecipeCategory(String uniqueName, String localKey, IDrawable background, Class<T> recipeClass, ItemStack... displayStacks) {
+        this.uniqueName = uniqueName;
+        this.localizedName = I18n.format(localKey);
+        this.background = background;
+        this.recipeClass = recipeClass;
+        this.displayStacks = displayStacks;
+    }
 
-	public void addCatalysts(IModRegistry registry)
-	{
-		for(ItemStack stack : displayStacks)
-			registry.addRecipeCategoryCraftingItem(stack, getUid());
-	}
+    public void addCatalysts(IModRegistry registry) {
+        for (ItemStack stack : displayStacks)
+            registry.addRecipeCategoryCraftingItem(stack, getUid());
+    }
 
-	@Nullable
-	@Override
-	public IDrawable getIcon()
-	{
-		return null;
-	}
+    @Nullable
+    @Override
+    public IDrawable getIcon() {
+        return null;
+    }
 
-	@Override
-	public String getUid()
-	{
-		return "ie."+uniqueName;
-	}
+    @Override
+    public String getUid() {
+        return "ie." + uniqueName;
+    }
 
-	@Override
-	public String getTitle()
-	{
-		return localizedName;
-	}
+    @Override
+    public String getTitle() {
+        return localizedName;
+    }
 
-	@Override
-	public IDrawable getBackground()
-	{
-		return background;
-	}
+    @Override
+    public IDrawable getBackground() {
+        return background;
+    }
 
-	@Override
-	public void drawExtras(Minecraft minecraft)
-	{
-	}
+    @Override
+    public void drawExtras(Minecraft minecraft) {
+    }
 
-	@Override
-	public List<String> getTooltipStrings(int mouseX, int mouseY)
-	{
-		return Collections.emptyList();
-	}
+    @Override
+    public List<String> getTooltipStrings(int mouseX, int mouseY) {
+        return Collections.emptyList();
+    }
 
-	//	@Override
-	public Class<T> getRecipeClass()
-	{
-		return this.recipeClass;
-	}
+    //	@Override
+    public Class<T> getRecipeClass() {
+        return this.recipeClass;
+    }
 
-	//	@Override
-	public String getRecipeCategoryUid()
-	{
-		return "ie."+uniqueName;
-	}
+    //	@Override
+    public String getRecipeCategoryUid() {
+        return "ie." + uniqueName;
+    }
 
-	//	@Override
-	public boolean isRecipeValid(T recipe)
-	{
-		return true;
-	}
+    //	@Override
+    public boolean isRecipeValid(T recipe) {
+        return true;
+    }
 
-	@Override
-	public String getModName()
-	{
-		return ImmersiveEngineering.MODNAME;
-	}
+    @Override
+    public String getModName() {
+        return ImmersiveEngineering.MODNAME;
+    }
 }

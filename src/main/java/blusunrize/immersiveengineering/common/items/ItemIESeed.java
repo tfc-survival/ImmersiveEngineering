@@ -21,47 +21,38 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 
-public class ItemIESeed extends ItemIEBase implements IPlantable
-{
-	private Block cropBlock;
+public class ItemIESeed extends ItemIEBase implements IPlantable {
+    private Block cropBlock;
 
-	public ItemIESeed(Block cropBlock, String... subNames)
-	{
-		super("seed", 64, subNames);
-		this.cropBlock = cropBlock;
-	}
+    public ItemIESeed(Block cropBlock, String... subNames) {
+        super("seed", 64, subNames);
+        this.cropBlock = cropBlock;
+    }
 
-	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-	{
-		ItemStack stack = player.getHeldItem(hand);
-		if(side!=EnumFacing.UP)
-			return EnumActionResult.PASS;
-		else if(player.canPlayerEdit(pos, side, stack)&&player.canPlayerEdit(pos.add(0, 1, 0), side, stack))
-		{
-			IBlockState state = world.getBlockState(pos);
-			if(state.getBlock().canSustainPlant(state, world, pos, EnumFacing.UP, this)&&world.isAirBlock(pos.add(0, 1, 0)))
-			{
-				world.setBlockState(pos.add(0, 1, 0), this.cropBlock.getDefaultState());
-				stack.shrink(1);
-				return EnumActionResult.SUCCESS;
-			}
-			else
-				return EnumActionResult.PASS;
-		}
-		else
-			return EnumActionResult.PASS;
-	}
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        ItemStack stack = player.getHeldItem(hand);
+        if (side != EnumFacing.UP)
+            return EnumActionResult.PASS;
+        else if (player.canPlayerEdit(pos, side, stack) && player.canPlayerEdit(pos.add(0, 1, 0), side, stack)) {
+            IBlockState state = world.getBlockState(pos);
+            if (state.getBlock().canSustainPlant(state, world, pos, EnumFacing.UP, this) && world.isAirBlock(pos.add(0, 1, 0))) {
+                world.setBlockState(pos.add(0, 1, 0), this.cropBlock.getDefaultState());
+                stack.shrink(1);
+                return EnumActionResult.SUCCESS;
+            } else
+                return EnumActionResult.PASS;
+        } else
+            return EnumActionResult.PASS;
+    }
 
-	@Override
-	public EnumPlantType getPlantType(IBlockAccess world, BlockPos pos)
-	{
-		return ((IPlantable)cropBlock).getPlantType(world, pos);
-	}
+    @Override
+    public EnumPlantType getPlantType(IBlockAccess world, BlockPos pos) {
+        return ((IPlantable) cropBlock).getPlantType(world, pos);
+    }
 
-	@Override
-	public IBlockState getPlant(IBlockAccess world, BlockPos pos)
-	{
-		return cropBlock.getDefaultState();
-	}
+    @Override
+    public IBlockState getPlant(IBlockAccess world, BlockPos pos) {
+        return cropBlock.getDefaultState();
+    }
 }

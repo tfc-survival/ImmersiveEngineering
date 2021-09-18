@@ -20,82 +20,72 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class RecipeIEItemRepair extends RecipeRepairItem
-{
-	private Ingredient tool;
+public class RecipeIEItemRepair extends RecipeRepairItem {
+    private Ingredient tool;
 
-	public RecipeIEItemRepair(Ingredient tool)
-	{
-		this.tool = tool;
-	}
+    public RecipeIEItemRepair(Ingredient tool) {
+        this.tool = tool;
+    }
 
-	@Override
-	public boolean matches(InventoryCrafting inv, World worldIn)
-	{
-		return getRelevantStacks(inv)!=null;
-	}
+    @Override
+    public boolean matches(InventoryCrafting inv, World worldIn) {
+        return getRelevantStacks(inv) != null;
+    }
 
-	@Nonnull
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
-	{
-		int[] relevant = getRelevantStacks(inv);
-		if(relevant==null)
-			return ItemStack.EMPTY;
+    @Nonnull
+    @Override
+    public ItemStack getCraftingResult(InventoryCrafting inv) {
+        int[] relevant = getRelevantStacks(inv);
+        if (relevant == null)
+            return ItemStack.EMPTY;
 
-		ItemStack first = inv.getStackInSlot(relevant[0]);
-		ItemStack second = inv.getStackInSlot(relevant[1]);
-		IItemDamageableIE firstDamage = (IItemDamageableIE)first.getItem();
-		IItemDamageableIE secondDamage = (IItemDamageableIE)second.getItem();
+        ItemStack first = inv.getStackInSlot(relevant[0]);
+        ItemStack second = inv.getStackInSlot(relevant[1]);
+        IItemDamageableIE firstDamage = (IItemDamageableIE) first.getItem();
+        IItemDamageableIE secondDamage = (IItemDamageableIE) second.getItem();
 
-		int j = firstDamage.getMaxDamageIE(first)-firstDamage.getItemDamageIE(first);
-		int k = firstDamage.getMaxDamageIE(first)-secondDamage.getItemDamageIE(second);
-		int l = j+k+firstDamage.getMaxDamageIE(first)*5/100;
-		int i1 = firstDamage.getMaxDamageIE(first)-l;
+        int j = firstDamage.getMaxDamageIE(first) - firstDamage.getItemDamageIE(first);
+        int k = firstDamage.getMaxDamageIE(first) - secondDamage.getItemDamageIE(second);
+        int l = j + k + firstDamage.getMaxDamageIE(first) * 5 / 100;
+        int i1 = firstDamage.getMaxDamageIE(first) - l;
 
-		if(i1 < 0)
-			i1 = 0;
+        if (i1 < 0)
+            i1 = 0;
 
-		ItemStack ret = new ItemStack(first.getItem(), 1, first.getMetadata());
-		ItemNBTHelper.setInt(ret, Lib.NBT_DAMAGE, i1);
-		return ret;
-	}
+        ItemStack ret = new ItemStack(first.getItem(), 1, first.getMetadata());
+        ItemNBTHelper.setInt(ret, Lib.NBT_DAMAGE, i1);
+        return ret;
+    }
 
-	@Nonnull
-	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-	{
-		NonNullList<ItemStack> ret = super.getRemainingItems(inv);
-		int[] relevantStacks = getRelevantStacks(inv);
-		if(relevantStacks!=null)
-		{
-			ret.set(relevantStacks[0], ItemStack.EMPTY);
-			ret.set(relevantStacks[1], ItemStack.EMPTY);
-		}
-		return ret;
-	}
+    @Nonnull
+    @Override
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
+        NonNullList<ItemStack> ret = super.getRemainingItems(inv);
+        int[] relevantStacks = getRelevantStacks(inv);
+        if (relevantStacks != null) {
+            ret.set(relevantStacks[0], ItemStack.EMPTY);
+            ret.set(relevantStacks[1], ItemStack.EMPTY);
+        }
+        return ret;
+    }
 
 
-	private int[] getRelevantStacks(InventoryCrafting inv)
-	{
-		int[] ret = new int[2];
-		int indexInRet = 0;
-		for(int i = 0; i < inv.getSizeInventory(); ++i)
-		{
-			ItemStack curr = inv.getStackInSlot(i);
+    private int[] getRelevantStacks(InventoryCrafting inv) {
+        int[] ret = new int[2];
+        int indexInRet = 0;
+        for (int i = 0; i < inv.getSizeInventory(); ++i) {
+            ItemStack curr = inv.getStackInSlot(i);
 
-			if(tool.apply(curr)&&curr.getItem() instanceof IItemDamageableIE)
-			{
-				if(indexInRet > 1)
-					return null;
+            if (tool.apply(curr) && curr.getItem() instanceof IItemDamageableIE) {
+                if (indexInRet > 1)
+                    return null;
 
-				ret[indexInRet] = i;
+                ret[indexInRet] = i;
 
-				indexInRet++;
-			}
-			else if(!curr.isEmpty())
-				return null;
-		}
-		return indexInRet==2?ret: null;
-	}
+                indexInRet++;
+            } else if (!curr.isEmpty())
+                return null;
+        }
+        return indexInRet == 2 ? ret : null;
+    }
 }

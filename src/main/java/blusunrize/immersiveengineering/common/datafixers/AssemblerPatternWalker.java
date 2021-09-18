@@ -18,26 +18,21 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
-public class AssemblerPatternWalker extends Filtered
-{
-	public AssemblerPatternWalker()
-	{
-		super(TileEntityAssembler.class);
-	}
+public class AssemblerPatternWalker extends Filtered {
+    public AssemblerPatternWalker() {
+        super(TileEntityAssembler.class);
+    }
 
-	@Nonnull
-	@Override
-	public NBTTagCompound filteredProcess(@Nonnull IDataFixer fixer, @Nonnull NBTTagCompound compound, int versionIn)
-	{
-		for(int pattern = 0; pattern < 3; pattern++)
-		{
-			NBTTagList patternNBT = compound.getTagList("pattern"+pattern, Constants.NBT.TAG_COMPOUND);
-			for(int slot = 0; slot < patternNBT.tagCount(); slot++)
-			{
-				NBTTagCompound in = patternNBT.getCompoundTagAt(slot);
-				patternNBT.set(slot, fixer.process(FixTypes.ITEM_INSTANCE, in, versionIn));
-			}
-		}
-		return compound;
-	}
+    @Nonnull
+    @Override
+    public NBTTagCompound filteredProcess(@Nonnull IDataFixer fixer, @Nonnull NBTTagCompound compound, int versionIn) {
+        for (int pattern = 0; pattern < 3; pattern++) {
+            NBTTagList patternNBT = compound.getTagList("pattern" + pattern, Constants.NBT.TAG_COMPOUND);
+            for (int slot = 0; slot < patternNBT.tagCount(); slot++) {
+                NBTTagCompound in = patternNBT.getCompoundTagAt(slot);
+                patternNBT.set(slot, fixer.process(FixTypes.ITEM_INSTANCE, in, versionIn));
+            }
+        }
+        return compound;
+    }
 }
