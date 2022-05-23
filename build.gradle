@@ -9,7 +9,7 @@ idea {
 import groovy.json.JsonOutput
 
 def mainVersion = "0.12"
-def buildNumber = "103"
+def buildNumber = "109"
 
 // For those who want the bleeding edge
 buildscript {
@@ -123,6 +123,8 @@ dependencies {
     deobfCompile 'abc:Baubles:1.12_1.5.2'
     deobfCompile "abc:crafttweaker2:4.1.20.660"
     deobfCompile "abc:jei:4.15.0.291"
+    //deobfCompile "abc:AdvancedTFCTech:0.2.3"
+    //deobfCompile "abc:immersivepetroleum:1.1.10"
 }
 
 reobf {

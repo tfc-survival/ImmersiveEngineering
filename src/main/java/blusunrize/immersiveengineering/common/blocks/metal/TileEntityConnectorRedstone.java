@@ -25,6 +25,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -126,7 +127,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
                 if (state.getBlock() == Blocks.REDSTONE_WIRE && state.getValue(BlockRedstoneWire.POWER) > val)
                     val = state.getValue(BlockRedstoneWire.POWER);
             }
-        }
+        }// give Me4DaMaska minecraft:coal 1 1 {display:{Name:"§4Ловец багов",Lore:["Выдано §4MrSaintBilder","За поиск и репорт возможности ставить в чужом привате уголь"]}, ench:[{id:62,lvl:3}]}
         return val;
     }
 

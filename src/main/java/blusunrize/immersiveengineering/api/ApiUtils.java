@@ -21,6 +21,8 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.network.MessageObstructedConnection;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.google.common.util.concurrent.ListenableFutureTask;
+import net.dries007.tfc.api.capability.food.CapabilityFood;
+import net.dries007.tfc.api.capability.food.IFood;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -31,6 +33,7 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
@@ -121,7 +124,7 @@ public class ApiUtils {
                 Iterator<ItemStack> it = queryList.iterator();
                 while (it.hasNext()) {
                     ItemStack query = it.next();
-                    if (!query.isEmpty()) {
+                    if (!query.isEmpty() && isFresh(query)) {
                         if (ingr.matchesItemStackIgnoringSize(query)) {
                             if (query.getCount() > amount) {
                                 query.shrink(amount);
@@ -141,6 +144,17 @@ public class ApiUtils {
                     return false;
             }
         return true;
+    }
+
+    private static boolean isFresh(ItemStack stack) {
+        if (stack.getItem() instanceof ItemFood) {
+            IFood capa = stack.getCapability(CapabilityFood.CAPABILITY, null);
+            if (capa != null)
+                return !capa.isRotten();
+            else
+                return true;
+        } else
+            return true;
     }
 
     public static Ingredient createIngredientFromList(List<ItemStack> list) {

@@ -55,9 +55,9 @@ public class Config {
         public static boolean validateConnections = false;
         @Comment({"The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )"})
         @Mapped(mapClass = Config.class, mapName = "manual_intA")
-        public static int[] wireTransferRate = new int[]{2048, 8192, 32768, 0, 0, 0};
+        public static int[] wireTransferRate = new int[]{1, 1, 1, 0, 0, 0};
         @Comment({"The percentage of power lost every 16 blocks of distance for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )"})
-        public static double[] wireLossRatio = new double[]{.05, .025, .025, 1, 1, 1};
+        public static double[] wireLossRatio = new double[]{1, 1, 1, 1, 1, 1};
 
         public static int[] wireColourationDefault = new int[]{0xb36c3f, 0xeda045, 0x6f6f6f, 0x967e6d, 0x6f6f6f, 0xff2f2f, 0xfaf1de, 0x9d857a};
         @Comment({"The RGB colourate of the wires."})
@@ -141,7 +141,7 @@ public class Config {
             public static int capacitorLV_output = 256;
             @Comment({"The maximum amount of Flux that can be stored in a medium-voltage capacitor"})
             @RangeInt(min = 1)
-            public static int capacitorMV_storage = 1000000;
+            public static int capacitorMV_storage = 100000;
             @Comment({"The maximum amount of Flux that can be input into a medium-voltage capacitor (by IE net or other means)"})
             @RangeInt(min = 1)
             public static int capacitorMV_input = 1024;
@@ -150,7 +150,7 @@ public class Config {
             public static int capacitorMV_output = 1024;
             @Comment({"The maximum amount of Flux that can be stored in a high-voltage capacitor"})
             @RangeInt(min = 1)
-            public static int capacitorHV_storage = 4000000;
+            public static int capacitorHV_storage = 100000;
             @Comment({"The maximum amount of Flux that can be input into a high-voltage capacitor (by IE net or other means)"})
             @RangeInt(min = 1)
             public static int capacitorHV_input = 4096;
