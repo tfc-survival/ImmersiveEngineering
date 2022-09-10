@@ -144,7 +144,6 @@ dependencies {
     compileOnly fg.deobf('abc:TConstruct:1.12.2-2.13.0.183')
 
     runtimeOnly fg.deobf('addon:AdvancedTFCTech:0.2.3')
-    runtimeOnly fg.deobf('addon:ImmersiveEnergy-1.12.2:0.5.5')
     runtimeOnly fg.deobf('addon:immersiveintelligence-1.12.2:0.1.1')
     runtimeOnly fg.deobf('addon:immersivepetroleum-1.12.2:1.1.10')
     runtimeOnly fg.deobf('addon:MCTImmersiveTechnology-1.12.2:1.8.94')
