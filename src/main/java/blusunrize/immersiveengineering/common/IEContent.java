@@ -35,8 +35,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChu
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteIron;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteSteel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
-import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
-import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.*;
@@ -86,7 +84,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.AbstractBrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
@@ -102,8 +99,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IRegistryDelegate;
 
@@ -135,7 +130,6 @@ public class IEContent {
     public static BlockIEBase<BlockTypes_WoodenDecoration> blockWoodenDecoration;
     public static BlockIEBase<BlockTypes_WoodenDevice0> blockWoodenDevice0;
     public static BlockIEBase<BlockTypes_WoodenDevice1> blockWoodenDevice1;
-    public static Block blockCrop;
     public static BlockIEBase<BlockTypes_ClothDevice> blockClothDevice;
     public static Block blockFakeLight;
 
@@ -168,7 +162,6 @@ public class IEContent {
     public static ItemIEBase itemTool;
     public static ItemIEBase itemToolbox;
     public static ItemIEBase itemWireCoil;
-    public static ItemIEBase itemSeeds;
     public static ItemIEBase itemDrill;
     public static ItemIEBase itemDrillhead;
     public static ItemIEBase itemJerrycan;
@@ -244,7 +237,6 @@ public class IEContent {
         blockWoodenDecoration = new BlockWoodenDecoration();
         blockWoodenDevice0 = new BlockWoodenDevice0();
         blockWoodenDevice1 = new BlockWoodenDevice1().setMetaHidden(BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta());
-        blockCrop = new BlockIECrop("hemp", PropertyEnum.create("type", BlockTypes_Hemp.class));
         blockClothDevice = new BlockClothDevice();
         blockFakeLight = new BlockFakeLight();
 
@@ -281,9 +273,6 @@ public class IEContent {
         itemToolbox = new ItemToolbox();
         itemWireCoil = new ItemWireCoil();
         WireType.ieWireCoil = itemWireCoil;
-        itemSeeds = new ItemIESeed(blockCrop, "hemp");
-        if (Config.IEConfig.hempSeedWeight > 0)
-            MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), Config.IEConfig.hempSeedWeight);
         itemDrill = new ItemDrill();
         itemDrillhead = new ItemDrillhead();
         itemJerrycan = new ItemJerrycan();
@@ -411,7 +400,6 @@ public class IEContent {
         SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 60), ItemStack.EMPTY, Items.BEETROOT_SEEDS, 6400);
         SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 40), ItemStack.EMPTY, Items.PUMPKIN_SEEDS, 6400);
         SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 20), ItemStack.EMPTY, Items.MELON_SEEDS, 6400);
-        SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), ItemStack.EMPTY, itemSeeds, 6400);
         SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial, 1, 18), new ItemStack(itemMaterial, 8, 17), 19200);
         Fluid fluidBlood = FluidRegistry.getFluid("blood");
         if (fluidBlood != null)
@@ -833,32 +821,6 @@ public class IEContent {
         ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.Machines.heater_consumption;
         ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.Machines.heater_speedupConsumption;
         ExternalHeaterHandler.registerHeatableAdapter(TileEntityFurnace.class, new DefaultFurnaceAdapter());
-
-        BelljarHandler.DefaultPlantHandler hempBelljarHandler = new BelljarHandler.DefaultPlantHandler() {
-            private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
-
-            @Override
-            protected HashSet<ComparableItemStack> getSeedSet() {
-                return validSeeds;
-            }
-
-            @Override
-            @SideOnly(Side.CLIENT)
-            public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile) {
-                int age = Math.min(4, Math.round(growth * 4));
-                if (age == 4)
-                    return new IBlockState[]{blockCrop.getStateFromMeta(age), blockCrop.getStateFromMeta(age + 1)};
-                return new IBlockState[]{blockCrop.getStateFromMeta(age)};
-            }
-
-            @Override
-            @SideOnly(Side.CLIENT)
-            public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile) {
-                return .6875f;
-            }
-        };
-        BelljarHandler.registerHandler(hempBelljarHandler);
-        hempBelljarHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemMaterial, 4, 4), new ItemStack(itemSeeds, 2)}, new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 
         ThermoelectricHandler.registerSource(new IngredientStack(new ItemStack(Blocks.MAGMA)), 1300);
         ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);

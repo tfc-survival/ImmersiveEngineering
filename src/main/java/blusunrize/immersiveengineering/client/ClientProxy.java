@@ -572,11 +572,6 @@ public class ClientProxy extends CommonProxy {
                 new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotLead"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 32), 78, 0)},
                 new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotConstantan"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 36), 78, 0)},
                 new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotSteel"), 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool, 1, 0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal, 1, 38), 78, 0)}}));
-        ManualHelper.addEntry("hemp", ManualHelper.CAT_GENERAL,
-                new ManualPages.ItemDisplay(ManualHelper.getManual(), "hemp0", new ItemStack(IEContent.blockCrop, 1, 5), new ItemStack(IEContent.itemSeeds)),
-                new ManualPages.Crafting(ManualHelper.getManual(), "hemp1", new ItemStack(IEContent.itemMaterial, 1, 5)),
-                new ManualPages.Crafting(ManualHelper.getManual(), "hemp2", new ItemStack(IEContent.blockClothDevice, 1, BlockTypes_ClothDevice.CUSHION.getMeta())),
-                new ManualPages.Crafting(ManualHelper.getManual(), "hemp3", new ItemStack(IEContent.blockClothDevice, 1, BlockTypes_ClothDevice.STRIPCURTAIN.getMeta())));
         ManualHelper.addEntry("cokeoven", ManualHelper.CAT_GENERAL,
                 new ManualPages.Text(ManualHelper.getManual(), "cokeoven0"),
                 new ManualPages.Crafting(ManualHelper.getManual(), "cokeovenBlock", new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.COKEBRICK.getMeta())),

@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
-import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 import mcp.mobius.waila.api.*;
 import net.minecraft.block.Block;
@@ -31,7 +30,6 @@ import java.util.List;
 public class IEWailaDataProvider implements IWailaDataProvider {
     public static void callbackRegister(IWailaRegistrar registrar) {
         IEWailaDataProvider dataProvider = new IEWailaDataProvider();
-        registrar.registerBodyProvider(dataProvider, BlockIECrop.class);
         registrar.registerBodyProvider(dataProvider, TileEntityWoodenBarrel.class);
         registrar.registerNBTProvider(dataProvider, TileEntityWoodenBarrel.class);
         registrar.registerStackProvider(dataProvider, TileEntityMultiblockPart.class);
@@ -59,21 +57,7 @@ public class IEWailaDataProvider implements IWailaDataProvider {
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         Block b = accessor.getBlock();
         TileEntity tile = accessor.getTileEntity();
-        if (b instanceof BlockIECrop) {
-            int meta = accessor.getMetadata();
-            int min = ((BlockIECrop) b).getMinMeta(meta);
-            int max = ((BlockIECrop) b).getMaxMeta(meta);
-            if (min == max)
-                currenttip.add(String.format("%s : %s", I18n.format("hud.msg.growth"), I18n.format("hud.msg.mature")));
-            else {
-                float growth = ((meta - min) / (float) (max - min)) * 100f;
-                if (growth < 100.0)
-                    currenttip.add(String.format("%s : %.0f %%", I18n.format("hud.msg.growth"), growth));
-                else
-                    currenttip.add(String.format("%s : %s", I18n.format("hud.msg.growth"), I18n.format("hud.msg.mature")));
-            }
-            return currenttip;
-        } else if (tile instanceof TileEntityWoodenBarrel) {
+        if (tile instanceof TileEntityWoodenBarrel) {
             NBTTagCompound tank = accessor.getNBTData().getCompoundTag("tank");
             if (!tank.hasKey("Empty") && !tank.isEmpty()) {
                 FluidStack fluid = FluidStack.loadFluidStackFromNBT(tank);
