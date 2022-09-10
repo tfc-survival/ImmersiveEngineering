@@ -651,9 +651,9 @@ desc.immersiveengineering.info.mininglvl.0=§7Камень
 desc.immersiveengineering.info.mininglvl.1=§4Железо
 desc.immersiveengineering.info.mininglvl.2=§cКрасный камень
 desc.immersiveengineering.info.mininglvl.3=§dОбсидиан
-desc.immersiveengineering.info.mininglvl.4=§9Кобальт
-desc.immersiveengineering.info.mininglvl.5=§5Мануллин
-desc.immersiveengineering.info.mininglvl.6=§5Мануллин§d+
+desc.immersiveengineering.info.mininglvl.4=§9Сталь
+desc.immersiveengineering.info.mininglvl.5=§5Черная сталь
+desc.immersiveengineering.info.mininglvl.6=§dЦветная сталь
 
 desc.immersiveengineering.info.durability=Прочность: %1$s
 

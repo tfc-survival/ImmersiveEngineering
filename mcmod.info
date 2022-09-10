@@ -1,0 +1,15 @@
+[
+{
+  "modid": "immersiveengineering",
+  "name": "Immersive Engineering",
+  "description": "A tech based mod focused on realism.",
+  "version": "${version}",
+  "mcversion": "1.12",
+  "url": "https://github.com/BluSunrize/ImmersiveEngineering",
+  "authorList": ["BluSunrize","Damien A.W. Hazard"],
+  "credits": "All the great other Git Contributors, and the nerds on IRC!",
+  "logoFile": "assets/immersiveengineering/logo.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]

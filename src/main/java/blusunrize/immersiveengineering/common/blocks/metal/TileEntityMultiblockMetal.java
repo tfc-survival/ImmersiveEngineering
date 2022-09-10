@@ -608,7 +608,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
                 for (int i = 0; i < inputSlots.length; i++)
                     if (inputSlots[i] >= 0 && inputSlots[i] < inv.size())
                         query.set(i, multiblock.getInventory().get(inputSlots[i]));
-                if (!ApiUtils.stacksMatchIngredientList(recipe.getItemInputs(), query)) {
+                if (!recipe.stacksMatchIngredientList(query)) {
                     this.clearProcess = true;
                     return;
                 }

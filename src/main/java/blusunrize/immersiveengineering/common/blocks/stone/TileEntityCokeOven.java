@@ -35,7 +35,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -302,8 +301,8 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return master() != null;
+        //if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        //    return master() != null;
         return super.hasCapability(capability, facing);
     }
 
@@ -311,12 +310,12 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        /*if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             TileEntityCokeOven master = master();
             if (master == null)
                 return null;
             return (T) master.invHandler;
-        }
+        }*/
         return super.getCapability(capability, facing);
     }
 }

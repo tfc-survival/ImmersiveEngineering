@@ -258,6 +258,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDama
                     }
                 }
         }
+
         return EnumActionResult.PASS;
     }
 

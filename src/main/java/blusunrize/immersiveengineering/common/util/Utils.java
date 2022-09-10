@@ -24,7 +24,6 @@ import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-import net.dries007.tfc.util.OreDictionaryHelper;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -519,7 +518,7 @@ public class Utils {
     public static boolean isHammer(ItemStack stack) {
         if (stack.isEmpty())
             return false;
-        return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_HAMMER) || OreDictionaryHelper.doesStackMatchOre(stack, "hammer");
+        return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_HAMMER);
     }
 
     public static boolean isWirecutter(ItemStack stack) {

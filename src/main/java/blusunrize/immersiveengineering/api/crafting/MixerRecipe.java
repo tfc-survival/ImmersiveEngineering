@@ -178,4 +178,9 @@ public class MixerRecipe extends MultiblockRecipe {
     public boolean shouldCheckItemAvailability() {
         return false;
     }
+
+    @Override
+    public boolean requiringFreshFoodInputs() {
+        return true;
+    }
 }

@@ -40,6 +40,11 @@ public class BottlingMachineRecipe extends MultiblockRecipe {
         this.outputList = ListUtils.fromItem(this.output);
     }
 
+    @Override
+    public boolean requiringFreshFoodInputs() {
+        return true;
+    }
+
     public static ArrayList<BottlingMachineRecipe> recipeList = new ArrayList<BottlingMachineRecipe>();
 
     public static void addRecipe(ItemStack output, Object input, FluidStack fluidInput) {

@@ -354,7 +354,9 @@ public class ImmersiveNetHandler {
         int dim = world.provider.getDimension();
         resetCachedIndirectConnections(world, node);
         boolean ret = false;
-        for (Connection con : getMultimap(world.provider.getDimension()).get(node)) {
+        ConcurrentHashMap<BlockPos, Set<Connection>> multimap = getMultimap(world.provider.getDimension());
+        Set<Connection> connections = multimap.get(node);
+        for (Connection con : connections) {
             if (con.cableType == type) {
                 removeConnection(world, con);
                 double dx = node.getX() + .5 + Math.signum(con.end.getX() - con.start.getX());

@@ -47,6 +47,11 @@ public class FermenterRecipe extends MultiblockRecipe {
         this.outputList = ListUtils.fromItem(this.itemOutput);
     }
 
+    @Override
+    public boolean requiringFreshFoodInputs() {
+        return false;
+    }
+
     public FermenterRecipe setInputSize(int size) {
         this.input.inputSize = size;
         return this;

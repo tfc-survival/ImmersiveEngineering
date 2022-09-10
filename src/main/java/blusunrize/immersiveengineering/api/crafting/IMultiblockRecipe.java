@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -58,4 +59,12 @@ public interface IMultiblockRecipe {
     int getMultipleProcessTicks();
 
     NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound);
+
+    default boolean stacksMatchIngredientList(NonNullList<ItemStack> query) {
+        return ApiUtils.stacksMatchIngredientList(getItemInputs(), query, requiringFreshFoodInputs());
+    }
+
+    default boolean requiringFreshFoodInputs() {
+        return false;
+    }
 }

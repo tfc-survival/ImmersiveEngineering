@@ -59,14 +59,14 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
 
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return master() != null;
+        //if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        //    return master() != null;
         return super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        /*if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             TileEntityAlloySmelter master = master();
             if (master == null)
                 return null;
@@ -74,7 +74,7 @@ public class TileEntityAlloySmelter extends TileEntityMultiblockPart<TileEntityA
                 return (T) master.fuelHandler;
             else
                 return (T) master.inputHandler;
-        }
+        }*/
         return super.getCapability(capability, facing);
     }
 

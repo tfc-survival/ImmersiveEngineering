@@ -47,6 +47,11 @@ public class SqueezerRecipe extends MultiblockRecipe {
         this.outputList = ListUtils.fromItem(this.itemOutput);
     }
 
+    @Override
+    public boolean requiringFreshFoodInputs() {
+        return true;
+    }
+
     public SqueezerRecipe setInputSize(int size) {
         this.input.inputSize = size;
         return this;

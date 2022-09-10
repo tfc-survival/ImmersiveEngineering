@@ -112,7 +112,7 @@ public class ApiUtils {
         return s2;
     }
 
-    public static boolean stacksMatchIngredientList(List<IngredientStack> list, NonNullList<ItemStack> stacks) {
+    public static boolean stacksMatchIngredientList(List<IngredientStack> list, NonNullList<ItemStack> stacks, boolean checkFreshFood) {
         ArrayList<ItemStack> queryList = new ArrayList<>(stacks.size());
         for (ItemStack s : stacks)
             if (!s.isEmpty())
@@ -124,7 +124,7 @@ public class ApiUtils {
                 Iterator<ItemStack> it = queryList.iterator();
                 while (it.hasNext()) {
                     ItemStack query = it.next();
-                    if (!query.isEmpty() && isFresh(query)) {
+                    if (!query.isEmpty() && (!checkFreshFood || isFresh(query))) {
                         if (ingr.matchesItemStackIgnoringSize(query)) {
                             if (query.getCount() > amount) {
                                 query.shrink(amount);

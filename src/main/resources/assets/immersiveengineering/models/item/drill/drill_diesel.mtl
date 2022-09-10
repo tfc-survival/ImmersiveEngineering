@@ -1,4 +1,4 @@
-newmtl drill
-map_Ka immersiveengineering:items/drill_diesel
-newmtl head
-map_Ka immersiveengineering:items/drill_diesel
+# Made in Blockbench 4.2.4
+newmtl m_0
+map_Kd drill_diesel.png 
+newmtl none
