@@ -356,17 +356,18 @@ public class ImmersiveNetHandler {
         boolean ret = false;
         ConcurrentHashMap<BlockPos, Set<Connection>> multimap = getMultimap(world.provider.getDimension());
         Set<Connection> connections = multimap.get(node);
-        for (Connection con : connections) {
-            if (con.cableType == type) {
-                removeConnection(world, con);
-                double dx = node.getX() + .5 + Math.signum(con.end.getX() - con.start.getX());
-                double dy = node.getY() + .5 + Math.signum(con.end.getY() - con.start.getY());
-                double dz = node.getZ() + .5 + Math.signum(con.end.getZ() - con.start.getZ());
-                if (world.getGameRules().getBoolean("doTileDrops"))
-                    world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
-                ret = true;
+        if (connections != null)
+            for (Connection con : connections) {
+                if (con.cableType == type) {
+                    removeConnection(world, con);
+                    double dx = node.getX() + .5 + Math.signum(con.end.getX() - con.start.getX());
+                    double dy = node.getY() + .5 + Math.signum(con.end.getY() - con.start.getY());
+                    double dz = node.getZ() + .5 + Math.signum(con.end.getZ() - con.start.getZ());
+                    if (world.getGameRules().getBoolean("doTileDrops"))
+                        world.spawnEntity(new EntityItem(world, dx, dy, dz, con.cableType.getWireCoil(con)));
+                    ret = true;
+                }
             }
-        }
         if (world.isBlockLoaded(node))
             world.addBlockEvent(node, world.getBlockState(node).getBlock(), -1, 0);
 

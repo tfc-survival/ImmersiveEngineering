@@ -45,7 +45,6 @@ import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
-import blusunrize.immersiveengineering.common.items.tools.*;
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
@@ -118,7 +117,6 @@ public class IEContent {
     public static ArrayList<Item> registeredIEItems = new ArrayList<Item>();
     public static List<Class<? extends TileEntity>> registeredIETiles = new ArrayList<>();
 
-    public static BlockIEBase<BlockTypes_MetalsIE> blockOre;
     public static BlockIEBase<BlockTypes_MetalsIE> blockStorage;
     public static BlockIESlab blockStorageSlabs;
     public static BlockIEBase<BlockTypes_StoneDecoration> blockStoneDecoration;
@@ -168,11 +166,6 @@ public class IEContent {
     public static ItemIEBase itemMaterial;
     public static ItemIEBase itemMetal;
     public static ItemIEBase itemTool;
-    public static ItemToolBase itemSteelPick;
-    public static ItemToolBase itemSteelShovel;
-    public static ItemToolBase itemSteelAxe;
-    public static ItemIEHoe itemSteelHoe;
-    public static ItemIESword itemSteelSword;
     public static ItemIEBase itemToolbox;
     public static ItemIEBase itemWireCoil;
     public static ItemIEBase itemSeeds;
@@ -198,7 +191,6 @@ public class IEContent {
     public static Item itemPowerpack;
     public static ItemIEBase itemShield;
     public static ItemIEBase itemMaintenanceKit;
-    public static ItemSteelArmor[] itemsSteelArmor = new ItemSteelArmor[4];
 
     public static ItemIEBase itemFakeIcons;
 
@@ -219,7 +211,6 @@ public class IEContent {
         fluidConcrete = setupFluid(new Fluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow")).setDensity(2400).setViscosity(4000));
         fluidPotion = setupFluid(new FluidPotion("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow")));
 
-        blockOre = (BlockIEBase) new BlockIEBase("ore", Material.ROCK, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
         blockStorage = (BlockIEBase) new BlockIEBase("storage", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
         blockStorageSlabs = (BlockIESlab) new BlockIESlab("storage_slab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
         blockStoneDecoration = (BlockIEBase) new BlockIEBase("stone_decoration", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class) {
@@ -285,17 +276,8 @@ public class IEContent {
         blockFluidConcrete = new BlockIEFluidConcrete("fluidConcrete", fluidConcrete, Material.WATER);
 
         itemMaterial = new ItemMaterial();
-        itemMetal = new ItemIEBase("metal", 64,
-                "ingot_copper", "ingot_aluminum", "ingot_lead", "ingot_silver", "ingot_nickel", "ingot_uranium", "ingot_constantan", "ingot_electrum", "ingot_steel",
-                "dust_copper", "dust_aluminum", "dust_lead", "dust_silver", "dust_nickel", "dust_uranium", "dust_constantan", "dust_electrum", "dust_steel", "dust_iron", "dust_gold",
-                "nugget_copper", "nugget_aluminum", "nugget_lead", "nugget_silver", "nugget_nickel", "nugget_uranium", "nugget_constantan", "nugget_electrum", "nugget_steel", "nugget_iron",
-                "plate_copper", "plate_aluminum", "plate_lead", "plate_silver", "plate_nickel", "plate_uranium", "plate_constantan", "plate_electrum", "plate_steel", "plate_iron", "plate_gold");
+        itemMetal = new ItemIEBase("metal", 64);
         itemTool = new ItemIETool();
-        itemSteelPick = new ItemIEPickaxe(Lib.MATERIAL_Steel, "pickaxe_steel", "pickaxe", "ingotSteel");
-        itemSteelShovel = new ItemIEShovel(Lib.MATERIAL_Steel, "shovel_steel", "shovel", "ingotSteel");
-        itemSteelAxe = new ItemIEAxe(Lib.MATERIAL_Steel, "axe_steel", "axe", "ingotSteel");
-        itemSteelHoe = new ItemIEHoe(Lib.MATERIAL_Steel, "hoe_steel", "ingotSteel");
-        itemSteelSword = new ItemIESword(Lib.MATERIAL_Steel, "sword_steel", "ingotSteel");
         itemToolbox = new ItemToolbox();
         itemWireCoil = new ItemWireCoil();
         WireType.ieWireCoil = itemWireCoil;
@@ -327,9 +309,6 @@ public class IEContent {
         itemPowerpack = new ItemPowerpack();
         itemShield = new ItemIEShield();
         itemMaintenanceKit = new ItemMaintenanceKit();
-        ItemSteelArmor.mat = EnumHelper.addArmorMaterial("IMMERSIVEENGINEERING:STEEL", "immersiveengineering:steelArmor", 21, new int[]{2, 6, 7, 2}, 10, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 1.0f).setRepairItem(new ItemStack(itemMetal, 1, 8));
-        for (int i = 0; i < itemsSteelArmor.length; i++)
-            itemsSteelArmor[i] = new ItemSteelArmor(EntityEquipmentSlot.values()[2 + i]);
 
         itemFakeIcons = new ItemIEBase("fake_icon", 1, "birthday", "lucky", "drillbreak") {
             @Override
@@ -512,12 +491,10 @@ public class IEContent {
 
     public static void registerOres() {
         /*ORE DICTIONARY*/
-        registerToOreDict("ore", blockOre);
         registerToOreDict("block", blockStorage);
         registerToOreDict("slab", blockStorageSlabs);
         registerToOreDict("blockSheetmetal", blockSheetmetal);
         registerToOreDict("slabSheetmetal", blockSheetmetalSlabs);
-        registerToOreDict("", itemMetal);
         OreDictionary.registerOre("stickTreatedWood", new ItemStack(itemMaterial, 1, 0));
         OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial, 1, 1));
         OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial, 1, 2));
@@ -572,13 +549,6 @@ public class IEContent {
             arcRecycleThread.start();
         }
 
-        /*MINING LEVELS*/
-        blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.COPPER.getMeta()));
-        blockOre.setHarvestLevel("pickaxe", 1, blockOre.getStateFromMeta(BlockTypes_Ore.ALUMINUM.getMeta()));
-        blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.LEAD.getMeta()));
-        blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.SILVER.getMeta()));
-        blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.NICKEL.getMeta()));
-        blockOre.setHarvestLevel("pickaxe", 2, blockOre.getStateFromMeta(BlockTypes_Ore.URANIUM.getMeta()));
         blockStorage.setHarvestLevel("pickaxe", 1, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.COPPER.getMeta()));
         blockStorage.setHarvestLevel("pickaxe", 1, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ALUMINUM.getMeta()));
         blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.LEAD.getMeta()));
@@ -590,12 +560,6 @@ public class IEContent {
         blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.STEEL.getMeta()));
 
         /*WORLDGEN*/
-        addConfiguredWorldgen(blockOre.getStateFromMeta(0), "copper", IEConfig.Ores.ore_copper);
-        addConfiguredWorldgen(blockOre.getStateFromMeta(1), "bauxite", IEConfig.Ores.ore_bauxite);
-        addConfiguredWorldgen(blockOre.getStateFromMeta(2), "lead", IEConfig.Ores.ore_lead);
-        addConfiguredWorldgen(blockOre.getStateFromMeta(3), "silver", IEConfig.Ores.ore_silver);
-        addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel", IEConfig.Ores.ore_nickel);
-        addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium", IEConfig.Ores.ore_uranium);
 
         /*TILEENTITIES*/
         registerTile(TileEntityIESlab.class);

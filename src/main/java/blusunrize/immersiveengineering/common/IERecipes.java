@@ -158,13 +158,6 @@ public class IERecipes {
     }
 
     public static void initFurnaceRecipes() {
-        //Ores
-        FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 0), new ItemStack(IEContent.itemMetal, 1, 0), 0.3f);
-        FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 1), new ItemStack(IEContent.itemMetal, 1, 1), 0.3F);
-        FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 2), new ItemStack(IEContent.itemMetal, 1, 2), 0.7F);
-        FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 3), new ItemStack(IEContent.itemMetal, 1, 3), 1.0F);
-        FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 4), new ItemStack(IEContent.itemMetal, 1, 4), 1.0F);
-        FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.blockOre, 1, 5), new ItemStack(IEContent.itemMetal, 1, 5), 1.0F);
         //Dusts
         FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 9), new ItemStack(IEContent.itemMetal, 1, 0), 0.3F);
         FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(IEContent.itemMetal, 1, 10), new ItemStack(IEContent.itemMetal, 1, 1), 0.3F);
