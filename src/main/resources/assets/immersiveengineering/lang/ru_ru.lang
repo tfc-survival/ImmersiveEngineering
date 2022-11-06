@@ -1662,3 +1662,5 @@ desc.immersiveengineering.info.shader.details.darkfire=Назван и окра�
 desc.immersiveengineering.info.shader.details.erruption=Без конкретной отсылки, просто использую классические текстуры, особенно наложение разрушения блоков.
 desc.immersiveengineering.info.shader.details.terra=Сильно вдохновлён материалами Жизнедерево и Террасталь, и ещё включает некоторые текстуры мода Botania.
 desc.immersiveengineering.info.shader.details.waaagh=Yellow makez da biggest BOOOMS!<br>Выполнен с очевидной отсылкой к Оркам из вселенной WH40K.
+
+item.pipe_cover.name=Покрытие для труб

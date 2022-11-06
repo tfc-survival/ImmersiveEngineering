@@ -62,11 +62,6 @@ public class JEIHelper implements IModPlugin {
                 return ItemNBTHelper.getString(itemStack, "conveyorType");
             return ISubtypeInterpreter.NONE;
         });
-        subtypeRegistry.registerSubtypeInterpreter(IEContent.itemBullet, itemStack -> {
-            if (!itemStack.isEmpty() && itemStack.getMetadata() == 2 && ItemNBTHelper.hasKey(itemStack, "bullet"))
-                return ItemNBTHelper.getString(itemStack, "bullet");
-            return ISubtypeInterpreter.NONE;
-        });
     }
 
     @Override

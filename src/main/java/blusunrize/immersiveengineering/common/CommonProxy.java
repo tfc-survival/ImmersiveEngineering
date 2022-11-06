@@ -29,7 +29,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.*;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.items.ItemMaintenanceKit;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
@@ -95,8 +94,6 @@ public class CommonProxy implements IGuiHandler {
             ID %= 100;//Slot determined, get actual ID
             ItemStack item = player.getItemStackFromSlot(slot);
             if (!item.isEmpty() && item.getItem() instanceof IGuiItem && ((IGuiItem) item.getItem()).getGuiID(item) == ID) {
-                if (ID == Lib.GUIID_Revolver && item.getItem() instanceof IEItemInterfaces.IBulletContainer)
-                    return new ContainerRevolver(player.inventory, world, slot, item);
                 if (ID == Lib.GUIID_Toolbox && item.getItem() instanceof ItemToolbox)
                     return new ContainerToolbox(player.inventory, world, slot, item);
                 if (ID == Lib.GUIID_MaintenanceKit && item.getItem() instanceof ItemMaintenanceKit)
@@ -132,8 +129,6 @@ public class CommonProxy implements IGuiHandler {
                     gui = new ContainerAutoWorkbench(player.inventory, (TileEntityAutoWorkbench) te);
                 if (ID == Lib.GUIID_Mixer && te instanceof TileEntityMixer)
                     gui = new ContainerMixer(player.inventory, (TileEntityMixer) te);
-                if (ID == Lib.GUIID_Turret && te instanceof TileEntityTurret)
-                    gui = new ContainerTurret(player.inventory, (TileEntityTurret) te);
                 if (ID == Lib.GUIID_FluidSorter && te instanceof TileEntityFluidSorter)
                     gui = new ContainerFluidSorter(player.inventory, (TileEntityFluidSorter) te);
                 if (ID == Lib.GUIID_Belljar && te instanceof TileEntityBelljar)

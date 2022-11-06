@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler.IRecipeAdapter;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Extinguish;
@@ -41,8 +40,6 @@ import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.datafixers.IEDataFixers;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
-import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
-import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
 import blusunrize.immersiveengineering.common.util.IELootFunctions;
@@ -51,7 +48,10 @@ import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import net.dries007.tfc.api.types.Metal;
+import net.dries007.tfc.types.DefaultMetals;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -65,7 +65,6 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -100,11 +99,15 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Function;
+
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 @Mod.EventBusSubscriber
 public class IEContent {
@@ -157,6 +160,7 @@ public class IEContent {
     public static BlockIEFluid blockFluidBiodiesel;
     public static BlockIEFluid blockFluidConcrete;
 
+    public static ItemIEBase itemBullet = new ItemIEBase("bullet", 64);
     public static ItemIEBase itemMaterial;
     public static ItemIEBase itemMetal;
     public static ItemIEBase itemTool;
@@ -167,9 +171,6 @@ public class IEContent {
     public static ItemIEBase itemJerrycan;
     public static ItemIEBase itemMold;
     public static ItemIEBase itemBlueprint;
-    public static ItemIEBase itemRevolver;
-    public static ItemIEBase itemSpeedloader;
-    public static ItemIEBase itemBullet;
     public static ItemIEBase itemChemthrower;
     public static ItemIEBase itemRailgun;
     public static ItemIEBase itemSkyhook;
@@ -186,6 +187,8 @@ public class IEContent {
     public static ItemIEBase itemMaintenanceKit;
 
     public static ItemIEBase itemFakeIcons;
+
+    public static ItemPipeCover itemPipeCover;
 
     //	public static BlockIEBase<BlockTypes_> blockClothDevice;
     public static Fluid fluidCreosote;
@@ -279,9 +282,6 @@ public class IEContent {
         itemMold = new ItemIEBase("mold", 1, "plate", "gear", "rod", "bullet_casing", "wire", "packing4", "packing9", "unpacking");
         itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
         BlueprintCraftingRecipe.itemBlueprint = itemBlueprint;
-        itemRevolver = new ItemRevolver();
-        itemSpeedloader = new ItemSpeedloader();
-        itemBullet = new ItemBullet();
         itemChemthrower = new ItemChemthrower();
         itemRailgun = new ItemRailgun();
         itemSkyhook = new ItemSkyhook();
@@ -304,10 +304,20 @@ public class IEContent {
             public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
             }
         };
+
+        itemPipeCover = new ItemPipeCover();
     }
+
+    public static Map<Metal, BlockTFCMetalPipe> pipes;
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
+
+        IForgeRegistry<Metal> metalRegistry = GameRegistry.findRegistry(Metal.class);
+        pipes = ImmutableList.of(DefaultMetals.LEAD, DefaultMetals.BRASS, DefaultMetals.STEEL, DefaultMetals.BLACK_STEEL).stream()
+                .map(metalRegistry::getValue)
+                .collect(toImmutableMap(Function.identity(), BlockTFCMetalPipe::new));
+
         for (Block block : registeredIEBlocks)
             event.getRegistry().register(block.setRegistryName(createRegistryName(block.getTranslationKey())));
     }
@@ -343,6 +353,7 @@ public class IEContent {
 
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+        event.getRegistry().register(new RecipePipeCover());
         /*CRAFTING*/
         IERecipes.initCraftingRecipes(event.getRegistry());
 
@@ -461,20 +472,12 @@ public class IEContent {
         ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_" + BlockTypes_MetalsAll.ALUMINUM.getName()), ConveyorChuteAluminum.class, (tileEntity) -> new ConveyorChuteAluminum());
         ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "chute_" + BlockTypes_MetalsAll.COPPER.getName()), ConveyorChuteCopper.class, (tileEntity) -> new ConveyorChuteCopper());
 
-        /*BULLETS*/
-        ItemBullet.initBullets();
-
         DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
         IELootFunctions.preInit();
     }
 
     public static void preInitEnd() {
-        /*WOLFPACK BULLETS*/
-        if (!BulletHandler.homingCartridges.isEmpty()) {
-            BulletHandler.registerBullet("wolfpack", new WolfpackBullet());
-            BulletHandler.registerBullet("wolfpackPart", new WolfpackPartBullet());
-        }
     }
 
     public static void registerOres() {
@@ -610,6 +613,7 @@ public class IEContent {
         registerTile(TileEntityElectricLantern.class);
         registerTile(TileEntityChargingStation.class);
         registerTile(TileEntityFluidPipe.class);
+        registerTile(TileEntityFluidPipeTFC.class);
         registerTile(TileEntitySampleDrill.class);
         registerTile(TileEntityTeslaCoil.class);
         registerTile(TileEntityFloodlight.class);
@@ -658,7 +662,6 @@ public class IEContent {
         CapabilitySkyhookData.register();
         ShaderRegistry.itemShader = IEContent.itemShader;
         ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
-        ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRevolver));
         ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemDrill));
         ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemChemthrower));
         ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRailgun));
@@ -675,12 +678,6 @@ public class IEContent {
         addBanner("ornate", "orn", "dustSilver");
         addBanner("treated_wood", "twd", "plankTreatedWood");
         addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(blockWoodenDevice1, 1, BlockTypes_WoodenDevice1.WINDMILL.getMeta())});
-        if (!BulletHandler.homingCartridges.isEmpty()) {
-            ItemStack wolfpackCartridge = BulletHandler.getBulletStack("wolfpack");
-            addBanner("wolf_r", "wlfr", wolfpackCartridge, 1);
-            addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
-            addBanner("wolf", "wlf", wolfpackCartridge, 0, 0);
-        }
 
         /*ASSEMBLER RECIPE ADAPTERS*/
         //Fluid Ingredients
@@ -689,30 +686,6 @@ public class IEContent {
             if (o instanceof IngredientFluidStack)
                 return new RecipeQuery(((IngredientFluidStack) o).getFluid(), ((IngredientFluidStack) o).getFluid().amount);
             else return null;
-        });
-        //Potion bullets
-        AssemblerHandler.registerRecipeAdapter(RecipePotionBullets.class, new IRecipeAdapter<RecipePotionBullets>() {
-            @Nullable
-            @Override
-            public RecipeQuery[] getQueriedInputs(RecipePotionBullets recipe, NonNullList<ItemStack> input) {
-                RecipeQuery bullet = null;
-                RecipeQuery potion = null;
-                for (int i = 0; i < input.size() - 1; ++i) {
-                    ItemStack s = input.get(i);
-                    if (!s.isEmpty()) {
-                        if (bullet == null && RecipePotionBullets.isPotionBullet(s))
-                            bullet = AssemblerHandler.createQueryFromItemStack(s);
-                        else if (potion == null && s.getItem() instanceof ItemPotion)
-                            potion = AssemblerHandler.createQuery(
-                                    MixerPotionHelper.getFluidStackForType(PotionUtils.getPotionFromItem(s), 250));
-                        else
-                            return null;
-                    }
-                }
-                if (bullet == null || potion == null)
-                    return null;
-                return new RecipeQuery[]{bullet, potion};
-            }
         });
 
         DieselHandler.registerFuel(fluidBiodiesel, 125);

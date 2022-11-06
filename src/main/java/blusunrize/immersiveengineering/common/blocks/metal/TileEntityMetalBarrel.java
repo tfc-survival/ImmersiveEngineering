@@ -14,8 +14,8 @@ import net.minecraftforge.fluids.FluidStack;
 public class TileEntityMetalBarrel extends TileEntityWoodenBarrel {
     @Override
     public void update() {
-        if (world.isRemote || world.getRedstonePowerFromNeighbors(getPos()) > 0) return;
-        else super.update();
+        if (!world.isRemote && world.getRedstonePowerFromNeighbors(getPos()) == 0)
+            super.update();
     }
 
     @Override

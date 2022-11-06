@@ -57,11 +57,14 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
-import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
+import blusunrize.immersiveengineering.common.items.ItemDrillhead;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
+import blusunrize.immersiveengineering.common.items.ItemIEBase;
+import blusunrize.immersiveengineering.common.items.ItemMaintenanceKit;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade.ToolUpgrades;
+import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -173,12 +176,6 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ImmersiveModelRegistry.instance);
 
-        ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemBullet, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement() {
-            @Override
-            public IBakedModel createBakedModel(IBakedModel existingModel) {
-                return new ModelItemDynamicOverride(existingModel, null);
-            }
-        });
         ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemShader), new ImmersiveModelRegistry.ItemModelReplacement() {
             @Override
             public IBakedModel createBakedModel(IBakedModel existingModel) {
@@ -203,16 +200,6 @@ public class ClientProxy extends CommonProxy {
                 .setTransformations(TransformType.FIXED, new Matrix4().translate(.5, .875, -.5).scale(1, 1, 1).rotate(Math.PI * .5, 0, 1, 0))
                 .setTransformations(TransformType.GUI, new Matrix4().translate(-.625, .75, 0).scale(.875, .875, .875).rotate(-Math.PI * .6875, 0, 1, 0))
                 .setTransformations(TransformType.GROUND, new Matrix4().translate(.25, .5, .25).scale(.5, .5, .5)));
-
-        ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRevolver, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/revolver.obj", true)
-                .setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0, 1, 0).scale(.1875, .25, .25).translate(.25, .25, .5))
-                .setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(90), 0, 1, 0).scale(.1875, .25, .25).translate(-.3, .25, .5))
-                .setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.125, .0625, -.03125).scale(.125, .125, .125).rotate(Math.toRadians(-90), 0, 1, 0).rotate(Math.toRadians(-10), 0, 0, 1))
-                .setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(.0, .0625, -.03125).scale(.125, .125, .125).rotate(Math.toRadians(90), 0, 1, 0).rotate(Math.toRadians(10), 0, 0, 1))
-                .setTransformations(TransformType.GUI, new Matrix4().translate(.1875, -.0781225, -.15625).scale(.2, .2, .2).rotate(Math.toRadians(-40), 0, 1, 0).rotate(Math.toRadians(-35), 0, 0, 1))
-                .setTransformations(TransformType.FIXED, new Matrix4().translate(-.375, -.25, -.0625).scale(.1875, .1875, .1875).rotate(Math.PI, 0, 1, 0).rotate(Math.toRadians(-40), 0, 0, 1))
-                .setTransformations(TransformType.GROUND, new Matrix4().translate(.125, 0, .0625).scale(.125, .125, .125)));
-        IEContent.itemRevolver.setTileEntityItemStackRenderer(ItemRendererIEOBJ.INSTANCE);
 
         ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemDrill, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/drill/drill_diesel.obj", true)
                 .setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375, .4375, .375).translate(-.25, 1, .5).rotate(Math.PI * .5, 0, 1, 0))
@@ -310,6 +297,10 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent evt) {
+        //for (BlockTFCMetalPipe pipe : IEContent.pipes.values())
+        //    ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(pipe), 0, new ModelResourceLocation(pipe.getRegistryName(), "inventory"));
+
+
         //Going through registered stuff at the end of preInit, because of compat modules possibly adding items
         for (Block block : IEContent.registeredIEBlocks) {
             final ResourceLocation loc = Block.REGISTRY.getNameForObject(block);
@@ -765,23 +756,6 @@ public class ClientProxy extends CommonProxy {
         ItemStack drum_perked = new ItemStack(IEContent.itemMaterial, 1, 15);
         ItemStack hammer_perked = new ItemStack(IEContent.itemMaterial, 1, 16);
         Random rand = new Random();
-        ItemNBTHelper.setTagCompound(barrel_perked, "perks", ItemRevolver.RevolverPerk.generatePerkSet(rand, 2));
-        ItemNBTHelper.setTagCompound(drum_perked, "perks", ItemRevolver.RevolverPerk.generatePerkSet(rand, 2));
-        ItemNBTHelper.setTagCompound(hammer_perked, "perks", ItemRevolver.RevolverPerk.generatePerkSet(rand, 2));
-        ManualHelper.addEntry("revolver", ManualHelper.CAT_TOOLS,
-                new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver0", new ItemStack(IEContent.itemRevolver, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 13), new ItemStack(IEContent.itemMaterial, 1, 14), new ItemStack(IEContent.itemMaterial, 1, 15), new ItemStack(IEContent.itemMaterial, 1, 16)),
-                new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver1", new ItemStack(IEContent.itemRevolver, 1, 1)),
-                new ManualPages.Crafting(ManualHelper.getManual(), "revolver2", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.REVOLVER_BAYONET.ordinal())),
-                new ManualPages.Crafting(ManualHelper.getManual(), "revolver3", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.REVOLVER_MAGAZINE.ordinal())),
-                new ManualPages.Crafting(ManualHelper.getManual(), "revolver4", new ItemStack(IEContent.itemToolUpgrades, 1, ToolUpgrades.REVOLVER_ELECTRO.ordinal())),
-                new ManualPages.ItemDisplay(ManualHelper.getManual(), "revolver5", barrel_perked, drum_perked, hammer_perked));
-        pages = new ArrayList<>();
-        pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "bullets0", BlueprintCraftingRecipe.getTypedBlueprint("bullet")));
-        pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet, 1, 0), new ItemStack(IEContent.itemBullet, 1, 1), new ItemStack(IEContent.itemMold, 1, 3)));
-        for (String key : BulletHandler.registry.keySet())
-            if (BulletHandler.registry.get(key).isProperCartridge())
-                pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets_" + key, BulletHandler.getBulletStack(key)));
-        ManualHelper.addEntry("bullets", ManualHelper.CAT_TOOLS, pages.toArray(new IManualPage[pages.size()]));
         ManualHelper.addEntry("skyhook", ManualHelper.CAT_TOOLS,
                 new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial, 1, 13)),
                 new ManualPages.Text(ManualHelper.getManual(), "skyhook1"));
@@ -1113,7 +1087,6 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void textureStichPre(TextureStitchEvent.Pre event) {
         IELogger.info("Stitching Revolver Textures!");
-        ((ItemRevolver) IEContent.itemRevolver).stichRevolverTextures(event.getMap());
         for (ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
             for (ShaderCase sCase : entry.getCases())
                 if (sCase.stitchIntoSheet())
@@ -1175,8 +1148,6 @@ public class ClientProxy extends CommonProxy {
             if (!item.isEmpty() && item.getItem() instanceof IGuiItem && ((IGuiItem) item.getItem()).getGuiID(item) == ID) {
                 if (ID == Lib.GUIID_Manual && ManualHelper.getManual() != null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool, 1, 3), item, false))
                     return ManualHelper.getManual().getGui();
-                if (ID == Lib.GUIID_Revolver && item.getItem() instanceof IEItemInterfaces.IBulletContainer)
-                    return new GuiRevolver(player.inventory, world, slot, item);
                 if (ID == Lib.GUIID_Toolbox && item.getItem() instanceof ItemToolbox)
                     return new GuiToolbox(player.inventory, world, slot, item);
                 if (ID == Lib.GUIID_MaintenanceKit && item.getItem() instanceof ItemMaintenanceKit)
@@ -1224,8 +1195,6 @@ public class ClientProxy extends CommonProxy {
                     gui = new GuiAutoWorkbench(player.inventory, (TileEntityAutoWorkbench) te);
                 if (ID == Lib.GUIID_Mixer && te instanceof TileEntityMixer)
                     gui = new GuiMixer(player.inventory, (TileEntityMixer) te);
-                if (ID == Lib.GUIID_Turret && te instanceof TileEntityTurret)
-                    gui = new GuiTurret(player.inventory, (TileEntityTurret) te);
                 if (ID == Lib.GUIID_FluidSorter && te instanceof TileEntityFluidSorter)
                     gui = new GuiFluidSorter(player.inventory, (TileEntityFluidSorter) te);
                 if (ID == Lib.GUIID_Belljar && te instanceof TileEntityBelljar)

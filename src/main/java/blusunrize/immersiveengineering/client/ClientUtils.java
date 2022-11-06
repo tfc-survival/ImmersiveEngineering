@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.items.ItemChemthrower;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRailgun;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -445,15 +444,7 @@ public class ClientUtils {
                 ItemStack heldItem = player.getHeldItem(hand);
                 if (!heldItem.isEmpty()) {
                     boolean right = (hand == EnumHand.MAIN_HAND) == (player.getPrimaryHand() == EnumHandSide.RIGHT);
-                    if (heldItem.getItem() instanceof ItemRevolver) {
-                        if (right) {
-                            model.bipedRightArm.rotateAngleX = -1.39626f + model.bipedHead.rotateAngleX;
-                            model.bipedRightArm.rotateAngleY = -.08726f + model.bipedHead.rotateAngleY;
-                        } else {
-                            model.bipedLeftArm.rotateAngleX = -1.39626f + model.bipedHead.rotateAngleX;
-                            model.bipedLeftArm.rotateAngleY = .08726f + model.bipedHead.rotateAngleY;
-                        }
-                    } else if (heldItem.getItem() instanceof ItemDrill || heldItem.getItem() instanceof ItemChemthrower) {
+                    if (heldItem.getItem() instanceof ItemDrill || heldItem.getItem() instanceof ItemChemthrower) {
                         if (right) {
                             model.bipedLeftArm.rotateAngleX = -.87266f;
                             model.bipedLeftArm.rotateAngleY = .52360f;

@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
@@ -29,7 +28,6 @@ import java.util.Random;
 public class IELootFunctions {
     public static void preInit() {
         LootFunctionManager.registerFunction(new Bluprintz.Serializer());
-        LootFunctionManager.registerFunction(new Revolver.Serializer());
     }
 
     public static class Bluprintz extends LootFunction {
@@ -57,35 +55,6 @@ public class IELootFunctions {
             @Nonnull
             public Bluprintz deserialize(@Nonnull JsonObject object, @Nonnull JsonDeserializationContext deserializationContext, @Nonnull LootCondition[] conditionsIn) {
                 return new Bluprintz(conditionsIn);
-            }
-
-        }
-    }
-
-    public static class Revolver extends LootFunction {
-        protected Revolver(LootCondition[] conditionsIn) {
-            super(conditionsIn);
-        }
-
-        @Override
-        public ItemStack apply(ItemStack stack, Random rand, LootContext context) {
-            ItemNBTHelper.setTagCompound(stack, "perks", ItemRevolver.RevolverPerk.generatePerkSet(rand, context.getLuck()));
-            return stack;
-        }
-
-        public static class Serializer extends LootFunction.Serializer<Revolver> {
-            protected Serializer() {
-                super(new ResourceLocation(ImmersiveEngineering.MODID, "revolver_perks"), Revolver.class);
-            }
-
-            @Override
-            public void serialize(@Nonnull JsonObject object, @Nonnull Revolver functionClazz, @Nonnull JsonSerializationContext serializationContext) {
-            }
-
-            @Override
-            @Nonnull
-            public Revolver deserialize(@Nonnull JsonObject object, @Nonnull JsonDeserializationContext deserializationContext, @Nonnull LootCondition[] conditionsIn) {
-                return new Revolver(conditionsIn);
             }
 
         }

@@ -44,30 +44,36 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
     public FluidTank tank = new FluidTank(12000);
     public static final int IGNITION_TEMPERATURE = 573;
 
+    private int freezeTicks = 0;
+
     @Override
     public void update() {
-        if (world.isRemote)
-            return;
-
-        boolean update = false;
-        for (int i = 0; i < 2; i++)
-            if (tank.getFluidAmount() > 0 && sideConfig[i] == 1) {
-                EnumFacing f = EnumFacing.byIndex(i);
-                int out = Math.min(40, tank.getFluidAmount());
-                TileEntity te = world.getTileEntity(getPos().offset(f));
-                if (te != null && te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite())) {
-                    IFluidHandler handler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
-                    int accepted = handler.fill(Utils.copyFluidStackWithAmount(tank.getFluid(), out, false), false);
-                    FluidStack drained = this.tank.drain(accepted, true);
-                    if (drained != null) {
-                        handler.fill(drained, true);
-                        update = true;
+        if (!world.isRemote) {
+            if (freezeTicks == 0) {
+                boolean update = false;
+                for (int i = 0; i < 2; i++)
+                    if (tank.getFluidAmount() > 0 && sideConfig[i] == 1) {
+                        EnumFacing f = EnumFacing.byIndex(i);
+                        int out = Math.min(500, tank.getFluidAmount());
+                        TileEntity te = world.getTileEntity(getPos().offset(f));
+                        if (te != null && te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite())) {
+                            IFluidHandler handler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
+                            int accepted = handler.fill(Utils.copyFluidStackWithAmount(tank.getFluid(), out, false), false);
+                            FluidStack drained = this.tank.drain(accepted, true);
+                            if (drained != null) {
+                                handler.fill(drained, true);
+                                update = true;
+                            }
+                        }
                     }
-                }
-            }
-        if (update) {
-            this.markDirty();
-            this.markContainingBlockForUpdate(null);
+
+                if (update) {
+                    this.markDirty();
+                    this.markContainingBlockForUpdate(null);
+                } else
+                    freezeTicks = 20;
+            } else
+                freezeTicks--;
         }
     }
 

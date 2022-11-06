@@ -77,7 +77,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
                 new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()),
                 new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()),
                 new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
-        TileEntityFluidPipe.validPipeCovers.add(new Function<ItemStack, Boolean>() {
+        validPipeCovers.add(new Function<ItemStack, Boolean>() {
             @Nullable
             @Override
             public Boolean apply(ItemStack input) {
@@ -89,7 +89,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
                 return Boolean.FALSE;
             }
         });
-        TileEntityFluidPipe.climbablePipeCovers.add(new Function<ItemStack, Boolean>() {
+        climbablePipeCovers.add(new Function<ItemStack, Boolean>() {
             @Nullable
             @Override
             public Boolean apply(ItemStack input) {
@@ -101,6 +101,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
                 return Boolean.FALSE;
             }
         });
+
+        validPipeCovers.add(stack -> stack.getItem() == IEContent.itemPipeCover);
     }
 
     public int[] sideConfig = new int[]{0, 0, 0, 0, 0, 0};
@@ -148,7 +150,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
         }
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
             if (!indirectConnections.containsKey(node)) {
-                indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<DirectionalFluidOutput, Boolean>()));
+                indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<>()));
                 indirectConnections.get(node).addAll(fluidHandlers);
             }
         }
@@ -269,18 +271,23 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
     @SideOnly(Side.CLIENT)
     public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads) {
         if (!pipeCover.isEmpty()) {
-            Block b = Block.getBlockFromItem(pipeCover.getItem());
+
+            Block b = pipeCover.getItem() == IEContent.itemPipeCover ?
+                    IEContent.itemPipeCover.getCover(pipeCover) :
+                    Block.getBlockFromItem(pipeCover.getItem());
+
             IBlockState state = b != null ? b.getStateFromMeta(pipeCover.getMetadata()) : Blocks.STONE.getDefaultState();
             IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
-            BlockRenderLayer curL = MinecraftForgeClient.getRenderLayer();
-            if (model != null)
+            if (model != null) {
+                BlockRenderLayer curL = MinecraftForgeClient.getRenderLayer();
                 for (BlockRenderLayer layer : BlockRenderLayer.values()) {
                     ForgeHooksClient.setRenderLayer(layer);
                     for (EnumFacing facing : EnumFacing.VALUES)
                         quads.addAll(model.getQuads(state, facing, 0));
                     quads.addAll(model.getQuads(state, null, 0));
                 }
-            ForgeHooksClient.setRenderLayer(curL);
+                ForgeHooksClient.setRenderLayer(curL);
+            }
         }
         return quads;
     }

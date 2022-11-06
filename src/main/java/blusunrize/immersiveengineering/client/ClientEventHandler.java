@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.fx.ParticleFractal;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
-import blusunrize.immersiveengineering.client.gui.GuiRevolver;
 import blusunrize.immersiveengineering.client.gui.GuiToolbox;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench;
 import blusunrize.immersiveengineering.client.render.TileRenderAutoWorkbench.BlueprintLines;
@@ -45,7 +44,6 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.network.MessageChemthrowerSwitch;
 import blusunrize.immersiveengineering.common.util.network.MessageMagnetEquip;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
-import blusunrize.immersiveengineering.common.util.network.MessageRevolverRotate;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
@@ -79,7 +77,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -240,32 +237,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener {
         if (event.getItemStack().getItem() instanceof IBulletContainer)
             for (String s : BULLET_TOOLTIP)
                 event.getToolTip().add(s);
-    }
-
-    @SubscribeEvent()
-    public void onRenderTooltip(RenderTooltipEvent.PostText event) {
-        ItemStack stack = event.getStack();
-        if (stack.getItem() instanceof IBulletContainer) {
-            NonNullList<ItemStack> bullets = ((IBulletContainer) stack.getItem()).getBullets(stack, true);
-            if (bullets != null) {
-                int bulletAmount = ((IBulletContainer) stack.getItem()).getBulletCount(stack);
-                int line = event.getLines().size() - Utils.findSequenceInList(event.getLines(), BULLET_TOOLTIP, (s, s2) -> s.equals(s2.substring(2)));
-
-                int currentX = event.getX();
-                int currentY = line > 0 ? event.getY() + (event.getHeight() + 1 - line * 10) : event.getY() - 42;
-
-                GlStateManager.pushMatrix();
-                GlStateManager.enableBlend();
-                GlStateManager.enableRescaleNormal();
-                GlStateManager.translate(currentX, currentY, 700);
-                GlStateManager.scale(.5f, .5f, 1);
-
-                GuiRevolver.drawExternalGUI(bullets, bulletAmount);
-
-                GlStateManager.disableRescaleNormal();
-                GlStateManager.popMatrix();
-            }
-        }
     }
 
     @SubscribeEvent
@@ -509,56 +480,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener {
                         String s = I18n.format("desc.immersiveengineering.info.colour", "#" + ItemFluorescentTube.hexColorString(equipped));
                         ClientUtils.font().drawString(s, event.getResolution().getScaledWidth() / 2 - ClientUtils.font().getStringWidth(s) / 2,
                                 event.getResolution().getScaledHeight() - GuiIngameForge.left_height - 20, ItemFluorescentTube.getRGBInt(equipped, 1), true);
-                    } else if (equipped.getItem() instanceof ItemRevolver || equipped.getItem() instanceof ItemSpeedloader) {
-                        NonNullList<ItemStack> bullets = ((IBulletContainer) equipped.getItem()).getBullets(equipped, true);
-                        if (bullets != null) {
-                            int bulletAmount = ((IBulletContainer) equipped.getItem()).getBulletCount(equipped);
-                            EnumHandSide side = hand == EnumHand.MAIN_HAND ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
-                            boolean right = side == EnumHandSide.RIGHT;
-                            float dx = right ? event.getResolution().getScaledWidth() - 32 - 48 : 48;
-                            float dy = event.getResolution().getScaledHeight() - 64;
-                            GlStateManager.pushMatrix();
-                            GlStateManager.enableRescaleNormal();
-                            GlStateManager.enableBlend();
-                            GlStateManager.translate(dx, dy, 0);
-                            GlStateManager.scale(.5f, .5f, 1);
-
-                            GuiRevolver.drawExternalGUI(bullets, bulletAmount);
-
-                            if (equipped.getItem() instanceof ItemRevolver) {
-                                int cd = ((ItemRevolver) equipped.getItem()).getShootCooldown(equipped);
-                                float cdMax = ((ItemRevolver) equipped.getItem()).getMaxShootCooldown(equipped);
-                                float cooldown = 1 - cd / cdMax;
-                                if (cooldown > 0) {
-                                    GlStateManager.scale(2, 2, 1);
-                                    GlStateManager.translate(-dx, -dy, 0);
-                                    GlStateManager.translate(event.getResolution().getScaledWidth() / 2 + (right ? 1 : -6), event.getResolution().getScaledHeight() / 2 - 7, 0);
-
-                                    float h1 = cooldown > .33 ? .5f : cooldown * 1.5f;
-                                    float h2 = cooldown;
-                                    float x2 = cooldown < .75 ? 1 : 4 * (1 - cooldown);
-
-                                    float uMin = (88 + (right ? 0 : 7 * x2)) / 256f;
-                                    float uMax = (88 + (right ? 7 * x2 : 0)) / 256f;
-                                    float vMin1 = (112 + (right ? h1 : h2) * 15) / 256f;
-                                    float vMin2 = (112 + (right ? h2 : h1) * 15) / 256f;
-
-                                    ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-                                    Tessellator tessellator = Tessellator.getInstance();
-                                    BufferBuilder worldrenderer = tessellator.getBuffer();
-                                    worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-                                    worldrenderer.pos((right ? 0 : 1 - x2) * 7, 15, 0).tex(uMin, 127 / 256f).endVertex();
-                                    worldrenderer.pos((right ? x2 : 1) * 7, 15, 0).tex(uMax, 127 / 256f).endVertex();
-                                    worldrenderer.pos((right ? x2 : 1) * 7, (right ? h2 : h1) * 15, 0).tex(uMax, vMin2).endVertex();
-                                    worldrenderer.pos((right ? 0 : 1 - x2) * 7, (right ? h1 : h2) * 15, 0).tex(uMin, vMin1).endVertex();
-                                    tessellator.draw();
-                                }
-                            }
-                            RenderHelper.disableStandardItemLighting();
-                            GlStateManager.disableBlend();
-                            GlStateManager.popMatrix();
-                        }
-
                     } else if (equipped.getItem() instanceof ItemRailgun) {
                         int duration = 72000 - (player.isHandActive() && player.getActiveHand() == hand ? player.getItemInUseCount() : 0);
                         int chargeTime = ((ItemRailgun) equipped.getItem()).getChargeTime(equipped);
@@ -850,10 +771,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener {
                 }
                 if (Config.IEConfig.Tools.chemthrower_scroll && equipped.getItem() instanceof ItemChemthrower && ((ItemChemthrower) equipped.getItem()).getUpgrades(equipped).getBoolean("multitank")) {
                     ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.getDwheel() < 0));
-                    event.setCanceled(true);
-                }
-                if (equipped.getItem() instanceof ItemRevolver) {
-                    ImmersiveEngineering.packetHandler.sendToServer(new MessageRevolverRotate(event.getDwheel() < 0));
                     event.setCanceled(true);
                 }
             }

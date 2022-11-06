@@ -69,7 +69,6 @@ public class TConstructHelper extends IECompatModule {
     public void preInit() {
         sendAlloyForMelting(new FluidStack(fluidConstantan, 2), "copper", 1, "nickel", 1);
 
-        FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemBullet, 1, OreDictionary.WILDCARD_VALUE));
         FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemDrillhead, 1, OreDictionary.WILDCARD_VALUE));
 
         TinkerRegistry.addMaterialStats(treatedWood,

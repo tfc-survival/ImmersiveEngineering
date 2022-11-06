@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,8 +34,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
-
-import javax.annotation.Nonnull;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar.SLOT_SEED;
 import static blusunrize.immersiveengineering.common.blocks.metal.TileEntityBelljar.SLOT_SOIL;
@@ -98,30 +95,6 @@ public abstract class IESlot extends Slot {
         @Override
         public boolean isItemValid(ItemStack itemStack) {
             return BlastFurnaceRecipe.isValidBlastFuel(itemStack);
-        }
-    }
-
-    public static class Bullet extends SlotItemHandler {
-        int limit;
-
-        public Bullet(IItemHandler inv, int id, int x, int y, int limit) {
-            super(inv, id, x, y);
-            this.limit = limit;
-        }
-
-        @Override
-        public boolean isItemValid(ItemStack itemStack) {
-            return !itemStack.isEmpty() && itemStack.getItem() instanceof ItemBullet;
-        }
-
-        @Override
-        public int getSlotStackLimit() {
-            return limit;
-        }
-
-        @Override
-        public int getItemStackLimit(@Nonnull ItemStack stack) {
-            return limit;
         }
     }
 

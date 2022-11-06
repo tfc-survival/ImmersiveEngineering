@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -23,9 +22,6 @@ import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.network.*;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonStreamParser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -40,8 +36,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Arrays;
 
 @Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME,
@@ -89,8 +83,6 @@ public class ImmersiveEngineering {
         IEApi.prefixToIngotMap.put("fence", new Integer[]{5, 3});
         IECompatModule.doModulesPreInit();
 
-        new ThreadContributorSpecialsDownloader();
-
         IEContent.preInitEnd();
     }
 
@@ -118,7 +110,6 @@ public class ImmersiveEngineering {
         packetHandler.registerMessage(MessageMineralListSync.Handler.class, MessageMineralListSync.class, messageId++, Side.CLIENT);
         packetHandler.registerMessage(MessageTileSync.HandlerServer.class, MessageTileSync.class, messageId++, Side.SERVER);
         packetHandler.registerMessage(MessageTileSync.HandlerClient.class, MessageTileSync.class, messageId++, Side.CLIENT);
-        packetHandler.registerMessage(MessageSpeedloaderSync.Handler.class, MessageSpeedloaderSync.class, messageId++, Side.CLIENT);
         packetHandler.registerMessage(MessageSkyhookSync.Handler.class, MessageSkyhookSync.class, messageId++, Side.CLIENT);
         packetHandler.registerMessage(MessageMinecartShaderSync.HandlerServer.class, MessageMinecartShaderSync.class, messageId++, Side.SERVER);
         packetHandler.registerMessage(MessageMinecartShaderSync.HandlerClient.class, MessageMinecartShaderSync.class, messageId++, Side.CLIENT);
@@ -132,7 +123,6 @@ public class ImmersiveEngineering {
         packetHandler.registerMessage(MessageObstructedConnection.Handler.class, MessageObstructedConnection.class, messageId++, Side.CLIENT);
         packetHandler.registerMessage(MessageSetGhostSlots.Handler.class, MessageSetGhostSlots.class, messageId++, Side.SERVER);
         packetHandler.registerMessage(MessageMaintenanceKit.Handler.class, MessageMaintenanceKit.class, messageId++, Side.SERVER);
-        packetHandler.registerMessage(MessageRevolverRotate.Handler.class, MessageRevolverRotate.class, messageId++, Side.SERVER);
 
         IEIMCHandler.init();
         IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(instance));
@@ -250,41 +240,4 @@ public class ImmersiveEngineering {
         }
     };
 
-    public static class ThreadContributorSpecialsDownloader extends Thread {
-        public static ThreadContributorSpecialsDownloader activeThread;
-
-        public ThreadContributorSpecialsDownloader() {
-            setName("Immersive Engineering Contributors Thread");
-            setDaemon(true);
-            start();
-            activeThread = this;
-        }
-
-        @Override
-        public void run() {
-            Gson gson = new Gson();
-            try {
-                IELogger.info("Attempting to download special revolvers from GitHub");
-                URL url = new URL("https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/gh-pages/contributorRevolvers.json");
-                JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(url.openStream()));
-                while (parser.hasNext()) {
-                    try {
-                        JsonElement je = parser.next();
-                        ItemRevolver.SpecialRevolver revolver = gson.fromJson(je, ItemRevolver.SpecialRevolver.class);
-                        if (revolver != null) {
-                            if (revolver.uuid != null)
-                                for (String uuid : revolver.uuid)
-                                    ItemRevolver.specialRevolvers.put(uuid, revolver);
-                            ItemRevolver.specialRevolversByTag.put(!revolver.tag.isEmpty() ? revolver.tag : revolver.flavour, revolver);
-                        }
-                    } catch (Exception excepParse) {
-                        IELogger.warn("Error on parsing a SpecialRevolver");
-                    }
-                }
-            } catch (Exception e) {
-                IELogger.info("Could not load contributor+special revolver list.");
-                e.printStackTrace();
-            }
-        }
-    }
 }

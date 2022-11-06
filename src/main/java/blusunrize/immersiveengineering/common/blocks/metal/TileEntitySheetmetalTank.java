@@ -40,6 +40,8 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
     private int[] oldComps = new int[4];
     private int masterCompOld;
 
+    private int freezeTicks = 0;
+
     private static final int[] size = {5, 3, 3};
 
     public TileEntitySheetmetalTank() {
@@ -77,24 +79,35 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
     @Override
     public void update() {
         ApiUtils.checkForNeedlessTicking(this);
-        if (pos == 4 && !world.isRemote && world.getRedstonePowerFromNeighbors(getPos()) > 0)
-            for (int i = 0; i < 6; i++)
-                if (i != 1 && tank.getFluidAmount() > 0) {
-                    EnumFacing f = EnumFacing.byIndex(i);
-                    int outSize = Math.min(144, tank.getFluidAmount());
-                    FluidStack out = Utils.copyFluidStackWithAmount(tank.getFluid(), outSize, false);
-                    BlockPos outputPos = getPos().offset(f);
-                    IFluidHandler output = FluidUtil.getFluidHandler(world, outputPos, f.getOpposite());
-                    if (output != null) {
-                        int accepted = output.fill(out, false);
-                        if (accepted > 0) {
-                            int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
-                            this.tank.drain(drained, true);
-                            this.markContainingBlockForUpdate(null);
-                            updateComparatorValuesPart2();
+        if (pos == 4 && !world.isRemote && world.getRedstonePowerFromNeighbors(getPos()) > 0) {
+
+            if (freezeTicks == 0) {
+                boolean updated = false;
+
+                for (int i = 0; i < 6; i++)
+                    if (i != 1 && tank.getFluidAmount() > 0) {
+                        EnumFacing f = EnumFacing.byIndex(i);
+                        int outSize = Math.min(2000, tank.getFluidAmount());
+                        FluidStack out = Utils.copyFluidStackWithAmount(tank.getFluid(), outSize, false);
+                        BlockPos outputPos = getPos().offset(f);
+                        IFluidHandler output = FluidUtil.getFluidHandler(world, outputPos, f.getOpposite());
+                        if (output != null) {
+                            int accepted = output.fill(out, false);
+                            if (accepted > 0) {
+                                int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
+                                this.tank.drain(drained, true);
+                                this.markContainingBlockForUpdate(null);
+                                updateComparatorValuesPart2();
+                                updated = true;
+                            }
                         }
                     }
-                }
+
+                if (!updated)
+                    freezeTicks = 20;
+            } else
+                freezeTicks--;
+        }
     }
 
     @Override
