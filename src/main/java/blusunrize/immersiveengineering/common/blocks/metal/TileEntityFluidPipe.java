@@ -53,6 +53,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -64,7 +65,7 @@ import static java.util.Collections.newSetFromMap;
 public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty,
         IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
         IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile {
-    static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
+    public static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
     public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList<>();
     public static ArrayList<Function<ItemStack, Boolean>> climbablePipeCovers = new ArrayList<>();
 
@@ -575,7 +576,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
         return false;
     }
 
-    public static HashMap<String, OBJState> cachedOBJStates = new HashMap<String, OBJState>();
+    public static HashMap<Pair<String, String>, OBJState> cachedOBJStates = new HashMap<>();
     static String[] CONNECTIONS = new String[]{
             "con_yMin", "con_yMax", "con_zMin", "con_zMax", "con_xMin", "con_xMax"
     };
@@ -621,7 +622,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
     @Override
     public OBJState getOBJState() {
         String key = getRenderCacheKey();
-        return getStateFromKey(key);
+        return getStateFromKey(key, world.getBlockState(pos).getBlock().getRegistryName().getPath());
     }
 
     //	@Override
@@ -641,8 +642,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 //		}
 //		return null;
 //	}
-    public static OBJState getStateFromKey(String key) {
-        if (!cachedOBJStates.containsKey(key)) {
+    public static OBJState getStateFromKey(String key, String pipeType) {
+        Pair<String, String> cacheKey = Pair.of(key, pipeType);
+        if (!cachedOBJStates.containsKey(cacheKey)) {
             ArrayList<String> parts = new ArrayList();
             Matrix4 rotationMatrix = new Matrix4(TRSRTransformation.identity().getMatrix());//new Matrix4();
             short connections = getConnectionsFromKey(key);
@@ -863,9 +865,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
             tempMatr.invert();
             rotationMatrix = rotationMatrix.multiply(tempMatr);
 
-            cachedOBJStates.put(key, new OBJState(parts, true, new TRSRTransformation(rotationMatrix.toMatrix4f())));
+            cachedOBJStates.put(cacheKey, new OBJState(parts, true, new TRSRTransformation(rotationMatrix.toMatrix4f())));
         }
-        return cachedOBJStates.get(key);
+        return cachedOBJStates.get(cacheKey);
     }
 
 

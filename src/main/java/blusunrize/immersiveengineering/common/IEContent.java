@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChu
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteIron;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteSteel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
+import blusunrize.immersiveengineering.common.blocks.pipes.*;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.*;
@@ -48,11 +49,11 @@ import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.dries007.tfc.api.types.Metal;
 import net.dries007.tfc.types.DefaultMetals;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -105,9 +106,7 @@ import net.minecraftforge.registries.IRegistryDelegate;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.Function;
-
-import static com.google.common.collect.ImmutableMap.toImmutableMap;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber
 public class IEContent {
@@ -308,18 +307,26 @@ public class IEContent {
         itemPipeCover = new ItemPipeCover();
     }
 
-    public static Map<Metal, BlockTFCMetalPipe> pipes;
-
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
 
         IForgeRegistry<Metal> metalRegistry = GameRegistry.findRegistry(Metal.class);
-        pipes = ImmutableList.of(DefaultMetals.LEAD, DefaultMetals.BRASS, DefaultMetals.STEEL, DefaultMetals.BLACK_STEEL).stream()
-                .map(metalRegistry::getValue)
-                .collect(toImmutableMap(Function.identity(), BlockTFCMetalPipe::new));
+        createFluidMetalPipe(metalRegistry, DefaultMetals.LEAD, TileEntityFluidPipeTFCLead::new);
+        createFluidMetalPipe(metalRegistry, DefaultMetals.BRASS, TileEntityFluidPipeTFCBrass::new);
+        createFluidMetalPipe(metalRegistry, DefaultMetals.STEEL, TileEntityFluidPipeTFCSteel::new);
+        createFluidMetalPipe(metalRegistry, DefaultMetals.BLACK_STEEL, () -> new TileEntityFluidPipeTFCBlackSteel());
+        createFluidPipe("rubber", TileEntityFluidPipeTFCRubber::new, SoundType.SLIME);
 
         for (Block block : registeredIEBlocks)
             event.getRegistry().register(block.setRegistryName(createRegistryName(block.getTranslationKey())));
+    }
+
+    private static void createFluidMetalPipe(IForgeRegistry<Metal> metalRegistry, ResourceLocation metalName, Supplier<TileEntity> tileFactory) {
+        createFluidPipe(metalRegistry.getValue(metalName).toString(), tileFactory, SoundType.METAL);
+    }
+
+    private static void createFluidPipe(String materialName, Supplier<TileEntity> tileFactory, SoundType metal) {
+        new BlockTFCPipe(materialName, tileFactory, metal);
     }
 
     @SubscribeEvent
@@ -613,7 +620,10 @@ public class IEContent {
         registerTile(TileEntityElectricLantern.class);
         registerTile(TileEntityChargingStation.class);
         registerTile(TileEntityFluidPipe.class);
-        registerTile(TileEntityFluidPipeTFC.class);
+        registerTile(TileEntityFluidPipeTFCLead.class);
+        registerTile(TileEntityFluidPipeTFCBrass.class);
+        registerTile(TileEntityFluidPipeTFCSteel.class);
+        registerTile(TileEntityFluidPipeTFCBlackSteel.class);
         registerTile(TileEntitySampleDrill.class);
         registerTile(TileEntityTeslaCoil.class);
         registerTile(TileEntityFloodlight.class);

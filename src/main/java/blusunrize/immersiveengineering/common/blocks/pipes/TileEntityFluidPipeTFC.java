@@ -1,11 +1,7 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
-package blusunrize.immersiveengineering.common.blocks.metal;
+package blusunrize.immersiveengineering.common.blocks.pipes;
 
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import mctmods.immersivetechnology.api.ITUtils;
 import mctmods.immersivetechnology.common.Config.ITConfig.Experimental;
@@ -32,9 +28,9 @@ public class TileEntityFluidPipeTFC extends TileEntityFluidPipe implements IPipe
     private boolean busy;
     TileEntityFluidPipeTFC.PipeFluidHandler[] sidedHandlers;
 
-    public TileEntityFluidPipeTFC() {
-        this.transferRate = Experimental.pipe_transfer_rate;
-        this.transferRatePressurized = Experimental.pipe_pressurized_transfer_rate;
+    public TileEntityFluidPipeTFC(int transferRate, int transferRatePressurized) {
+        this.transferRate = transferRate;
+        this.transferRatePressurized = transferRatePressurized;
         this.busy = false;
         this.sidedHandlers = new TileEntityFluidPipeTFC.PipeFluidHandler[]{new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.DOWN), new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.UP), new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.NORTH), new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.SOUTH), new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.WEST), new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.EAST)};
     }

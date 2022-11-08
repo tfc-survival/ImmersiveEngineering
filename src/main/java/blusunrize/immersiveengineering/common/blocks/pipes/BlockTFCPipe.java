@@ -1,12 +1,13 @@
-package blusunrize.immersiveengineering.common.blocks.metal;
+package blusunrize.immersiveengineering.common.blocks.pipes;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import net.dries007.tfc.api.types.Metal;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -21,10 +22,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.Properties;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
-public class BlockTFCMetalPipe extends BlockIETileProvider<BlockTFCMetalPipe.SingleType> {
+public class BlockTFCPipe extends BlockIETileProvider<BlockTFCPipe.SingleType> {
 
-    private final Metal metal;
+    private final Supplier<TileEntity> tileFactory;
 
     public enum SingleType implements IStringSerializable, BlockIEBase.IBlockEnum {
         instance;
@@ -45,24 +47,15 @@ public class BlockTFCMetalPipe extends BlockIETileProvider<BlockTFCMetalPipe.Sin
         }
     }
 
-    public BlockTFCMetalPipe(Metal metal) {
-        super("fluid_pipe_" + metal, Material.IRON, PropertyEnum.create("type", SingleType.class), ItemBlockIEBase.class, Properties.AnimationProperty, IOBJModelCallback.PROPERTY, IEProperties.OBJ_TEXTURE_REMAP);
-        this.metal = metal;
+    public BlockTFCPipe(String material, Supplier<TileEntity> tileFactory, SoundType soundType) {
+        super("fluid_pipe_" + material, Material.IRON, PropertyEnum.create("type", SingleType.class), ItemBlockIEBase.class, Properties.AnimationProperty, IOBJModelCallback.PROPERTY, IEProperties.OBJ_TEXTURE_REMAP);
+        this.tileFactory = tileFactory;
         setHardness(3);
         setResistance(15);
         lightOpacity = 0;
         this.setMetaBlockLayer(0, BlockRenderLayer.CUTOUT);
         this.setNotNormalBlock(0);
-    }
-
-    @Override
-    public boolean useCustomStateMapper() {
-        return true;
-    }
-
-    @Override
-    public String getCustomStateMapping(int meta, boolean itemBlock) {
-        return metal.toString();
+        this.setSoundType(soundType);
     }
 
     @Override
@@ -76,7 +69,7 @@ public class BlockTFCMetalPipe extends BlockIETileProvider<BlockTFCMetalPipe.Sin
     @Nullable
     @Override
     public TileEntity createBasicTE(World worldIn, SingleType type) {
-        return new TileEntityFluidPipeTFC();
+        return tileFactory.get();
     }
 
     @Override

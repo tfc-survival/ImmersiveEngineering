@@ -1396,7 +1396,7 @@ public class ClientProxy extends CommonProxy {
         IBlockState state = IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
         IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
         if (state instanceof IExtendedBlockState)
-            state = ((IExtendedBlockState) state).withProperty(Properties.AnimationProperty, TileEntityFluidPipe.getStateFromKey(configuration));
+            state = ((IExtendedBlockState) state).withProperty(Properties.AnimationProperty, TileEntityFluidPipe.getStateFromKey(configuration, "wrought_iron"));
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 0, 1);
