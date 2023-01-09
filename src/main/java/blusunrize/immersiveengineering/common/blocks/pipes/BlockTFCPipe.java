@@ -2,8 +2,8 @@ package blusunrize.immersiveengineering.common.blocks.pipes;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
+import blusunrize.immersiveengineering.common.blocks.BlockTypes_SingleType;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import net.minecraft.block.Block;
@@ -15,7 +15,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -24,31 +23,12 @@ import net.minecraftforge.common.property.Properties;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class BlockTFCPipe extends BlockIETileProvider<BlockTFCPipe.SingleType> {
+public class BlockTFCPipe extends BlockIETileProvider<BlockTypes_SingleType> {
 
     private final Supplier<TileEntity> tileFactory;
 
-    public enum SingleType implements IStringSerializable, BlockIEBase.IBlockEnum {
-        instance;
-
-        @Override
-        public int getMeta() {
-            return 0;
-        }
-
-        @Override
-        public boolean listForCreative() {
-            return true;
-        }
-
-        @Override
-        public String getName() {
-            return name();
-        }
-    }
-
     public BlockTFCPipe(String material, Supplier<TileEntity> tileFactory, SoundType soundType) {
-        super("fluid_pipe_" + material, Material.IRON, PropertyEnum.create("type", SingleType.class), ItemBlockIEBase.class, Properties.AnimationProperty, IOBJModelCallback.PROPERTY, IEProperties.OBJ_TEXTURE_REMAP);
+        super("fluid_pipe_" + material, Material.IRON, PropertyEnum.create("type", BlockTypes_SingleType.class), ItemBlockIEBase.class, Properties.AnimationProperty, IOBJModelCallback.PROPERTY, IEProperties.OBJ_TEXTURE_REMAP);
         this.tileFactory = tileFactory;
         setHardness(3);
         setResistance(15);
@@ -68,7 +48,7 @@ public class BlockTFCPipe extends BlockIETileProvider<BlockTFCPipe.SingleType> {
 
     @Nullable
     @Override
-    public TileEntity createBasicTE(World worldIn, SingleType type) {
+    public TileEntity createBasicTE(World worldIn, BlockTypes_SingleType type) {
         return tileFactory.get();
     }
 

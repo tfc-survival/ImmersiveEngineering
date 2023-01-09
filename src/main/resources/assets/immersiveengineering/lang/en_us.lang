@@ -184,7 +184,7 @@ tile.immersiveengineering.metal_device1.dynamo.name=Kinetic Dynamo
 tile.immersiveengineering.metal_device1.thermoelectric_gen.name=Thermoelectric Generator
 tile.immersiveengineering.metal_device1.electric_lantern.name=Powered Lantern
 tile.immersiveengineering.metal_device1.charging_station.name=Charging Station
-tile.immersiveengineering.metal_device1.fluid_pipe.name=Fluid Pipe
+tile.immersiveengineering.metal_device1.fluid_pipe.name=Wrought Iron Fluid Pipe
 tile.immersiveengineering.metal_device1.sample_drill.name=Core Sample Drill
 tile.immersiveengineering.metal_device1.tesla_coil.name=Tesla Coil
 tile.immersiveengineering.metal_device1.floodlight.name=Floodlight
@@ -1699,3 +1699,11 @@ desc.immersiveengineering.info.shader.details.darkfire=Named and designed after 
 desc.immersiveengineering.info.shader.details.erruption=No particular reference, just another use of vanilla textures, specificially the block breaking overlay.
 desc.immersiveengineering.info.shader.details.terra=Heavily inspired by Livingwood and Terrasteel materials, and incoporating some of Botania's textures.
 desc.immersiveengineering.info.shader.details.waaagh=Yellow makez da biggest BOOOMS!<br>Designed in obvious reference to the Orks in the 40k universe.
+
+tile.immersiveengineering.fluid_pipe_rubber.instance.name=Rubber Fluid Pipe
+tile.immersiveengineering.fluid_pipe_lead.instance.name=Lead Fluid Pipe
+tile.immersiveengineering.fluid_pipe_brass.instance.name=Brass Fluid Pipe
+tile.immersiveengineering.fluid_pipe_steel.instance.name=Steel Fluid Pipe
+tile.immersiveengineering.fluid_pipe_black_steel.instance.name=Black Steel Fluid Pipe
+
+item.immersiveengineering.pipe_cover.name=Pipe Cover

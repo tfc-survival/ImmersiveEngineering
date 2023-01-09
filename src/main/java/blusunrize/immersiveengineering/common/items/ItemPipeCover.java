@@ -26,7 +26,7 @@ public class ItemPipeCover extends ItemIEBase {
     }
 
     public ItemStack withCover(Block block) {
-        ItemStack r = new ItemStack(this);
+        ItemStack r = new ItemStack(this, 8);
 
         r.setTagCompound(new NBTTagCompound());
         r.getTagCompound().setString("block", block.getRegistryName().toString());

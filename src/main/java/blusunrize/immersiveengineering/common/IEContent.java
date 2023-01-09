@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFur
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
+import blusunrize.immersiveengineering.common.blocks.af.AlternateFluxTransformer;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
@@ -189,6 +190,9 @@ public class IEContent {
 
     public static ItemPipeCover itemPipeCover;
 
+    public static List<BlockTFCPipe> tfcPipes = new ArrayList<>();
+    public static AlternateFluxTransformer blockAlternateFluxTransformer;
+
     //	public static BlockIEBase<BlockTypes_> blockClothDevice;
     public static Fluid fluidCreosote;
     public static Fluid fluidPlantoil;
@@ -263,6 +267,8 @@ public class IEContent {
         blockConveyor = new BlockConveyor();
         blockMetalMultiblock = new BlockMetalMultiblocks();
 
+        blockAlternateFluxTransformer = new AlternateFluxTransformer();
+
         blockFluidCreosote = new BlockIEFluid("fluidCreosote", fluidCreosote, Material.WATER).setFlammability(40, 400);
         blockFluidPlantoil = new BlockIEFluid("fluidPlantoil", fluidPlantoil, Material.WATER);
         blockFluidEthanol = new BlockIEFluid("fluidEthanol", fluidEthanol, Material.WATER).setFlammability(60, 600);
@@ -326,7 +332,7 @@ public class IEContent {
     }
 
     private static void createFluidPipe(String materialName, Supplier<TileEntity> tileFactory, SoundType metal) {
-        new BlockTFCPipe(materialName, tileFactory, metal);
+        tfcPipes.add(new BlockTFCPipe(materialName, tileFactory, metal));
     }
 
     @SubscribeEvent
@@ -624,6 +630,7 @@ public class IEContent {
         registerTile(TileEntityFluidPipeTFCBrass.class);
         registerTile(TileEntityFluidPipeTFCSteel.class);
         registerTile(TileEntityFluidPipeTFCBlackSteel.class);
+        registerTile(TileEntityFluidPipeTFCRubber.class);
         registerTile(TileEntitySampleDrill.class);
         registerTile(TileEntityTeslaCoil.class);
         registerTile(TileEntityFloodlight.class);
@@ -653,6 +660,11 @@ public class IEContent {
         registerTile(TileEntityMixer.class);
         //		registerTile(TileEntitySkycrateDispenser.class);
         registerTile(TileEntityFakeLight.class);
+
+        {
+            GameRegistry.registerTileEntity(AlternateFluxTransformer.Tile.class, ImmersiveEngineering.MODID + ":" + AlternateFluxTransformer.class.getSimpleName());
+            registeredIETiles.add(AlternateFluxTransformer.Tile.class);
+        }
 
 
 

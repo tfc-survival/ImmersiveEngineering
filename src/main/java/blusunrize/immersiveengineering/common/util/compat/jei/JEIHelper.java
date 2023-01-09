@@ -53,6 +53,7 @@ public class JEIHelper implements IModPlugin {
     public static IModRegistry modRegistry;
     public static IDrawable slotDrawable;
     public static ITooltipCallback fluidTooltipCallback = new IEFluidTooltipCallback();
+    //private PipeCoverRecipeCategory pipeCoverCategory;
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
@@ -91,6 +92,7 @@ public class JEIHelper implements IModPlugin {
         categories.put(BottlingMachineRecipe.class, new BottlingMachineRecipeCategory(guiHelper));
         categories.put(MixerRecipe.class, new MixerRecipeCategory(guiHelper));
         registry.addRecipeCategories(categories.values().toArray(new IRecipeCategory[0]));
+        //registry.addRecipeCategories(pipeCoverCategory = new PipeCoverRecipeCategory(guiHelper));
     }
 
     @Override
@@ -143,6 +145,9 @@ public class JEIHelper implements IModPlugin {
 
         modRegistry.addRecipeClickArea(GuiModWorkbench.class, 4, 41, 53, 18, "ie.workbench");
         modRegistry.addRecipeClickArea(GuiAutoWorkbench.class, 90, 12, 39, 37, "ie.workbench");
+
+        //modRegistry.addRecipeCatalyst(RecipePipeCover.pipe(), pipeCoverCategory.id);
+        //modRegistry.addRecipes(ImmutableList.of(new PipeCoverRecipeWrapper()), pipeCoverCategory.id);
     }
 
     @Override

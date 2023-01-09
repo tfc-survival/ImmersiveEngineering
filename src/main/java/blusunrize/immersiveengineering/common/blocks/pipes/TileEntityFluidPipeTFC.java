@@ -3,15 +3,14 @@ package blusunrize.immersiveengineering.common.blocks.pipes;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.util.Utils;
-import mctmods.immersivetechnology.api.ITUtils;
-import mctmods.immersivetechnology.common.Config.ITConfig.Experimental;
-import mctmods.immersivetechnology.common.ITContent;
-import mctmods.immersivetechnology.common.util.IPipe;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -21,7 +20,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class TileEntityFluidPipeTFC extends TileEntityFluidPipe implements IPipe {
+public class TileEntityFluidPipeTFC extends TileEntityFluidPipe {
     public int transferRate;
     public int transferRatePressurized;
     public static TileEntityFluidPipeTFC.IPathingMethod pathingMethod;
@@ -35,14 +34,44 @@ public class TileEntityFluidPipeTFC extends TileEntityFluidPipe implements IPipe
         this.sidedHandlers = new TileEntityFluidPipeTFC.PipeFluidHandler[]{new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.DOWN), new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.UP), new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.NORTH), new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.SOUTH), new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.WEST), new TileEntityFluidPipeTFC.PipeFluidHandler(EnumFacing.EAST)};
     }
 
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing != null && this.sideConfig[facing.ordinal()] == 0 ? (T) this.sidedHandlers[facing.ordinal()] : null;
+    }
+
+    public static EnumSet<EnumFacing> allSides = EnumSet.allOf(EnumFacing.class);
+
+    public static void improvedMarkBlockForUpdate(World world, BlockPos pos, @Nullable IBlockState newState) {
+        improvedMarkBlockForUpdate(world, pos, newState, allSides);
+    }
+
+    public static void improvedMarkBlockForUpdate(World world, BlockPos pos, @Nullable IBlockState newState, EnumSet<EnumFacing> directions) {
+        IBlockState state = world.getBlockState(pos);
+        if (newState == null) {
+            newState = state;
+        }
+
+        world.notifyBlockUpdate(pos, state, newState, 3);
+        if (!ForgeEventFactory.onNeighborNotify(world, pos, newState, EnumSet.allOf(EnumFacing.class), true).isCanceled()) {
+            Block blockType = newState.getBlock();
+            Iterator var6 = directions.iterator();
+
+            while (var6.hasNext()) {
+                EnumFacing facing = (EnumFacing) var6.next();
+                BlockPos toNotify = pos.offset(facing);
+                if (world.isBlockLoaded(toNotify)) {
+                    world.neighborChanged(toNotify, blockType, pos);
+                }
+            }
+
+            world.updateObservingBlocksAt(pos, blockType);
+        }
+
     }
 
     public void onNeighborBlockChange(BlockPos otherPos) {
         EnumFacing dir = EnumFacing.getFacingFromVector((float) (otherPos.getX() - this.pos.getX()), (float) (otherPos.getY() - this.pos.getY()), (float) (otherPos.getZ() - this.pos.getZ()));
         if (this.updateConnectionByte(dir)) {
-            ITUtils.improvedMarkBlockForUpdate(this.world, this.pos, null, EnumSet.complementOf(EnumSet.of(dir)));
+            improvedMarkBlockForUpdate(this.world, this.pos, null, EnumSet.complementOf(EnumSet.of(dir)));
         }
 
     }
@@ -61,7 +90,7 @@ public class TileEntityFluidPipeTFC extends TileEntityFluidPipe implements IPipe
             }
 
             if (changed) {
-                ITUtils.improvedMarkBlockForUpdate(this.world, this.pos, null);
+                improvedMarkBlockForUpdate(this.world, this.pos, null);
             }
         }
 
@@ -146,7 +175,7 @@ public class TileEntityFluidPipeTFC extends TileEntityFluidPipe implements IPipe
 
     public boolean receiveClientEvent(int id, int arg) {
         if (id == 0) {
-            ITUtils.improvedMarkBlockForUpdate(this.world, this.pos, (IBlockState) null);
+            improvedMarkBlockForUpdate(this.world, this.pos, (IBlockState) null);
             return true;
         } else {
             return false;
@@ -157,8 +186,10 @@ public class TileEntityFluidPipeTFC extends TileEntityFluidPipe implements IPipe
         return false;
     }
 
+    public static final boolean pipe_last_served = false;
+
     static {
-        pathingMethod = Experimental.pipe_last_served ? (lastValid, outputs) -> {
+        pathingMethod = pipe_last_served ? (lastValid, outputs) -> {
             if (outputs.indexOf(lastValid) != 0) {
                 Collections.swap(outputs, outputs.indexOf(lastValid), 0);
             }
@@ -259,7 +290,11 @@ public class TileEntityFluidPipeTFC extends TileEntityFluidPipe implements IPipe
         }
 
         private int getTranferrableAmount(FluidStack resource) {
-            return (resource.tag == null || !resource.tag.hasKey("pressurized")) && !ITContent.normallyPressurized.contains(resource.getFluid()) ? TileEntityFluidPipeTFC.this.transferRate : TileEntityFluidPipeTFC.this.transferRatePressurized;
+            return (resource.tag == null || !resource.tag.hasKey("pressurized")) && !isPressuredFluid(resource) ? TileEntityFluidPipeTFC.this.transferRate : TileEntityFluidPipeTFC.this.transferRatePressurized;
+        }
+
+        private boolean isPressuredFluid(FluidStack resource) {
+            return false;
         }
 
         public void disableSide(EnumFacing side) {
@@ -281,12 +316,10 @@ public class TileEntityFluidPipeTFC extends TileEntityFluidPipe implements IPipe
             this.fastFillOutputs.put(side, null);
         }
 
-        @Nullable
         public FluidStack drain(FluidStack resource, boolean doDrain) {
             return null;
         }
 
-        @Nullable
         public FluidStack drain(int maxDrain, boolean doDrain) {
             return null;
         }
