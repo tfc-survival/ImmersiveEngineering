@@ -50,10 +50,15 @@ public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEn
 
             if (tile.formed && tile instanceof IIEInventory) {
                 IIEInventory master = (IIEInventory) tile.master();
-                if (master != null && (!(master instanceof ITileDrop) || !((ITileDrop) master).preventInventoryDrop()) && master.getDroppedItems() != null)
+                if (master != null && (!(master instanceof ITileDrop) || !((ITileDrop) master).preventInventoryDrop()) && master.getDroppedItems() != null) {
                     for (ItemStack s : master.getDroppedItems())
                         if (!s.isEmpty())
                             world.spawnEntity(new EntityItem(world, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, s.copy()));
+
+                    NonNullList<ItemStack> inventory = master.getInventory();
+                    for (int i = 0; i < inventory.size(); i++)
+                        inventory.set(i, ItemStack.EMPTY);
+                }
             }
         }
         if (tileEntity instanceof TileEntityMultiblockPart)
