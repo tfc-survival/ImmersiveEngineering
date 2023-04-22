@@ -107,7 +107,11 @@ public class MultiblockAlloySmelter implements IMultiblock {
                     TileEntity curr = world.getTileEntity(pos2);
                     if (curr instanceof TileEntityAlloySmelter) {
                         TileEntityAlloySmelter currBlast = (TileEntityAlloySmelter) curr;
-                        currBlast.offset = new int[]{pos2.getX() - pos.getX(), pos2.getY() - pos.getY(), pos2.getZ() - pos.getZ()};
+                        currBlast.offset = new int[]{
+                                pos2.getX() - pos.getX(),
+                                pos2.getY() - pos.getY(),
+                                pos2.getZ() - pos.getZ()
+                        };
                         currBlast.pos = (h + 1) * 9 + (l + 1) * 3 + (w + 1);
                         currBlast.formed = true;
                         currBlast.markDirty();

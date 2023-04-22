@@ -153,7 +153,11 @@ public class MultiblockAutoWorkbench implements IMultiblock {
                         TileEntityAutoWorkbench tile = (TileEntityAutoWorkbench) curr;
                         tile.formed = true;
                         tile.pos = (h + 1) * 9 + l * 3 + (w + 1);
-                        tile.offset = new int[]{(side == EnumFacing.WEST ? 1 - l : side == EnumFacing.EAST ? l - 1 : side == EnumFacing.NORTH ? ww : -ww), h, (side == EnumFacing.NORTH ? 1 - l : side == EnumFacing.SOUTH ? l - 1 : side == EnumFacing.EAST ? ww : -ww)};
+                        tile.offset = new int[]{
+                                side == EnumFacing.WEST ? 1 - l : side == EnumFacing.EAST ? l - 1 : side == EnumFacing.NORTH ? ww : -ww,
+                                h,
+                                side == EnumFacing.NORTH ? 1 - l : side == EnumFacing.SOUTH ? l - 1 : side == EnumFacing.EAST ? ww : -ww
+                        };
                         tile.mirrored = mirrored;
                         tile.markDirty();
                         world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);

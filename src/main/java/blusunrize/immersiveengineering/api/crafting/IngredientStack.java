@@ -32,7 +32,7 @@ public class IngredientStack {
     public String oreName;
     public FluidStack fluid;
     public int inputSize = 1;
-    public boolean useNBT;
+    public boolean useNBT = false;
 
     public IngredientStack(ItemStack stack) {
         this.stack = stack;

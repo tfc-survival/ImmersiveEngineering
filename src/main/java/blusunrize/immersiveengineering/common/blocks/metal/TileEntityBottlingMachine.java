@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttacha
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -34,6 +35,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -242,9 +244,60 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
         return .5f;
     }
 
+    private static ItemStack actualStack(BottlingProcess process) {
+        return process.items.get(process.processTick >= (int) (process.maxProcessTick * .4375) ? 1 : 0);
+    }
+
+    NonNullList<ItemStack> inv = new NonNullList<ItemStack>(ImmutableList.of(), ItemStack.EMPTY) {
+        @Nonnull
+        @Override
+        public ItemStack get(int i) {
+            if (i < getProcessQueueMaxLength()) {
+                if (bottlingProcessQueue.size() > i) {
+                    BottlingProcess process = bottlingProcessQueue.get(i);
+                    return actualStack(process);
+                } else
+                    return ItemStack.EMPTY;
+            } else
+                throw new IndexOutOfBoundsException("Index: " + i + ", max: " + (getProcessQueueMaxLength() - 1));
+        }
+
+        @Override
+        public ItemStack set(int i, ItemStack stack) {
+            if (i < getProcessQueueMaxLength()) {
+                if (stack.isEmpty() && !processQueue.isEmpty()) {
+                    BottlingProcess process = bottlingProcessQueue.remove(bottlingProcessQueue.size() - 1);
+                    return actualStack(process);
+                }
+                return ItemStack.EMPTY;
+            } else
+                throw new IndexOutOfBoundsException("Index: " + i + ", max: " + getProcessQueueMaxLength());
+        }
+
+        @Override
+        public int size() {
+            return getProcessQueueMaxLength();
+        }
+
+        @Override
+        public boolean add(ItemStack stack) {
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public ItemStack remove(int p_remove_1_) {
+            return ItemStack.EMPTY;
+        }
+    };
+
     @Override
     public NonNullList<ItemStack> getInventory() {
-        return null;
+        return inv;
     }
 
     @Override

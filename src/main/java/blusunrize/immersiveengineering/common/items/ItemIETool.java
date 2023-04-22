@@ -56,6 +56,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -361,8 +363,12 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem, IItemDama
             if (!world.isRemote) {
                 double reachDistance = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getAttributeValue();
                 Connection target = ApiUtils.getTargetConnection(world, player, null, reachDistance);
-                if (target != null)
-                    ImmersiveNetHandler.INSTANCE.removeConnectionAndDrop(target, world, player.getPosition());
+                if (target != null) {
+                    BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, target.start, world.getBlockState(target.start), player);
+                    if (!MinecraftForge.EVENT_BUS.post(event)) {
+                        ImmersiveNetHandler.INSTANCE.removeConnectionAndDrop(target, world, player.getPosition());
+                    }
+                }
             }
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }

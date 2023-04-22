@@ -142,7 +142,11 @@ public class MultiblockBucketWheel implements IMultiblock {
                     tile.formed = true;
                     tile.pos = (w + 3) + (h + 3) * 7;
 
-                    tile.offset = new int[]{(side == EnumFacing.NORTH ? w : side == EnumFacing.SOUTH ? -w : 0), h, (side == EnumFacing.WEST ? w : side == EnumFacing.EAST ? -w : 0)};
+                    tile.offset = new int[]{
+                            side == EnumFacing.NORTH ? w : side == EnumFacing.SOUTH ? -w : 0,
+                            h,
+                            side == EnumFacing.WEST ? w : side == EnumFacing.EAST ? -w : 0
+                    };
                     tile.markDirty();
                     world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
                 }

@@ -59,7 +59,7 @@ public class ContainerToolbox extends ContainerInternalStorageItem implements IC
         else if (slotNumer < 16)
             return ToolboxHandler.isWiring(stack, world);
         else
-            return true;
+            return ToolboxHandler.isCommon(stack);
     }
 
     @Override

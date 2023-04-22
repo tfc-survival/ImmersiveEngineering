@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFur
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
-import blusunrize.immersiveengineering.common.blocks.af.AlternateFluxTransformer;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
@@ -159,6 +158,8 @@ public class IEContent {
     public static BlockIEFluid blockFluidEthanol;
     public static BlockIEFluid blockFluidBiodiesel;
     public static BlockIEFluid blockFluidConcrete;
+    public static BlockIEFluid blockFluidKerosene;
+    public static BlockIEFluid blockFluidSulfuricAcid;
 
     public static ItemIEBase itemBullet = new ItemIEBase("bullet", 64);
     public static ItemIEBase itemMaterial;
@@ -191,7 +192,6 @@ public class IEContent {
     public static ItemPipeCover itemPipeCover;
 
     public static List<BlockTFCPipe> tfcPipes = new ArrayList<>();
-    public static AlternateFluxTransformer blockAlternateFluxTransformer;
 
     //	public static BlockIEBase<BlockTypes_> blockClothDevice;
     public static Fluid fluidCreosote;
@@ -199,6 +199,8 @@ public class IEContent {
     public static Fluid fluidEthanol;
     public static Fluid fluidBiodiesel;
     public static Fluid fluidConcrete;
+    public static Fluid fluidKerosene;
+    public static Fluid fluidSulfuricAcid;
 
     public static Fluid fluidPotion;
 
@@ -208,6 +210,9 @@ public class IEContent {
         fluidEthanol = setupFluid(new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000));
         fluidBiodiesel = setupFluid(new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000));
         fluidConcrete = setupFluid(new Fluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow")).setDensity(2400).setViscosity(4000));
+        fluidKerosene = setupFluid(new Fluid("kerosene", new ResourceLocation("immersiveengineering:blocks/fluid/kerosene_still"), new ResourceLocation("immersiveengineering:blocks/fluid/kerosene_flow")).setDensity(789).setViscosity(1000));
+        fluidSulfuricAcid = setupFluid(new Fluid("sulfuric_acid", new ResourceLocation("immersiveengineering:blocks/fluid/sulfuric_acid_still"), new ResourceLocation("immersiveengineering:blocks/fluid/sulfuric_acid_flow")).setDensity(1000).setViscosity(1000));
+
         fluidPotion = setupFluid(new FluidPotion("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow")));
 
         blockStorage = (BlockIEBase) new BlockIEBase("storage", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
@@ -267,13 +272,14 @@ public class IEContent {
         blockConveyor = new BlockConveyor();
         blockMetalMultiblock = new BlockMetalMultiblocks();
 
-        blockAlternateFluxTransformer = new AlternateFluxTransformer();
 
         blockFluidCreosote = new BlockIEFluid("fluidCreosote", fluidCreosote, Material.WATER).setFlammability(40, 400);
         blockFluidPlantoil = new BlockIEFluid("fluidPlantoil", fluidPlantoil, Material.WATER);
         blockFluidEthanol = new BlockIEFluid("fluidEthanol", fluidEthanol, Material.WATER).setFlammability(60, 600);
         blockFluidBiodiesel = new BlockIEFluid("fluidBiodiesel", fluidBiodiesel, Material.WATER).setFlammability(60, 200);
         blockFluidConcrete = new BlockIEFluidConcrete("fluidConcrete", fluidConcrete, Material.WATER);
+        blockFluidKerosene = new BlockIEFluid("fluidKerosene", fluidKerosene, Material.WATER);
+        blockFluidSulfuricAcid = new BlockIEFluid("fluidSulfuricAcid", fluidSulfuricAcid, Material.WATER);
 
         itemMaterial = new ItemMaterial();
         itemMetal = new ItemIEBase("metal", 64);
@@ -541,6 +547,7 @@ public class IEContent {
         OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.CRAFTING_TABLE));
         OreDictionary.registerOre("rodBlaze", new ItemStack(Items.BLAZE_ROD));
         OreDictionary.registerOre("charcoal", new ItemStack(Items.COAL, 1, 1));
+        OreDictionary.registerOre("bedrock", new ItemStack(Blocks.BEDROCK));
     }
 
     private static ArcRecyclingThreadHandler arcRecycleThread;
@@ -662,8 +669,6 @@ public class IEContent {
         registerTile(TileEntityFakeLight.class);
 
         {
-            GameRegistry.registerTileEntity(AlternateFluxTransformer.Tile.class, ImmersiveEngineering.MODID + ":" + AlternateFluxTransformer.class.getSimpleName());
-            registeredIETiles.add(AlternateFluxTransformer.Tile.class);
         }
 
 
@@ -720,6 +725,8 @@ public class IEContent {
         blockFluidCreosote.setPotionEffects(new PotionEffect(IEPotions.flammable, 100, 0));
         blockFluidEthanol.setPotionEffects(new PotionEffect(MobEffects.NAUSEA, 40, 0));
         blockFluidBiodiesel.setPotionEffects(new PotionEffect(IEPotions.flammable, 100, 1));
+        blockFluidKerosene.setPotionEffects(new PotionEffect(IEPotions.flammable, 300, 1));
+        blockFluidSulfuricAcid.setPotionEffects(new PotionEffect(IEPotions.dissolution, 1, 0));
         blockFluidConcrete.setPotionEffects(new PotionEffect(MobEffects.SLOWNESS, 20, 3, false, false));
 
         ChemthrowerHandler.registerEffect(FluidRegistry.WATER, new ChemthrowerEffect_Extinguish());
@@ -793,7 +800,13 @@ public class IEContent {
         ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 0));
         ChemthrowerHandler.registerFlammable(fluidCreosote);
         ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 1));
+        ChemthrowerHandler.registerEffect(fluidKerosene, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 1));
+
+        ChemthrowerHandler.registerEffect(fluidSulfuricAcid, new ChemthrowerEffect_Potion(null, 0, IEPotions.dissolution, 1, 0));
+        ChemthrowerHandler.registerFlammable(fluidSulfuricAcid);
+
         ChemthrowerHandler.registerFlammable(fluidBiodiesel);
+        ChemthrowerHandler.registerFlammable(fluidKerosene);
         ChemthrowerHandler.registerFlammable(fluidEthanol);
         ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null, 0, new PotionEffect(IEPotions.flammable, 140, 0), new PotionEffect(MobEffects.BLINDNESS, 80, 1)));
         ChemthrowerHandler.registerFlammable("oil");
@@ -802,7 +815,9 @@ public class IEContent {
         ChemthrowerHandler.registerEffect("diesel", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 1));
         ChemthrowerHandler.registerFlammable("diesel");
         ChemthrowerHandler.registerEffect("kerosene", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 100, 1));
+        ChemthrowerHandler.registerEffect("sulfuric_acid", new ChemthrowerEffect_Potion(null, 0, IEPotions.dissolution, 1, 0));
         ChemthrowerHandler.registerFlammable("kerosene");
+        ChemthrowerHandler.registerFlammable("sulfuric_acid");
         ChemthrowerHandler.registerEffect("biofuel", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 1));
         ChemthrowerHandler.registerFlammable("biofuel");
         ChemthrowerHandler.registerEffect("rocket_fuel", new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 60, 2));
@@ -931,6 +946,8 @@ public class IEContent {
         fluidEthanol = FluidRegistry.getFluid("ethanol");
         fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
         fluidConcrete = FluidRegistry.getFluid("concrete");
+        fluidKerosene = FluidRegistry.getFluid("kerosene");
+        fluidSulfuricAcid = FluidRegistry.getFluid("sulfuric_acid");
         fluidPotion = FluidRegistry.getFluid("potion");
     }
 

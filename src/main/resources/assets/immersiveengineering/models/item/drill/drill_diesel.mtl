@@ -1,4 +1,4 @@
 newmtl drill
-map_Ka immersiveengineering:items/drill_diesel
+map_Ka immersiveengineering:items/drill_model/steel
 newmtl head
-map_Ka immersiveengineering:items/drill_diesel
+map_Ka immersiveengineering:items/drill_model/steel

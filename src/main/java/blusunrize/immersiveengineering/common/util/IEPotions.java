@@ -20,6 +20,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
@@ -31,6 +32,7 @@ public class IEPotions {
     public static Potion stunned;
     public static Potion concreteFeet;
     public static Potion flashed;
+    public static Potion dissolution;
 
     public static void init() {
         flammable = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flammable"), true, 0x8f3f1f, 0, false, 0, true, true).setPotionName("immersiveengineering.potion.flammable");
@@ -40,8 +42,9 @@ public class IEPotions {
         stunned = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "stunned"), true, 0x624a98, 0, false, 4, true, true).setPotionName("immersiveengineering.potion.stunned");
         concreteFeet = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "concreteFeet"), true, 0x624a98, 0, false, 5, true, true).setPotionName("immersiveengineering.potion.concreteFeet").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, 2);
         flashed = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flashed"), true, 0x624a98, 0, false, 6, true, true).setPotionName("immersiveengineering.potion.flashed").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15000000596046448D, 2);
+        dissolution = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "dissolution"), true, 0xB29C4F, 0, false, 8, true, true).setPotionName("immersiveengineering.potion.dissolution").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.50000000298023224D, 2);
 
-        IEApi.potions = new Potion[]{flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed};
+        IEApi.potions = new Potion[]{flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed, dissolution};
     }
 
     public static class IEPotion extends Potion {
@@ -94,7 +97,7 @@ public class IEPotions {
 
         @Override
         public void performEffect(EntityLivingBase living, int amplifier) {
-            if (this == IEPotions.slippery) {
+            if (this == slippery) {
                 if (living.onGround)
                     living.moveRelative(0, 0, 1, 0.005F);
                 EntityEquipmentSlot hand = living.getRNG().nextBoolean() ? EntityEquipmentSlot.MAINHAND : EntityEquipmentSlot.OFFHAND;
@@ -103,13 +106,17 @@ public class IEPotions {
                     dropped.setPickupDelay(20);
                     living.setItemStackToSlot(hand, ItemStack.EMPTY);
                 }
-            } else if (this == IEPotions.concreteFeet && !living.world.isRemote) {
+            } else if (this == concreteFeet && !living.world.isRemote) {
                 IBlockState state = living.world.getBlockState(living.getPosition());
                 if (state.getBlock() != IEContent.blockStoneDecoration && state.getBlock() != IEContent.blockStoneDecorationSlabs && state.getBlock() != IEContent.blockStoneDevice) {
                     PotionEffect effect = living.getActivePotionEffect(this);
                     if (effect != null)
                         effect.duration = 0;
                 }
+            } else if (this == dissolution && !living.world.isRemote) {
+                living.attackEntityFrom(new DamageSource("immersiveengineering.damage.dissolution").setDamageBypassesArmor().setDamageIsAbsolute(), (amplifier + 1));
+                for (ItemStack stack : living.getArmorInventoryList())
+                    stack.damageItem(1, living);
             }
         }
     }

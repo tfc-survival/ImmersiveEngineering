@@ -92,6 +92,9 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
         formed = nbt.getBoolean("formed");
         pos = nbt.getInteger("pos");
         offset = nbt.getIntArray("offset");
+        if (offset.length != 3)
+            throw new IllegalArgumentException("malformed `offset` int array");
+
         mirrored = nbt.getBoolean("mirrored");
         facing = EnumFacing.byIndex(nbt.getInteger("facing"));
     }

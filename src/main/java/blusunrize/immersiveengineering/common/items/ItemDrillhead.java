@@ -39,19 +39,34 @@ import java.util.List;
 
 public class ItemDrillhead extends ItemIEBase implements IDrillHead {
     public ItemDrillhead() {
-        super("drillhead", 1, "steel", "iron");
-        perms = new DrillHeadPerm[this.subNames.length];
-        //Maximal damage is slightly proportionate to pickaxes
-        addPerm(0, new DrillHeadPerm("ingotSteel", 3, 1, 3, 10, 7, 10000, "immersiveengineering:items/drill_diesel"));
-        addPerm(1, new DrillHeadPerm("ingotIron", 2, 1, 2, 9, 6, 6000, "immersiveengineering:items/drill_iron"));
+        super("drillhead", 1,
+                "black_steel",
+                "steel",
+                "wrought_iron",
+
+                "diamond_black_steel",
+                "diamond_steel",
+                "diamond_wrought_iron",
+
+                "bedrock",
+                "diamond_bedrock");
+        perms = new DrillHeadPerm[]{
+                //Maximal damage is slightly proportionate to pickaxes
+                new Drill3HeadPerm("ingotBlackSteel", 3, 1, 3, 11, 7, 10000, "immersiveengineering:items/drill_model/black_steel"),
+                new DrillCrossHeadPerm("ingotSteel", 3, 1, 2, 9, 6, 6000, "immersiveengineering:items/drill_model/steel"),
+                new DrillHeadPerm("ingotWroughtIron", 2, 1, 2, 9, 6, 6000, "immersiveengineering:items/drill_model/wrought_iron"),
+
+                new Drill3HeadPerm("ingotBlackSteel", 3, 1, 4, 12, 9, 12000, "immersiveengineering:items/drill_model/diamond_black_steel"),
+                new DrillCrossHeadPerm("ingotSteel", 3, 1, 3, 10, 8, 8000, "immersiveengineering:items/drill_model/diamond_steel"),
+                new DrillHeadPerm("ingotWroughtIron", 2, 1, 2, 9, 6, 6000, "immersiveengineering:items/drill_model/diamond_wrought_iron"),
+
+                new Drill5HeadPerm("bedrock", 5, 1, 4, 11, 10, 14000, "immersiveengineering:items/drill_model/bedrock"),
+                new Drill5HeadPerm("bedrock", 5, 1, 5, 11, 12, 18000, "immersiveengineering:items/drill_model/diamond_bedrock")
+        };
     }
 
     public DrillHeadPerm[] perms;
 
-    private void addPerm(int i, DrillHeadPerm perm) {
-        if (i < perms.length)
-            perms[i] = perm;
-    }
 
     private DrillHeadPerm getHeadPerm(ItemStack stack) {
         if (stack.getItemDamage() >= 0 && stack.getItemDamage() < perms.length)
@@ -84,7 +99,6 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead {
                 if (ApiUtils.isExistingOreName(getHeadPerm(s).repairMaterial))
                     list.add(s);
             }
-
     }
 
     @Override
@@ -147,6 +161,194 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead {
         return ItemNBTHelper.getInt(stack, "headDamage") > 0;
     }
 
+    public static class DrillCrossHeadPerm extends DrillHeadPerm {
+        public DrillCrossHeadPerm(String repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, String texture) {
+            super(repairMaterial, drillSize, drillDepth, drillLevel, drillSpeed, drillAttack, maxDamage, texture);
+        }
+
+        public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, World world, EntityPlayer player, RayTraceResult mop) {
+            EnumFacing side = mop.sideHit;
+            BlockPos pos = mop.getBlockPos();
+            Builder<BlockPos> b = ImmutableList.builder();
+
+            if (side.getAxis() == Axis.Y) {
+                b.add(pos.add(-1, 0, 0));
+                b.add(pos.add(0, 0, -1));
+                b.add(pos.add(0, 0, 1));
+                b.add(pos.add(1, 0, 0));
+
+            } else if (side.getAxis() == Axis.X) {
+                b.add(pos.add(0, -1, 0));
+                b.add(pos.add(0, 0, -1));
+                b.add(pos.add(0, 0, 1));
+                b.add(pos.add(0, 1, 0));
+
+            } else if (side.getAxis() == Axis.Z) {
+                b.add(pos.add(-1, 0, 0));
+                b.add(pos.add(0, -1, 0));
+                b.add(pos.add(0, 1, 0));
+                b.add(pos.add(1, 0, 0));
+            }
+
+            return b.build();
+        }
+    }
+
+    public static class Drill3HeadPerm extends DrillHeadPerm {
+        public Drill3HeadPerm(String repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, String texture) {
+            super(repairMaterial, drillSize, drillDepth, drillLevel, drillSpeed, drillAttack, maxDamage, texture);
+        }
+
+        public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, World world, EntityPlayer player, RayTraceResult mop) {
+            EnumFacing side = mop.sideHit;
+            BlockPos pos = mop.getBlockPos();
+            Builder<BlockPos> b = ImmutableList.builder();
+
+            if (side.getAxis() == Axis.Y) {
+                b.add(pos.add(-1, 0, -1));
+                b.add(pos.add(-1, 0, 0));
+                b.add(pos.add(-1, 0, 1));
+
+                b.add(pos.add(0, 0, -1));
+                b.add(pos.add(0, 0, 1));
+
+                b.add(pos.add(1, 0, -1));
+                b.add(pos.add(1, 0, 0));
+                b.add(pos.add(1, 0, 1));
+            } else if (side.getAxis() == Axis.X) {
+                b.add(pos.add(0, -1, -1));
+                b.add(pos.add(0, -1, 0));
+                b.add(pos.add(0, -1, 1));
+
+                b.add(pos.add(0, 0, -1));
+                b.add(pos.add(0, 0, 1));
+
+                b.add(pos.add(0, 1, -1));
+                b.add(pos.add(0, 1, 0));
+                b.add(pos.add(0, 1, 1));
+            } else if (side.getAxis() == Axis.Z) {
+                b.add(pos.add(-1, -1, 0));
+                b.add(pos.add(-1, 0, 0));
+                b.add(pos.add(-1, 1, 0));
+
+                b.add(pos.add(0, -1, 0));
+                b.add(pos.add(0, 1, 0));
+
+                b.add(pos.add(1, -1, 0));
+                b.add(pos.add(1, 0, 0));
+                b.add(pos.add(1, 1, 0));
+            }
+
+            return b.build();
+        }
+    }
+
+    public static class Drill5HeadPerm extends DrillHeadPerm {
+        public Drill5HeadPerm(String repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, String texture) {
+            super(repairMaterial, drillSize, drillDepth, drillLevel, drillSpeed, drillAttack, maxDamage, texture);
+        }
+
+        public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, World world, EntityPlayer player, RayTraceResult mop) {
+            EnumFacing side = mop.sideHit;
+            BlockPos pos = mop.getBlockPos();
+            Builder<BlockPos> b = ImmutableList.builder();
+
+            if (side.getAxis() == Axis.Y) {
+                b.add(pos.add(-2, 0, -2));
+                b.add(pos.add(-2, 0, -1));
+                b.add(pos.add(-2, 0, 0));
+                b.add(pos.add(-2, 0, 1));
+                b.add(pos.add(-2, 0, 2));
+
+                b.add(pos.add(-1, 0, -2));
+                b.add(pos.add(-1, 0, -1));
+                b.add(pos.add(-1, 0, 0));
+                b.add(pos.add(-1, 0, 1));
+                b.add(pos.add(-1, 0, 2));
+
+                b.add(pos.add(0, 0, -2));
+                b.add(pos.add(0, 0, -1));
+                b.add(pos.add(0, 0, 1));
+                b.add(pos.add(0, 0, 2));
+
+                b.add(pos.add(1, 0, -2));
+                b.add(pos.add(1, 0, -1));
+                b.add(pos.add(1, 0, 0));
+                b.add(pos.add(1, 0, 1));
+                b.add(pos.add(1, 0, 2));
+
+                b.add(pos.add(2, 0, -2));
+                b.add(pos.add(2, 0, -1));
+                b.add(pos.add(2, 0, 0));
+                b.add(pos.add(2, 0, 1));
+                b.add(pos.add(2, 0, 2));
+
+            } else if (side.getAxis() == Axis.X) {
+                b.add(pos.add(0, -2, -2));
+                b.add(pos.add(0, -2, -1));
+                b.add(pos.add(0, -2, 0));
+                b.add(pos.add(0, -2, 1));
+                b.add(pos.add(0, -2, 2));
+
+                b.add(pos.add(0, -1, -2));
+                b.add(pos.add(0, -1, -1));
+                b.add(pos.add(0, -1, 0));
+                b.add(pos.add(0, -1, 1));
+                b.add(pos.add(0, -1, 2));
+
+                b.add(pos.add(0, 0, -2));
+                b.add(pos.add(0, 0, -1));
+                b.add(pos.add(0, 0, 1));
+                b.add(pos.add(0, 0, 2));
+
+                b.add(pos.add(0, 1, -2));
+                b.add(pos.add(0, 1, -1));
+                b.add(pos.add(0, 1, 0));
+                b.add(pos.add(0, 1, 1));
+                b.add(pos.add(0, 1, 2));
+
+                b.add(pos.add(0, 2, -2));
+                b.add(pos.add(0, 2, -1));
+                b.add(pos.add(0, 2, 0));
+                b.add(pos.add(0, 2, 1));
+                b.add(pos.add(0, 2, 2));
+
+            } else if (side.getAxis() == Axis.Z) {
+                b.add(pos.add(-2, -2, 0));
+                b.add(pos.add(-2, -1, 0));
+                b.add(pos.add(-2, 0, 0));
+                b.add(pos.add(-2, 1, 0));
+                b.add(pos.add(-2, 2, 0));
+
+                b.add(pos.add(-1, -2, 0));
+                b.add(pos.add(-1, -1, 0));
+                b.add(pos.add(-1, 0, 0));
+                b.add(pos.add(-1, 1, 0));
+                b.add(pos.add(-1, 2, 0));
+
+                b.add(pos.add(0, -2, 0));
+                b.add(pos.add(0, -1, 0));
+                b.add(pos.add(0, 0, 0));
+                b.add(pos.add(0, 1, 0));
+                b.add(pos.add(0, 2, 0));
+
+                b.add(pos.add(1, -2, 0));
+                b.add(pos.add(1, -1, 0));
+                b.add(pos.add(1, 0, 0));
+                b.add(pos.add(1, 1, 0));
+                b.add(pos.add(1, 2, 0));
+
+                b.add(pos.add(2, -2, 0));
+                b.add(pos.add(2, -1, 0));
+                b.add(pos.add(2, 0, 0));
+                b.add(pos.add(2, 1, 0));
+                b.add(pos.add(2, 2, 0));
+            }
+
+            return b.build();
+        }
+    }
+
     public static class DrillHeadPerm {
         final String repairMaterial;
         final int drillSize;
@@ -169,54 +371,58 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead {
             this.maxDamage = maxDamage;
             this.texture = texture;
         }
+
+        public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, World world, EntityPlayer player, RayTraceResult mop) {
+            EnumFacing side = mop.sideHit;
+            int diameter = drillSize;
+            int depth = drillDepth;
+
+            BlockPos startPos = mop.getBlockPos();
+            IBlockState state = world.getBlockState(startPos);
+            Block block = state.getBlock();
+            float maxHardness = 1;
+            if (block != null && !block.isAir(state, world, startPos))
+                maxHardness = state.getPlayerRelativeBlockHardness(player, world, startPos) * 0.6F;
+            if (maxHardness < 0)
+                maxHardness = 0;
+
+            if (diameter % 2 == 0)//even numbers
+            {
+                float hx = (float) mop.hitVec.x - mop.getBlockPos().getX();
+                float hy = (float) mop.hitVec.y - mop.getBlockPos().getY();
+                float hz = (float) mop.hitVec.z - mop.getBlockPos().getZ();
+                if ((side.getAxis() == Axis.Y && hx < .5) || (side.getAxis() == Axis.Z && hx < .5))
+                    startPos = startPos.add(-diameter / 2, 0, 0);
+                if (side.getAxis() != Axis.Y && hy < .5)
+                    startPos = startPos.add(0, -diameter / 2, 0);
+                if ((side.getAxis() == Axis.Y && hz < .5) || (side.getAxis() == Axis.X && hz < .5))
+                    startPos = startPos.add(0, 0, -diameter / 2);
+            } else//odd numbers
+            {
+                startPos = startPos.add(-(side.getAxis() == Axis.X ? 0 : diameter / 2), -(side.getAxis() == Axis.Y ? 0 : diameter / 2), -(side.getAxis() == Axis.Z ? 0 : diameter / 2));
+            }
+            Builder<BlockPos> b = ImmutableList.builder();
+            for (int dd = 0; dd < depth; dd++)
+                for (int dw = 0; dw < diameter; dw++)
+                    for (int dh = 0; dh < diameter; dh++) {
+                        BlockPos pos = startPos.add((side.getAxis() == Axis.X ? dd : dw), (side.getAxis() == Axis.Y ? dd : dh), (side.getAxis() == Axis.Y ? dh : side.getAxis() == Axis.X ? dw : dd));
+                        if (pos.equals(mop.getBlockPos()))
+                            continue;
+                        state = world.getBlockState(pos);
+                        block = state.getBlock();
+                        float h = state.getPlayerRelativeBlockHardness(player, world, pos);
+                        boolean canHarvest = block.canHarvestBlock(world, pos, player);
+                        boolean drillMat = ((ItemDrill) IEContent.itemDrill).isEffective(state.getMaterial());
+                        boolean hardness = h > maxHardness;
+                        if (canHarvest && drillMat && hardness)
+                            b.add(pos);
+                    }
+            return b.build();
+        }
     }
 
     @Override
     public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, World world, EntityPlayer player, RayTraceResult mop) {
-        EnumFacing side = mop.sideHit;
-        int diameter = getHeadPerm(head).drillSize;
-        int depth = getHeadPerm(head).drillDepth;
-
-        BlockPos startPos = mop.getBlockPos();
-        IBlockState state = world.getBlockState(startPos);
-        Block block = state.getBlock();
-        float maxHardness = 1;
-        if (block != null && !block.isAir(state, world, startPos))
-            maxHardness = state.getPlayerRelativeBlockHardness(player, world, startPos) * 0.6F;
-        if (maxHardness < 0)
-            maxHardness = 0;
-
-        if (diameter % 2 == 0)//even numbers
-        {
-            float hx = (float) mop.hitVec.x - mop.getBlockPos().getX();
-            float hy = (float) mop.hitVec.y - mop.getBlockPos().getY();
-            float hz = (float) mop.hitVec.z - mop.getBlockPos().getZ();
-            if ((side.getAxis() == Axis.Y && hx < .5) || (side.getAxis() == Axis.Z && hx < .5))
-                startPos = startPos.add(-diameter / 2, 0, 0);
-            if (side.getAxis() != Axis.Y && hy < .5)
-                startPos = startPos.add(0, -diameter / 2, 0);
-            if ((side.getAxis() == Axis.Y && hz < .5) || (side.getAxis() == Axis.X && hz < .5))
-                startPos = startPos.add(0, 0, -diameter / 2);
-        } else//odd numbers
-        {
-            startPos = startPos.add(-(side.getAxis() == Axis.X ? 0 : diameter / 2), -(side.getAxis() == Axis.Y ? 0 : diameter / 2), -(side.getAxis() == Axis.Z ? 0 : diameter / 2));
-        }
-        Builder<BlockPos> b = ImmutableList.builder();
-        for (int dd = 0; dd < depth; dd++)
-            for (int dw = 0; dw < diameter; dw++)
-                for (int dh = 0; dh < diameter; dh++) {
-                    BlockPos pos = startPos.add((side.getAxis() == Axis.X ? dd : dw), (side.getAxis() == Axis.Y ? dd : dh), (side.getAxis() == Axis.Y ? dh : side.getAxis() == Axis.X ? dw : dd));
-                    if (pos.equals(mop.getBlockPos()))
-                        continue;
-                    state = world.getBlockState(pos);
-                    block = state.getBlock();
-                    float h = state.getPlayerRelativeBlockHardness(player, world, pos);
-                    boolean canHarvest = block.canHarvestBlock(world, pos, player);
-                    boolean drillMat = ((ItemDrill) IEContent.itemDrill).isEffective(state.getMaterial());
-                    boolean hardness = h > maxHardness;
-                    if (canHarvest && drillMat && hardness)
-                        b.add(pos);
-                }
-        return b.build();
+        return getHeadPerm(head).getExtraBlocksDug(head, world, player, mop);
     }
 }

@@ -416,7 +416,7 @@ public class EventHandler {
             for (Entry<MineralMix, Integer> e : ExcavatorHandler.mineralList.entrySet())
                 if (e.getKey() != null && e.getValue() != null)
                     packetMap.put(e.getKey(), e.getValue());
-            ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
+            ImmersiveEngineering.packetHandler.sendTo(new MessageMineralListSync(packetMap), (EntityPlayerMP) event.player);
         }
     }
 

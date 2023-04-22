@@ -589,8 +589,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
             else
                 key.append("0");
         }
-        if (!pipeCover.isEmpty())
-            key.append("scaf:").append(pipeCover);
+        if (!pipeCover.isEmpty()) {
+            Block b = pipeCover.getItem() == IEContent.itemPipeCover ?
+                    IEContent.itemPipeCover.getCover(pipeCover) :
+                    Block.getBlockFromItem(pipeCover.getItem());
+            key.append("scaf:").append(b).append(":").append(pipeCover.getMetadata());
+        }
         key.append(color);
         return key.toString();
     }

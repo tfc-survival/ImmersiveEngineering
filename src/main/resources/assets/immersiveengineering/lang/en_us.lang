@@ -249,6 +249,8 @@ tile.immersiveengineering.fluidConcrete.name=Liquid Concrete
 
 fluid.creosote=Creosote Oil
 fluid.plantoil=Plant Oil
+fluid.kerosene=Kerosene
+fluid.sulfuric_acid=Sulfuric Acid
 fluid.ethanol=Ethanol
 fluid.biodiesel=Biodiesel
 fluid.concrete=Liquid Concrete
@@ -392,8 +394,14 @@ item.immersiveengineering.bullet.potion.linger.name=Lingering Phial Cartridge
 item.immersiveengineering.bullet.flare.name=Flare Cartridge
 
 item.immersiveengineering.drill.diesel.name=Mining Drill
-item.immersiveengineering.drillhead.iron.name=Iron Drill Head
+item.immersiveengineering.drillhead.black_steel.name=Black Steel Drill Head
 item.immersiveengineering.drillhead.steel.name=Steel Drill Head
+item.immersiveengineering.drillhead.wrought_iron.name=Wrought Iron Drill Head
+item.immersiveengineering.drillhead.diamond_black_steel.name=Diamond Black Steel Drill Head
+item.immersiveengineering.drillhead.diamond_steel.name=Diamond Steel Drill Head
+item.immersiveengineering.drillhead.diamond_wrought_iron.name=Diamond Wrought Iron Drill Head
+item.immersiveengineering.drillhead.bedrock.name=Bedrock Drill Head
+item.immersiveengineering.drillhead.diamond_bedrock.name=Diamond Bedrock Drill Head
 
 item.immersiveengineering.skyhook.name=Engineer's Skyhook
 
@@ -1066,6 +1074,8 @@ immersiveengineering.potion.sticky=Sticky
 immersiveengineering.potion.stunned=Stunned
 immersiveengineering.potion.concreteFeet=Concrete Feet
 immersiveengineering.potion.flashed=Flashed
+immersiveengineering.potion.dissolution=Dissolution
+immersiveengineering.damage.dissolution=dissolved
 
 #MANUAL
 ie.manual.currentVersion= - CURRENT

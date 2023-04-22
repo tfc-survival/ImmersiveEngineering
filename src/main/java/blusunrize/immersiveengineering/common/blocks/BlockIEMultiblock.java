@@ -56,8 +56,9 @@ public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEn
                             world.spawnEntity(new EntityItem(world, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, s.copy()));
 
                     NonNullList<ItemStack> inventory = master.getInventory();
-                    for (int i = 0; i < inventory.size(); i++)
-                        inventory.set(i, ItemStack.EMPTY);
+                    if (inventory != null)
+                        for (int i = 0; i < inventory.size(); i++)
+                            inventory.set(i, ItemStack.EMPTY);
                 }
             }
         }

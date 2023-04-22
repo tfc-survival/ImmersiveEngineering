@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttacha
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -35,6 +35,8 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMetalPress, MetalPressRecipe> implements IPlayerInteraction, IConveyorAttachable {
     public TileEntityMetalPress() {
         super(MultiblockMetalPress.instance, new int[]{3, 3, 1}, 16000, true);
@@ -44,6 +46,58 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
     //	public MetalPressRecipe[] curRecipes = new MetalPressRecipe[3];
     //	public int[] process = new int[3];
     public ItemStack mold = ItemStack.EMPTY;
+    NonNullList<ItemStack> inv = new NonNullList<ItemStack>(ImmutableList.of(), ItemStack.EMPTY) {
+        @Nonnull
+        @Override
+        public ItemStack get(int i) {
+            if (i == 0)
+                return mold;
+            else if (i <= getProcessQueueMaxLength()) {
+                if (processQueue.size() >= i) {
+                    MultiblockProcessInWorld<MetalPressRecipe> process = (MultiblockProcessInWorld<MetalPressRecipe>) processQueue.get(i - 1);
+                    return process.inputItems.get(0);
+                } else
+                    return ItemStack.EMPTY;
+            } else
+                throw new IndexOutOfBoundsException("Index: " + i + ", max: " + getProcessQueueMaxLength());
+        }
+
+        @Override
+        public ItemStack set(int i, ItemStack stack) {
+            if (i == 0) {
+                ItemStack prev = mold;
+                mold = stack;
+                return prev;
+            } else if (i <= getProcessQueueMaxLength()) {
+                if (stack.isEmpty() && !processQueue.isEmpty()) {
+                    MultiblockProcessInWorld<MetalPressRecipe> process = (MultiblockProcessInWorld<MetalPressRecipe>) processQueue.remove(processQueue.size() - 1);
+                    return process.inputItems.get(0);
+                }
+                return ItemStack.EMPTY;
+            } else
+                throw new IndexOutOfBoundsException("Index: " + i + ", max: " + getProcessQueueMaxLength());
+        }
+
+        @Override
+        public int size() {
+            return getProcessQueueMaxLength() + 1;
+        }
+
+        @Override
+        public boolean add(ItemStack stack) {
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public ItemStack remove(int p_remove_1_) {
+            return ItemStack.EMPTY;
+        }
+    };
     //	public boolean active;
     //	public static final int MAX_PROCESS = 120;
     //	public int stopped = -1;
@@ -215,12 +269,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 
     @Override
     public NonNullList<ItemStack> getInventory() {
-        return null;
-    }
-
-    @Override
-    public NonNullList<ItemStack> getDroppedItems() {
-        return ListUtils.fromItem(mold);
+        return inv;
     }
 
     @Override

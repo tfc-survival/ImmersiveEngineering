@@ -175,7 +175,11 @@ public class MultiblockRefinery implements IMultiblock {
                         TileEntityRefinery tile = (TileEntityRefinery) curr;
                         tile.formed = true;
                         tile.pos = (h + 1) * 15 + l * 5 + (w + 2);
-                        tile.offset = new int[]{(side == EnumFacing.WEST ? -l : side == EnumFacing.EAST ? l : side == EnumFacing.NORTH ? ww : -ww), h, (side == EnumFacing.NORTH ? -l : side == EnumFacing.SOUTH ? l : side == EnumFacing.EAST ? ww : -ww)};
+                        tile.offset = new int[]{
+                                side == EnumFacing.WEST ? -l : side == EnumFacing.EAST ? l : side == EnumFacing.NORTH ? ww : -ww,
+                                h,
+                                side == EnumFacing.NORTH ? -l : side == EnumFacing.SOUTH ? l : side == EnumFacing.EAST ? ww : -ww
+                        };
                         tile.mirrored = mirror;
                         tile.markDirty();
                         world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);

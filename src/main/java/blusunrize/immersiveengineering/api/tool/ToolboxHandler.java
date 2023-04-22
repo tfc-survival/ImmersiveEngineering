@@ -26,6 +26,7 @@ public class ToolboxHandler {
     private static final List<Predicate<ItemStack>> tools = new ArrayList<>();
     private static final List<Predicate<ItemStack>> foods = new ArrayList<>();
     private static final List<BiPredicate<ItemStack, World>> wiring = new ArrayList<>();
+    private static Predicate<ItemStack> commonBlacklist = __ -> false;
 
     static {
         tools.add((s) -> (s.getItem() instanceof ITool && ((ITool) s.getItem()).isTool(s)));
@@ -73,5 +74,13 @@ public class ToolboxHandler {
 
     public static void addWiringType(BiPredicate<ItemStack, World> in) {
         wiring.add(in);
+    }
+
+    public static boolean isCommon(ItemStack s) {
+        return !commonBlacklist.test(s);
+    }
+
+    public static void addBlackListed(Predicate<ItemStack> f) {
+        commonBlacklist = commonBlacklist.or(f);
     }
 }
