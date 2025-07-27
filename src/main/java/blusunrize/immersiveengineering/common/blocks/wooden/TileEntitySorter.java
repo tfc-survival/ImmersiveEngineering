@@ -22,7 +22,6 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.text.*;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.items.*;
-import net.minecraftforge.oredict.*;
 
 import java.util.*;
 import java.util.function.*;
@@ -166,15 +165,6 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
         return ItemStack.EMPTY;
     }
 
-    private boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack, boolean fuzzy, boolean nbt) {
-        boolean b = OreDictionary.itemMatches(filterStack, stack, true);
-        if (!b && fuzzy)
-            b = filterStack.getItem().equals(stack.getItem());
-        if (nbt)
-            b &= Utils.compareItemNBT(filterStack, stack);
-        return b;
-    }
-
     /**
      * @param stack the stack to check
      * @param side  the side the filter is on
@@ -185,7 +175,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
         for (ItemStack filterStack : filter.filters[side.ordinal()])
             if (!filterStack.isEmpty()) {
                 unmapped = false;
-                if (compareStackToFilterstack(stack, filterStack, doFuzzy(side.ordinal()), doNBT(side.ordinal())))
+                if (FilterUtils.compareStackToFilterstack(stack, filterStack, doFuzzy(side.ordinal()), doNBT(side.ordinal())))
                     return EnumFilterResult.VALID_FILTERED;
             }
         if (unmapped)
@@ -209,7 +199,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
             @Override
             public boolean test(ItemStack stack) {
                 for (ItemStack filterStack : filter)
-                    if (compareStackToFilterstack(stack, filterStack, doFuzzy(side0.ordinal()), doNBT(side0.ordinal())))
+                    if (FilterUtils.compareStackToFilterstack(stack, filterStack, doFuzzy(side0.ordinal()), doNBT(side0.ordinal())))
                         return true;
                 return false;
             }
@@ -224,7 +214,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
 
         return concat.isEmpty() ? stack -> true : stack -> {
             for (ItemStack filterStack : concat)
-                if (compareStackToFilterstack(stack, filterStack, concatFuzzy, concatNBT))
+                if (FilterUtils.compareStackToFilterstack(stack, filterStack, concatFuzzy, concatNBT))
                     return true;
             return false;
         };
