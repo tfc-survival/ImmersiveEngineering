@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.pipes;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_SingleType;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
@@ -12,6 +13,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -88,5 +90,20 @@ public class BlockTFCPipe extends BlockIETileProvider<BlockTypes_SingleType> {
     @Override
     public boolean allowHammerHarvest(IBlockState state) {
         return true;
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state, IBlockAccess w, BlockPos pos) {
+        TileEntity tile = w.getTileEntity(pos);
+        if (tile instanceof TileEntityFluidPipe) {
+            ItemStack pipeCover = ((TileEntityFluidPipe) tile).pipeCover;
+            if (!pipeCover.isEmpty()) {
+                Block b = pipeCover.getItem() == IEContent.itemPipeCover ?
+                    IEContent.itemPipeCover.getCover(pipeCover) :
+                    Block.getBlockFromItem(pipeCover.getItem());
+                return b.getLightOpacity(b.getStateFromMeta(pipeCover.getMetadata()));
+            }
+        }
+        return super.getLightOpacity(state, w, pos);
     }
 }
