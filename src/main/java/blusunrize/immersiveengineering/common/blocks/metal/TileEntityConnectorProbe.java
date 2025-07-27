@@ -8,31 +8,28 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.*;
+import net.minecraft.block.material.*;
+import net.minecraft.block.state.*;
+import net.minecraft.client.resources.*;
+import net.minecraft.entity.item.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
+import net.minecraftforge.client.*;
+import net.minecraftforge.fml.relauncher.*;
 
-import java.util.List;
+import java.util.*;
 
 public class TileEntityConnectorProbe extends TileEntityConnectorRedstone {
     private int redstoneChannelSending = 0;
     private int lastOutput = 0;
+
+    private int lookingSlot = 0;
 
     @Override
     public void update() {
@@ -165,8 +162,8 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone {
         if (!hammer)
             return null;
         return new String[]{
-                I18n.format(Lib.DESC_INFO + "redstoneChannel.rec", I18n.format("item.fireworksCharge." + EnumDyeColor.byMetadata(redstoneChannel).getTranslationKey())),
-                I18n.format(Lib.DESC_INFO + "redstoneChannel.send", I18n.format("item.fireworksCharge." + EnumDyeColor.byMetadata(redstoneChannelSending).getTranslationKey()))
+            I18n.format(Lib.DESC_INFO + "redstoneChannel.rec", I18n.format("item.fireworksCharge." + EnumDyeColor.byMetadata(redstoneChannel).getTranslationKey())),
+            I18n.format(Lib.DESC_INFO + "redstoneChannel.send", I18n.format("item.fireworksCharge." + EnumDyeColor.byMetadata(redstoneChannelSending).getTranslationKey()))
         };
     }
 

@@ -8,25 +8,24 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
-import blusunrize.immersiveengineering.common.gui.ContainerSorter;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import blusunrize.immersiveengineering.*;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.client.*;
+import blusunrize.immersiveengineering.common.blocks.wooden.*;
+import blusunrize.immersiveengineering.common.gui.*;
+import blusunrize.immersiveengineering.common.util.network.*;
+import net.minecraft.client.*;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.resources.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.*;
+import net.minecraft.util.text.*;
+import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.relauncher.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import static net.minecraft.client.renderer.GlStateManager.DestFactor.ZERO;
 import static net.minecraft.client.renderer.GlStateManager.SourceFactor.ONE;
@@ -79,11 +78,11 @@ public class GuiSorter extends GuiIEContainerBase {
         super.initGui();
         this.buttonList.clear();
         for (int side = 0; side < 6; side++)
-            for (int i = 0; i < 3; i++) {
-                int x = guiLeft + 3 + (side / 2) * 58 + i * 18;
+            for (int i = 1; i < 3; i++) {
+                int x = guiLeft + 3 + (side / 2) * 58 + i * 18 - 9;
                 int y = guiTop + 3 + (side % 2) * 76;
                 ButtonSorter b = new ButtonSorter(side * 3 + i, x, y, i);
-                b.active = i == 0 ? this.tile.doOredict(side) : i == 1 ? this.tile.doNBT(side) : this.tile.doFuzzy(side);
+                b.active = i == 1 ? this.tile.doNBT(side) : this.tile.doFuzzy(side);
                 this.buttonList.add(b);
             }
     }

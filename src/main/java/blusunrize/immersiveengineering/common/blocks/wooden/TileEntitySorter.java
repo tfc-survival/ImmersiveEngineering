@@ -8,31 +8,24 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.*;
+import blusunrize.immersiveengineering.common.util.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.inventory.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.*;
+import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.items.*;
+import net.minecraftforge.oredict.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.function.*;
 
 public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
     public SorterInventory filter;
@@ -86,8 +79,6 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
     }
 
     public boolean doOredict(int side) {
-        if (side >= 0 && side < this.sideFilter.length)
-            return (this.sideFilter[side] & 1) != 0;
         return false;
     }
 
@@ -139,8 +130,8 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
             }
 
         return new EnumFacing[][]{
-                validFiltered.toArray(new EnumFacing[0]),
-                validUnfiltered.toArray(new EnumFacing[0])
+            validFiltered.toArray(new EnumFacing[0]),
+            validUnfiltered.toArray(new EnumFacing[0])
         };
     }
 
@@ -175,16 +166,10 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
         return ItemStack.EMPTY;
     }
 
-    private boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack, boolean fuzzy, boolean oredict, boolean nbt) {
+    private boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack, boolean fuzzy, boolean nbt) {
         boolean b = OreDictionary.itemMatches(filterStack, stack, true);
         if (!b && fuzzy)
             b = filterStack.getItem().equals(stack.getItem());
-        if (!b && oredict)
-            for (String name : OreDictionary.getOreNames())
-                if (Utils.compareToOreName(stack, name) && Utils.compareToOreName(filterStack, name)) {
-                    b = true;
-                    break;
-                }
         if (nbt)
             b &= Utils.compareItemNBT(filterStack, stack);
         return b;
@@ -200,7 +185,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
         for (ItemStack filterStack : filter.filters[side.ordinal()])
             if (!filterStack.isEmpty()) {
                 unmapped = false;
-                if (compareStackToFilterstack(stack, filterStack, doFuzzy(side.ordinal()), doOredict(side.ordinal()), doNBT(side.ordinal())))
+                if (compareStackToFilterstack(stack, filterStack, doFuzzy(side.ordinal()), doNBT(side.ordinal())))
                     return EnumFilterResult.VALID_FILTERED;
             }
         if (unmapped)
@@ -224,7 +209,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
             @Override
             public boolean test(ItemStack stack) {
                 for (ItemStack filterStack : filter)
-                    if (compareStackToFilterstack(stack, filterStack, doFuzzy(side0.ordinal()), doOredict(side0.ordinal()), doNBT(side0.ordinal())))
+                    if (compareStackToFilterstack(stack, filterStack, doFuzzy(side0.ordinal()), doNBT(side0.ordinal())))
                         return true;
                 return false;
             }
@@ -235,12 +220,11 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
                 concat.add(filterStack);
 
         final boolean concatFuzzy = doFuzzy(side0.ordinal()) | doFuzzy(side1.ordinal());
-        final boolean concatOredict = doOredict(side0.ordinal()) | doOredict(side1.ordinal());
         final boolean concatNBT = doNBT(side0.ordinal()) | doNBT(side1.ordinal());
 
         return concat.isEmpty() ? stack -> true : stack -> {
             for (ItemStack filterStack : concat)
-                if (compareStackToFilterstack(stack, filterStack, concatFuzzy, concatOredict, concatNBT))
+                if (compareStackToFilterstack(stack, filterStack, concatFuzzy, concatNBT))
                     return true;
             return false;
         };
@@ -295,12 +279,12 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile {
     }
 
     IItemHandler[] insertionHandlers = {
-            new SorterInventoryHandler(this, EnumFacing.DOWN),
-            new SorterInventoryHandler(this, EnumFacing.UP),
-            new SorterInventoryHandler(this, EnumFacing.NORTH),
-            new SorterInventoryHandler(this, EnumFacing.SOUTH),
-            new SorterInventoryHandler(this, EnumFacing.WEST),
-            new SorterInventoryHandler(this, EnumFacing.EAST)};
+        new SorterInventoryHandler(this, EnumFacing.DOWN),
+        new SorterInventoryHandler(this, EnumFacing.UP),
+        new SorterInventoryHandler(this, EnumFacing.NORTH),
+        new SorterInventoryHandler(this, EnumFacing.SOUTH),
+        new SorterInventoryHandler(this, EnumFacing.WEST),
+        new SorterInventoryHandler(this, EnumFacing.EAST)};
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
