@@ -8,76 +8,67 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.AdvancedAABB;
-import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.fluid.*;
+import blusunrize.immersiveengineering.client.models.*;
+import blusunrize.immersiveengineering.common.Config.*;
+import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import blusunrize.immersiveengineering.common.blocks.*;
+import blusunrize.immersiveengineering.common.blocks.wooden.*;
+import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.chickenbones.*;
+import com.google.common.collect.*;
+import net.minecraft.block.*;
+import net.minecraft.block.state.*;
+import net.minecraft.client.*;
+import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.entity.*;
+import net.minecraft.entity.item.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.init.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.world.*;
+import net.minecraftforge.client.*;
+import net.minecraftforge.client.model.obj.OBJModel.*;
+import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.common.model.*;
+import net.minecraftforge.common.util.Constants.*;
+import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.capability.*;
+import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.relauncher.*;
+import net.minecraftforge.oredict.*;
+import org.apache.commons.lang3.tuple.*;
 
-import javax.annotation.Nullable;
+import javax.annotation.*;
+import java.util.Optional;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
+import java.util.concurrent.*;
+import java.util.function.*;
 
-import static java.util.Collections.newSetFromMap;
+import static java.util.Collections.*;
 
 public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty,
-        IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
-        IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile {
+    IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
+    IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile {
     public static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
     public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList<>();
     public static ArrayList<Function<ItemStack, Boolean>> climbablePipeCovers = new ArrayList<>();
 
     public static void initCovers() {
         final ArrayList<ItemStack> scaffolds = Lists.newArrayList(
-                new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()),
-                new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
-                new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()),
-                new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()),
-                new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()),
-                new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()),
-                new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
+            new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()),
+            new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
+            new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()),
+            new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()),
+            new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()),
+            new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()),
+            new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
         validPipeCovers.add(new Function<ItemStack, Boolean>() {
             @Nullable
             @Override
@@ -274,18 +265,20 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
         if (!pipeCover.isEmpty()) {
 
             Block b = pipeCover.getItem() == IEContent.itemPipeCover ?
-                    IEContent.itemPipeCover.getCover(pipeCover) :
-                    Block.getBlockFromItem(pipeCover.getItem());
+                IEContent.itemPipeCover.getCover(pipeCover) :
+                Block.getBlockFromItem(pipeCover.getItem());
 
             IBlockState state = b != null ? b.getStateFromMeta(pipeCover.getMetadata()) : Blocks.STONE.getDefaultState();
             IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
             if (model != null) {
                 BlockRenderLayer curL = MinecraftForgeClient.getRenderLayer();
                 for (BlockRenderLayer layer : BlockRenderLayer.values()) {
-                    ForgeHooksClient.setRenderLayer(layer);
-                    for (EnumFacing facing : EnumFacing.VALUES)
-                        quads.addAll(model.getQuads(state, facing, 0));
-                    quads.addAll(model.getQuads(state, null, 0));
+                    if (b.canRenderInLayer(state, layer)) {
+                        ForgeHooksClient.setRenderLayer(layer);
+                        for (EnumFacing facing : EnumFacing.VALUES)
+                            quads.addAll(model.getQuads(state, facing, 0));
+                        quads.addAll(model.getQuads(state, null, 0));
+                    }
                 }
                 ForgeHooksClient.setRenderLayer(curL);
             }
@@ -315,7 +308,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
     @Override
     public void onNeighborBlockChange(BlockPos otherPos) {
         EnumFacing dir = EnumFacing.getFacingFromVector(otherPos.getX() - pos.getX(),
-                otherPos.getY() - pos.getY(), otherPos.getZ() - pos.getZ());
+            otherPos.getY() - pos.getY(), otherPos.getZ() - pos.getZ());
         if (updateConnectionByte(dir)) {
             world.notifyNeighborsOfStateExcept(pos, getBlockType(), dir);
             markContainingBlockForUpdate(null);
@@ -374,7 +367,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
                         int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
                         float prio = amount / (float) sum;
                         amount = (int) Math.ceil(MathHelper.clamp(amount, 1,
-                                Math.min(resource.amount * prio, tileSpecificAcceptedFluid)));
+                            Math.min(resource.amount * prio, tileSpecificAcceptedFluid)));
                         amount = Math.min(amount, canAccept);
                     }
                     int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
@@ -392,8 +385,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 
         private int getTranferrableAmount(FluidStack resource, DirectionalFluidOutput output) {
             return (resource.tag != null && resource.tag.hasKey("pressurized")) ||
-                    pipe.canOutputPressurized(output.containingTile, false)
-                    ? IEConfig.Machines.pipe_transferrate_pressurized : IEConfig.Machines.pipe_transferrate;
+                pipe.canOutputPressurized(output.containingTile, false)
+                ? IEConfig.Machines.pipe_transferrate_pressurized : IEConfig.Machines.pipe_transferrate;
         }
 
         @Nullable
@@ -578,7 +571,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 
     public static HashMap<Pair<String, String>, OBJState> cachedOBJStates = new HashMap<>();
     static String[] CONNECTIONS = new String[]{
-            "con_yMin", "con_yMax", "con_zMin", "con_zMax", "con_xMin", "con_xMax"
+        "con_yMin", "con_yMax", "con_zMin", "con_zMax", "con_xMin", "con_xMax"
     };
 
     String getRenderCacheKey() {
@@ -591,8 +584,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
         }
         if (!pipeCover.isEmpty()) {
             Block b = pipeCover.getItem() == IEContent.itemPipeCover ?
-                    IEContent.itemPipeCover.getCover(pipeCover) :
-                    Block.getBlockFromItem(pipeCover.getItem());
+                IEContent.itemPipeCover.getCover(pipeCover) :
+                Block.getBlockFromItem(pipeCover.getItem());
             key.append("scaf:").append(b).append(":").append(pipeCover.getMetadata());
         }
         key.append(color);
