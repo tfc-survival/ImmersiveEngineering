@@ -26,7 +26,6 @@ import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.player.*;
-import net.minecraft.init.*;
 import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.tileentity.*;
@@ -268,19 +267,21 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
                 IEContent.itemPipeCover.getCover(pipeCover) :
                 Block.getBlockFromItem(pipeCover.getItem());
 
-            IBlockState state = b != null ? b.getStateFromMeta(pipeCover.getMetadata()) : Blocks.STONE.getDefaultState();
-            IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
-            if (model != null) {
-                BlockRenderLayer curL = MinecraftForgeClient.getRenderLayer();
-                for (BlockRenderLayer layer : BlockRenderLayer.values()) {
-                    if (b.canRenderInLayer(state, layer)) {
-                        ForgeHooksClient.setRenderLayer(layer);
-                        for (EnumFacing facing : EnumFacing.VALUES)
-                            quads.addAll(model.getQuads(state, facing, 0));
-                        quads.addAll(model.getQuads(state, null, 0));
+            if (b != null) {
+                IBlockState state = b.getStateFromMeta(pipeCover.getMetadata());
+                IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+                if (!ModelUtils.isMissingModel(model)) {
+                    BlockRenderLayer curL = MinecraftForgeClient.getRenderLayer();
+                    for (BlockRenderLayer layer : BlockRenderLayer.values()) {
+                        if (b.canRenderInLayer(state, layer)) {
+                            ForgeHooksClient.setRenderLayer(layer);
+                            for (EnumFacing facing : EnumFacing.VALUES)
+                                quads.addAll(model.getQuads(state, facing, 0));
+                            quads.addAll(model.getQuads(state, null, 0));
+                        }
                     }
+                    ForgeHooksClient.setRenderLayer(curL);
                 }
-                ForgeHooksClient.setRenderLayer(curL);
             }
         }
         return quads;
