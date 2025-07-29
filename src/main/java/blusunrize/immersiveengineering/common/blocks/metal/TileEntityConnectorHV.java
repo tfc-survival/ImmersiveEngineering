@@ -8,10 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.Vec3d;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.*;
+import blusunrize.immersiveengineering.api.energy.wires.*;
+import net.minecraft.util.math.*;
 
 public class TileEntityConnectorHV extends TileEntityConnectorMV {
     @Override
@@ -32,9 +31,7 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV {
 
     @Override
     public Vec3d getConnectionOffset(Connection con) {
-        EnumFacing side = facing.getOpposite();
-        double conRadius = con.cableType.getRenderDiameter() / 2;
-        return new Vec3d(.5 + side.getXOffset() * (.25 - conRadius), .5 + side.getYOffset() * (.25 - conRadius), .5 + side.getZOffset() * (.25 - conRadius));
+        return getConnectionOffset2(con, .25);
     }
 
     @Override

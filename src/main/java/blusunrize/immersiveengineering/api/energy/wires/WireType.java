@@ -8,26 +8,23 @@
 
 package blusunrize.immersiveengineering.api.energy.wires;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import blusunrize.immersiveengineering.*;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.*;
+import blusunrize.immersiveengineering.api.tool.*;
+import blusunrize.immersiveengineering.common.*;
+import blusunrize.immersiveengineering.common.util.*;
+import com.google.common.collect.*;
+import net.minecraft.client.renderer.texture.*;
+import net.minecraft.item.*;
+import net.minecraft.util.*;
+import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.relauncher.*;
 
-import javax.annotation.Nullable;
-import java.util.LinkedHashSet;
+import javax.annotation.*;
+import java.util.*;
 
-import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-import static blusunrize.immersiveengineering.api.energy.wires.WireApi.registerFeedthroughForWiretype;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.*;
+import static blusunrize.immersiveengineering.api.energy.wires.WireApi.*;
 import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector.*;
 
 /**
@@ -40,6 +37,7 @@ public abstract class WireType {
     public static final String LV_CATEGORY = "LV";
     public static final String MV_CATEGORY = "MV";
     public static final String HV_CATEGORY = "HV";
+    public static final String SV_CATEGORY = "SV";
     public static final String STRUCTURE_CATEGORY = "STRUCTURE";
     public static final String REDSTONE_CATEGORY = "REDSTONE";
     private static LinkedHashSet<WireType> values = new LinkedHashSet<WireType>();
@@ -113,7 +111,7 @@ public abstract class WireType {
 
     //THESE VALUES ARE FOR IE's OWN WIRES!
     public static String[] uniqueNames = {"COPPER", "ELECTRUM", "STEEL", "STRUCTURE_ROPE", "STRUCTURE_STEEL", "REDSTONE",
-            "COPPER_INS", "ELECTRUM_INS"};
+        "COPPER_INS", "ELECTRUM_INS"};
     public static double[] wireLossRatio;
     public static int[] wireTransferRate;
     public static int[] wireColouration;
@@ -131,13 +129,14 @@ public abstract class WireType {
     public static WireType REDSTONE;
     public static WireType COPPER_INSULATED;
     public static WireType ELECTRUM_INSULATED;
+    public static WireType SHITLOAD;
 
     public static void init() {
         ModContainer currentMod = Loader.instance().activeModContainer();
         if (currentMod != null && !ImmersiveEngineering.MODID.equals(currentMod.getModId())) {
             IELogger.error("WireType#init was called by " + currentMod.getName() + " (" + currentMod.getModId() + ")!");
             IELogger.error("The method should only be called by Immersive Engineering, calls from other mods will cause many " +
-                    "hard-to-debug issues and are therefore forbidden!");
+                "hard-to-debug issues and are therefore forbidden!");
             IELogger.error("Please report this as a bug to " + currentMod.getName());
             return;
         }
@@ -149,22 +148,23 @@ public abstract class WireType {
         REDSTONE = new IEBASE(5);
         COPPER_INSULATED = new IEBASE(6);
         ELECTRUM_INSULATED = new IEBASE(7);
+        SHITLOAD = new ShitloadWireType();
         registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
-                new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
-                .5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_LV.getMeta()),
-                8 * 2F / COPPER.getTransferRate(), 2, (f) -> f);
+            new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
+            .5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_LV.getMeta()),
+            8 * 2F / COPPER.getTransferRate(), 2, (f) -> f);
         registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
-                new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
-                .5625, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_MV.getMeta()),
-                8 * 5F / ELECTRUM.getTransferRate(), 5, (f) -> f);
+            new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
+            .5625, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_MV.getMeta()),
+            8 * 5F / ELECTRUM.getTransferRate(), 5, (f) -> f);
         registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
-                new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
-                .75, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_HV.getMeta()),
-                8 * 15F / STEEL.getTransferRate(), 15, (f) -> f);
+            new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
+            .75, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_HV.getMeta()),
+            8 * 15F / STEEL.getTransferRate(), 15, (f) -> f);
         registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
-                ImmutableMap.of(), new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
-                .5625, .5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_REDSTONE.getMeta()),
-                0, 0, (f) -> f);
+            ImmutableMap.of(), new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
+            .5625, .5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_REDSTONE.getMeta()),
+            0, 0, (f) -> f);
     }
 
     public IElectricEquipment.ElectricSource getElectricSource() {
@@ -284,6 +284,68 @@ public abstract class WireType {
         @Override
         public IElectricEquipment.ElectricSource getElectricSource() {
             return eSource;
+        }
+    }
+
+    private static class ShitloadWireType extends WireType {
+        {
+            WireApi.registerWireType(this);
+        }
+
+        @Override
+        public String getUniqueName() {
+            return "SHITLOAD";
+        }
+
+        @Nullable
+        @Override
+        public String getCategory() {
+            return SV_CATEGORY;
+        }
+
+        @Override
+        public double getLossRatio() {
+            return 0;
+        }
+
+        @Override
+        public int getTransferRate() {
+            return 4096 + 100;
+        }
+
+        @Override
+        public int getColour(Connection connection) {
+            return 0xaa_ff_ff_ff;
+        }
+
+        @Override
+        public double getSlack() {
+            return 1;
+        }
+
+        @Override
+        public TextureAtlasSprite getIcon(Connection connection) {
+            return WireType.iconDefaultWire;
+        }
+
+        @Override
+        public int getMaxLength() {
+            return 64;
+        }
+
+        @Override
+        public ItemStack getWireCoil() {
+            return new ItemStack(ieWireCoil, 1, 8);
+        }
+
+        @Override
+        public double getRenderDiameter() {
+            return 0.07;
+        }
+
+        @Override
+        public boolean isEnergyWire() {
+            return true;
         }
     }
 }

@@ -9,37 +9,28 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.Level;
+import blusunrize.immersiveengineering.*;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.*;
+import blusunrize.immersiveengineering.common.blocks.*;
+import blusunrize.immersiveengineering.common.util.*;
+import com.google.common.collect.*;
+import net.minecraft.block.state.*;
+import net.minecraft.client.*;
+import net.minecraft.entity.*;
+import net.minecraft.nbt.*;
+import net.minecraft.network.*;
+import net.minecraft.network.play.server.*;
+import net.minecraft.util.math.*;
+import net.minecraftforge.common.property.*;
+import org.apache.commons.lang3.tuple.*;
+import org.apache.logging.log4j.*;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
+import javax.annotation.*;
+import java.util.*;
+import java.util.function.*;
 
-import static blusunrize.immersiveengineering.api.energy.wires.WireApi.canMix;
+import static blusunrize.immersiveengineering.api.energy.wires.WireApi.*;
 import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable {
@@ -54,6 +45,10 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
     }
 
     protected boolean canTakeHV() {
+        return false;
+    }
+
+    protected boolean canTakeSV() {
         return false;
     }
 
@@ -93,9 +88,11 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
     @Override
     public boolean canConnectCable(WireType cableType, TargetingInfo target, Vec3i offset) {
         String category = cableType.getCategory();
-        boolean foundAccepting = (HV_CATEGORY.equals(category) && canTakeHV())
+        boolean foundAccepting =
+            (HV_CATEGORY.equals(category) && canTakeHV())
                 || (MV_CATEGORY.equals(category) && canTakeMV())
-                || (LV_CATEGORY.equals(category) && canTakeLV());
+                || (LV_CATEGORY.equals(category) && canTakeLV())
+                || (SV_CATEGORY.equals(category) && canTakeSV());
         if (!foundAccepting)
             return false;
         return limitType == null || (this.isRelay() && canMix(limitType, cableType));

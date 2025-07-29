@@ -8,29 +8,24 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.energy.wires.*;
+import net.minecraft.client.resources.*;
+import net.minecraft.client.util.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.item.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
+import javax.annotation.*;
+import java.util.*;
 
 
 public class ItemWireCoil extends ItemIEBase implements IWireCoil {
     public ItemWireCoil() {
         super("wirecoil", 64, "copper", "electrum", "hv", "rope", "structural", "redstone",
-                "insulated_copper", "insulated_electrum");
+            "insulated_copper", "insulated_electrum", "shitload");
     }
 
     @Override
@@ -53,15 +48,18 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil {
                 return WireType.COPPER_INSULATED;
             case 7:
                 return WireType.ELECTRUM_INSULATED;
+            case 8:
+                return WireType.SHITLOAD;
         }
     }
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag) {
-        if (stack.getItemDamage() == 5) {
+        int damage = stack.getItemDamage();
+        if (damage == 5) {
             list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.redstone"));
             list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.construction1"));
-        } else if (stack.getItemDamage() % 6 > 2) {
+        } else if (damage == 3 || damage == 4) {
             list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.construction0"));
             list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.construction1"));
         }

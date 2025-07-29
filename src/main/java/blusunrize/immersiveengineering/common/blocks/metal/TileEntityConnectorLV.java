@@ -8,42 +8,26 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.AbstractConnection;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
-import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.IEEnums.*;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.*;
+import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.*;
+import blusunrize.immersiveengineering.common.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.*;
+import net.minecraft.entity.*;
+import net.minecraft.nbt.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraftforge.fml.relauncher.*;
+import org.apache.commons.lang3.tuple.*;
 
-import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.function.Consumer;
+import javax.annotation.*;
+import java.util.*;
+import java.util.function.*;
 
 //@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
 public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IIEInternalFluxHandler, IBlockBounds//, ic2.api.energy.tile.IEnergySink
@@ -202,9 +186,13 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
     @Override
     public Vec3d getConnectionOffset(Connection con) {
+        return getConnectionOffset2(con, 0);
+    }
+
+    protected Vec3d getConnectionOffset2(Connection con, double offset) {
         EnumFacing side = facing.getOpposite();
         double conRadius = con.cableType.getRenderDiameter() / 2;
-        return new Vec3d(.5 - conRadius * side.getXOffset(), .5 - conRadius * side.getYOffset(), .5 - conRadius * side.getZOffset());
+        return new Vec3d(.5 + side.getXOffset() * (offset - conRadius), .5 + side.getYOffset() * (offset - conRadius), .5 + side.getZOffset() * (offset - conRadius));
     }
 
     @SideOnly(Side.CLIENT)
@@ -305,7 +293,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
         int received = 0;
         if (!world.isRemote) {
             Set<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this),
-                    world, true);
+                world, true);
             int powerLeft = Math.min(Math.min(getMaxOutput(), getMaxInput()), energy);
             final int powerForSort = powerLeft;
 
