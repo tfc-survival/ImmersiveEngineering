@@ -146,9 +146,10 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
         if (inv != null) {
             if (inv.getSlots() > lookingSlot) {
                 ItemStack stack = inv.getStackInSlot(lookingSlot);
+                int max = Math.min(inv.getSlotLimit(lookingSlot), stack.getMaxStackSize());
                 ItemStack filterStack = filterStackInv.getStackInSlot(0);
                 if (filterStack.isEmpty() || FilterUtils.compareStackToFilterstack(stack, filterStack, checkFuzzy, checkNbt))
-                    return clamp(stack.getCount() * 15 / stack.getMaxStackSize(), 0, 15);
+                    return clamp(stack.getCount() * 15 / max, 0, 15);
             }
         }
         return 0;
@@ -397,7 +398,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
                 observingTileSlots.child(slots[i]);
             }
             if (world.isRemote) {
-                TileEntityConnectorProbeContainerVisitor.fixSlotsPoses(slots, observingTile, observingTileSlots.getArea().getHeight());
+                TileEntityConnectorProbeContainerVisitor.fixSlotsPoses(slots, observingTile, observingTileSlots);
             }
         }
 

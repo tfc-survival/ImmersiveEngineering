@@ -8,6 +8,7 @@ import com.cleanroommc.modularui.api.widget.*;
 import com.cleanroommc.modularui.factory.*;
 import com.cleanroommc.modularui.screen.*;
 import com.cleanroommc.modularui.value.sync.*;
+import com.cleanroommc.modularui.widget.*;
 import com.cleanroommc.modularui.widgets.*;
 import com.cleanroommc.modularui.widgets.slot.*;
 import net.minecraft.block.state.*;
@@ -22,10 +23,12 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.*;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.fml.common.Mod.*;
 import net.minecraftforge.fml.common.eventhandler.*;
 import net.minecraftforge.fml.common.gameevent.*;
 import net.minecraftforge.fml.relauncher.*;
+import org.apache.commons.lang3.mutable.*;
 import org.apache.commons.lang3.tuple.*;
 
 import java.util.*;
@@ -50,7 +53,7 @@ public class TileEntityConnectorProbeContainerVisitor {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void fixSlotsPoses(FakeObservingSlot[] slots, TileEntity observingTile, double availableHeight) {
+    public static void fixSlotsPoses(FakeObservingSlot[] slots, TileEntity observingTile, ParentWidget<?> pane) {
         Minecraft mc = Minecraft.getMinecraft();
 
         EntityPlayerSP fakePlayerClient = new EntityPlayerSP(mc, observingTile.getWorld(), mc.player.connection, new StatisticsManager(), new RecipeBook());
@@ -66,15 +69,15 @@ public class TileEntityConnectorProbeContainerVisitor {
             if (lastContainerSlotPoses != null) {
                 int minY = lastContainerSlotPoses.values().stream().mapToInt(Pair::getRight).min().orElse(0);
                 int maxY = lastContainerSlotPoses.values().stream().mapToInt(Pair::getRight).max().orElse(0) + 18;
+
                 int height = maxY - minY;
-
-                int offsetY = availableHeight > height ? (int) (-minY + (availableHeight - height) / 2) : -minY;
-
+                if (height < 87)
+                    pane.center();
 
                 for (int i = 0; i < slots.length; i++) {
                     Pair<Integer, Integer> maybePos = lastContainerSlotPoses.get(i);
                     if (maybePos != null) {
-                        slots[i].pos(maybePos.getLeft(), maybePos.getRight() + offsetY);
+                        slots[i].pos(maybePos.getLeft(), maybePos.getRight() - minY);
                     }
                 }
                 lastContainerSlotPoses = null;
@@ -82,11 +85,15 @@ public class TileEntityConnectorProbeContainerVisitor {
         }
     }
 
+    private static IdentityHashMap<EntityPlayer, MutableInt> fakeOpener = new IdentityHashMap<>();
+
     public static void openObservingContainer(TileEntity observingTile, EntityPlayer player) {
         if (observingTile instanceof IGuiHolder)
             return;
 
         ImmersiveEngineering.packetHandler.sendTo(new MessageProbeContainer(), (EntityPlayerMP) player);
+
+        fakeOpener.put(player, new MutableInt(20));
 
         World world = observingTile.getWorld();
         IBlockState blockState = world.getBlockState(observingTile.getPos());
@@ -101,6 +108,19 @@ public class TileEntityConnectorProbeContainerVisitor {
         );
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onContainerOpenedClient(PlayerContainerEvent.Open event) {
+        if (fakeOpener.containsKey(event.getEntityPlayer())) {
+            fakeOpener.remove(event.getEntityPlayer());
+            //event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void updateServer(TickEvent.ServerTickEvent event) {
+        fakeOpener.entrySet().removeIf(e -> e.getValue().decrementAndGet() == 0);
+    }
+
     public static void markAwaitForNextContainer() {
         awaitForNextContainer = true;
         tick = 20;
@@ -112,7 +132,7 @@ public class TileEntityConnectorProbeContainerVisitor {
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public static void update(TickEvent.ClientTickEvent event) {
+    public static void updateClient(TickEvent.ClientTickEvent event) {
         if (tick > 0) {
             tick--;
             if (tick == 0)
@@ -122,7 +142,7 @@ public class TileEntityConnectorProbeContainerVisitor {
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public static void onContainerOpened(GuiOpenEvent event) {
+    public static void onContainerOpenedClient(GuiOpenEvent event) {
         if (event.getGui() instanceof GuiContainer) {
             if (awaitForNextContainer) {
                 awaitForNextContainer = false;
