@@ -661,6 +661,9 @@ desc.immersiveengineering.info.blockSide.connectFluid.1=Fluid Output
 desc.immersiveengineering.info.filter.oreDict=Filter: OreDictionary<br>Filters items based on<br>their OreDictionary names.
 desc.immersiveengineering.info.filter.nbt=Filter: NBT Data<br>Filters items with<br>respect to their NBT Data.
 desc.immersiveengineering.info.filter.fuzzy=Filter: Fuzzy<br>Filters items while<br>ignoring their damage value.
+desc.immersiveengineering.info.probe.analyze.placed.side=Check from side placed on
+desc.immersiveengineering.info.probe.analyze.null.side=Check from null side
+desc.immersiveengineering.info.probe.analyze.mode=Toggle analyzing mode
 
 desc.immersiveengineering.info.oreDict.off=OreDictionary: Disabled
 desc.immersiveengineering.info.oreDict.on=OreDictionary: Enabled

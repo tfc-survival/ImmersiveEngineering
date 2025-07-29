@@ -18,6 +18,7 @@ import com.cleanroommc.modularui.api.widget.*;
 import com.cleanroommc.modularui.drawable.*;
 import com.cleanroommc.modularui.factory.*;
 import com.cleanroommc.modularui.screen.*;
+import com.cleanroommc.modularui.screen.RichTooltip.*;
 import com.cleanroommc.modularui.screen.viewport.*;
 import com.cleanroommc.modularui.theme.*;
 import com.cleanroommc.modularui.utils.*;
@@ -35,6 +36,7 @@ import net.minecraft.entity.item.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.item.*;
 import net.minecraft.nbt.*;
+import net.minecraft.network.*;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
@@ -44,7 +46,7 @@ import net.minecraftforge.fml.relauncher.*;
 import net.minecraftforge.items.*;
 
 import javax.annotation.*;
-import java.lang.ref.*;
+import java.io.*;
 import java.util.*;
 
 import static net.minecraft.util.math.MathHelper.*;
@@ -114,9 +116,9 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
 
     private int getComparatorSignal() {
         if (analyzingMode) {
-            return getVanillaComparatorSignal();
-        } else {
             return getAnalyzingComparatorSignal();
+        } else {
+            return getVanillaComparatorSignal();
         }
     }
 
@@ -283,7 +285,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
         return false;
     }
 
-    private UITexture texturePart(int x, int y, int w, int h) {
+    private static UITexture texturePart(int x, int y, int w, int h) {
         return UITexture.builder()
             .location(new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/redstone_probe.png"))
             .imageSize(256, 256)
@@ -294,12 +296,42 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
     static class FakeObservingSlot extends Widget<FakeObservingSlot> implements Interactable {
         private final IItemHandler inv;
         private final int index;
-        private WeakReference<TileEntityConnectorProbe> probe;
+        private final IntSyncValue lookingSlotSH;
 
-        public FakeObservingSlot(IItemHandler inv, int index, TileEntityConnectorProbe probe) {
+        public FakeObservingSlot(IItemHandler inv, int index, IntSyncValue lookingSlotSH, PanelSyncManager panelSyncManager) {
             this.inv = inv;
             this.index = index;
-            this.probe = new WeakReference<>(probe);
+            this.lookingSlotSH = lookingSlotSH;
+            background(GuiTextures.SLOT_ITEM);
+            panelSyncManager.syncValue("observedInv", index, new ValueSyncHandler<ItemStack>() {
+                @Override
+                public ItemStack getValue() {
+                    return inv.getStackInSlot(index);
+                }
+
+                @Override
+                public void setValue(ItemStack stack, boolean setSource, boolean sync) {
+                    if (sync && panelSyncManager.isClient()) {
+                        inv.extractItem(index, 64, false);
+                        inv.insertItem(index, stack, false);
+                    }
+                }
+
+                @Override
+                public boolean updateCacheFromSource(boolean isFirstSync) {
+                    return true;
+                }
+
+                @Override
+                public void write(PacketBuffer packetBuffer) throws IOException {
+                    packetBuffer.writeItemStack(getValue());
+                }
+
+                @Override
+                public void read(PacketBuffer packetBuffer) throws IOException {
+                    setValue(packetBuffer.readItemStack(), false, true);
+                }
+            });
         }
 
         @Override
@@ -321,8 +353,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
             RenderHelper.enableStandardItemLighting();
             GlStateManager.disableLighting();
 
-            TileEntityConnectorProbe tile = probe.get();
-            if (tile != null && tile.lookingSlot == index) {
+            if (lookingSlotSH.getIntValue() == index) {
                 Gui.drawRect(1, 1, 1 + 16, 1 + 16, 0x8000ff00);
 
             } else {
@@ -334,10 +365,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
 
         @Override
         public Result onMousePressed(int mouseButton) {
-            TileEntityConnectorProbe tile = probe.get();
-            if (tile != null) {
-                tile.setLookingSlot(index);
-            }
+            lookingSlotSH.setIntValue(index, true, true);
             return Result.ACCEPT;
         }
     }
@@ -345,23 +373,31 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
     @Override
     public ModularPanel buildUI(PosGuiData posGuiData, PanelSyncManager panelSyncManager) {
         ModularPanel panel = new ModularPanel("redstone_probe");
-        panel.size(176, 244);
+        panel.size(176, 245);
+        panel.background(texturePart(0, 0, 176, 245));
 
         TileEntity observingTile = getObservingTile();
         IItemHandler inv = getObservingInventory();
         ParentWidget<?> observingTileSlots = new ParentWidget();
-        observingTileSlots.size(176, 86);
+        observingTileSlots.width(174);
+        observingTileSlots.coverChildrenHeight();
         if (observingTile == null) {
             observingTileSlots.child(IKey.str("no tile for observing").asWidget().align(Alignment.Center));
+
         } else {
+            if (!world.isRemote) {
+                TileEntityConnectorProbeContainerVisitor.openObservingContainer(observingTile, posGuiData.getPlayer());
+            }
+            IntSyncValue lookingSlotSH = new IntSyncValue(() -> lookingSlot, TileEntityConnectorProbe.this::setLookingSlot);
+            panelSyncManager.syncValue("lookingSlot", lookingSlotSH);
             FakeObservingSlot[] slots = new FakeObservingSlot[inv.getSlots()];
             for (int i = 0; i < inv.getSlots(); i++) {
-                slots[i] = new FakeObservingSlot(inv, i, this);
-                slots[i].pos(i * 18, 0);
+                slots[i] = new FakeObservingSlot(inv, i, lookingSlotSH, panelSyncManager);
+                slots[i].pos((i % 9) * 18, (i / 9) * 18);
                 observingTileSlots.child(slots[i]);
             }
             if (world.isRemote) {
-                TileEntityConnectorProbeContainerVisitor.fixSlotsPoses(this, slots, observingTile);
+                TileEntityConnectorProbeContainerVisitor.fixSlotsPoses(slots, observingTile, observingTileSlots.getArea().getHeight());
             }
         }
 
@@ -370,13 +406,18 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
             size(18, 18);
             pos(79, 0);
             stateBackground(texturePart(238, 0, 18, 36));
+            tooltip(t -> {
+                t.clearText();
+                t.pos(Pos.NEXT_TO_MOUSE);
+                t.add(I18n.format(("desc.immersiveengineering.info.probe.analyze.mode")));
+            });
         }});
 
         panel.child(new Column() {{
             setEnabledIf(__ -> analyzingMode);
             pos(0, 21);
             coverChildren();
-            childPadding(10);
+            childPadding(5);
             child(new Row() {{
                 coverChildren();
                 childPadding(10);
@@ -388,25 +429,52 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
                             size(18, 18);
                             stateBackground(texturePart(220, 39, 18, 36));
                             value(new BooleanSyncValue(() -> checkNbt, TileEntityConnectorProbe.this::setCheckNbt));
+                            tooltip(t -> {
+                                t.clearText();
+                                t.pos(Pos.NEXT_TO_MOUSE);
+                                t.add(I18n.format(("desc.immersiveengineering.info.filter.nbt")).replace("<br>", "\n"));
+                            });
                         }});
                         child(new ToggleButton() {{
                             size(18, 18);
                             stateBackground(texturePart(238, 39, 18, 36));
                             value(new BooleanSyncValue(() -> checkFuzzy, TileEntityConnectorProbe.this::setCheckFuzzy));
+                            tooltip(t -> {
+                                t.clearText();
+                                t.pos(Pos.NEXT_TO_MOUSE);
+                                t.add(I18n.format(("desc.immersiveengineering.info.filter.fuzzy")).replace("<br>", "\n"));
+                            });
                         }});
                     }});
                     child(new ItemSlot() {{
                         slot(new ModularSlot(filterStackInv, 0, true));
+                        background(texturePart(238, 117, 18, 18));
+                        tooltipPos(Pos.NEXT_TO_MOUSE);
                     }});
                 }});
                 child(new ToggleButton() {{
                     size(18, 18);
                     stateBackground(texturePart(238, 78, 18, 36));
                     value(new BooleanSyncValue(() -> checkNullSide, TileEntityConnectorProbe.this::setCheckNullSide));
+                    tooltip(0, t -> {
+                        t.clearText();
+                        t.pos(Pos.NEXT_TO_MOUSE);
+                        t.add(I18n.format(("desc.immersiveengineering.info.probe.analyze.placed.side")));
+                    });
+                    tooltip(1, t -> {
+                        t.clearText();
+                        t.pos(Pos.NEXT_TO_MOUSE);
+                        t.add(I18n.format(("desc.immersiveengineering.info.probe.analyze.null.side")));
+                    });
                 }});
             }});
-            child(observingTileSlots);
+            ListWidget<ParentWidget, ?> list = new ListWidget<>();
+            list.child(observingTileSlots);
+            list.size(174, 87);
+            child(list);
         }});
+
+        panel.child(SlotGroupWidget.playerInventory(7, (i, s) -> s.tooltipPos(Pos.NEXT_TO_MOUSE).background(IDrawable.EMPTY)));
 
         return panel;
     }

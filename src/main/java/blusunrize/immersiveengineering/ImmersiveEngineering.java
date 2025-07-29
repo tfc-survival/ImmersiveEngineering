@@ -8,40 +8,36 @@
 
 package blusunrize.immersiveengineering;
 
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.shader.*;
+import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.common.*;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
-import blusunrize.immersiveengineering.common.util.IEIMCHandler;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
-import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.Config.*;
+import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.advancements.*;
+import blusunrize.immersiveengineering.common.util.commands.*;
+import blusunrize.immersiveengineering.common.util.compat.*;
 import blusunrize.immersiveengineering.common.util.network.*;
-import blusunrize.immersiveengineering.common.world.IEWorldGen;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
+import blusunrize.immersiveengineering.common.world.*;
+import net.minecraft.creativetab.*;
+import net.minecraft.item.*;
+import net.minecraft.world.*;
+import net.minecraftforge.common.*;
+import net.minecraftforge.fluids.*;
+import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.common.network.*;
+import net.minecraftforge.fml.common.network.simpleimpl.*;
+import net.minecraftforge.fml.common.registry.*;
+import net.minecraftforge.fml.relauncher.*;
 
-import java.util.Arrays;
+import java.util.*;
 
 @Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME,
-        dependencies = "required-after:forge@[14.23.5.2820,);after:jei@[4.8,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
-        certificateFingerprint = "4cb49fcde3b43048c9889e0a3d083225da926334", acceptedMinecraftVersions = "[1.12,1.12.2]",
-        updateJSON = "https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/changelog.json")
+    dependencies = "required-after:forge@[14.23.5.2820,);after:jei@[4.8,);after:railcraft;after:tconstruct@[1.12-2.7.1,);after:theoneprobe@[1.4.4,)",
+    certificateFingerprint = "4cb49fcde3b43048c9889e0a3d083225da926334", acceptedMinecraftVersions = "[1.12,1.12.2]",
+    updateJSON = "https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/changelog.json")
 public class ImmersiveEngineering {
     public static final String MODID = "immersiveengineering";
     public static final String MODNAME = "Immersive Engineering";
@@ -123,6 +119,7 @@ public class ImmersiveEngineering {
         packetHandler.registerMessage(MessageObstructedConnection.Handler.class, MessageObstructedConnection.class, messageId++, Side.CLIENT);
         packetHandler.registerMessage(MessageSetGhostSlots.Handler.class, MessageSetGhostSlots.class, messageId++, Side.SERVER);
         packetHandler.registerMessage(MessageMaintenanceKit.Handler.class, MessageMaintenanceKit.class, messageId++, Side.SERVER);
+        packetHandler.registerMessage(MessageProbeContainer.Handler.class, MessageProbeContainer.class, messageId++, Side.CLIENT);
 
         IEIMCHandler.init();
         IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(instance));
@@ -148,8 +145,8 @@ public class ImmersiveEngineering {
     }
 
     private static final String[] alternativeCerts = {
-            "7e11c175d1e24007afec7498a1616bef0000027d",// malte0811
-            "MavenKeyHere"//TODO maven
+        "7e11c175d1e24007afec7498a1616bef0000027d",// malte0811
+        "MavenKeyHere"//TODO maven
     };
 
     @Mod.EventHandler
@@ -158,7 +155,7 @@ public class ImmersiveEngineering {
         for (String altCert : alternativeCerts)
             if (event.getFingerprints().contains(altCert)) {
                 System.out.println("[Immersive Engineering/Error] " + altCert + " is considered an alternative certificate (which may be ok to use in some cases). " +
-                        "If you thought this was an official build you probably shouldn't use it.");
+                    "If you thought this was an official build you probably shouldn't use it.");
                 break;
             }
     }
