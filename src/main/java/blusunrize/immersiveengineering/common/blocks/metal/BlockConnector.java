@@ -8,54 +8,40 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IPostBlock;
-import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
-import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.EnumPushReaction;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.client.models.*;
+import blusunrize.immersiveengineering.common.blocks.*;
+import com.cleanroommc.modularui.factory.*;
+import com.cleanroommc.modularui.screen.*;
+import net.dries007.tfc.objects.items.metal.*;
+import net.minecraft.block.*;
+import net.minecraft.block.material.*;
+import net.minecraft.block.properties.*;
+import net.minecraft.block.state.*;
+import net.minecraft.entity.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.item.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
+import net.minecraftforge.common.property.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector> {
     public BlockConnector() {
         super("connector", Material.IRON, PropertyEnum.create("type", BlockTypes_Connector.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,
-                IEProperties.BOOLEANS[0], IEProperties.BOOLEANS[1], IEProperties.MULTIBLOCKSLAVE, IOBJModelCallback.PROPERTY,
-                IEProperties.TILEENTITY_PASSTHROUGH);
+            IEProperties.BOOLEANS[0], IEProperties.BOOLEANS[1], IEProperties.MULTIBLOCKSLAVE, IOBJModelCallback.PROPERTY,
+            IEProperties.TILEENTITY_PASSTHROUGH);
         setHardness(3.0F);
         setResistance(15.0F);
         lightOpacity = 0;
         setMetaBlockLayer(BlockTypes_Connector.RELAY_HV.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
         setMetaBlockLayer(BlockTypes_Connector.CONNECTOR_PROBE.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
         setMetaBlockLayer(BlockTypes_Connector.FEEDTHROUGH.getMeta(), BlockRenderLayer.SOLID,
-                BlockRenderLayer.CUTOUT, BlockRenderLayer.CUTOUT_MIPPED, BlockRenderLayer.TRANSLUCENT);
+            BlockRenderLayer.CUTOUT, BlockRenderLayer.CUTOUT_MIPPED, BlockRenderLayer.TRANSLUCENT);
         setAllNotNormalBlock();
         setMetaMobilityFlag(BlockTypes_Connector.TRANSFORMER.getMeta(), EnumPushReaction.BLOCK);
         setMetaMobilityFlag(BlockTypes_Connector.TRANSFORMER_HV.getMeta(), EnumPushReaction.BLOCK);
@@ -130,7 +116,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector> {
                 BlockPos forward = pos.offset(f, 1);
                 BlockPos backward = pos.offset(f, -1);
                 return world.getBlockState(forward).getBlock().isReplaceable(world, forward) &&
-                        world.getBlockState(backward).getBlock().isReplaceable(world, backward);
+                    world.getBlockState(backward).getBlock().isReplaceable(world, backward);
         }
         return true;
     }
@@ -299,5 +285,21 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector> {
                 return 255;
         }
         return super.getLightOpacity(state, w, pos);
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (player.getHeldItem(hand).getItem() instanceof ItemMetalScrewdriver) {
+            if (!player.world.isRemote) {
+                if (!(player.openContainer instanceof ModularContainer)) {
+                    TileEntity tile = world.getTileEntity(pos);
+                    if (tile instanceof TileEntityConnectorProbe)
+                        GuiFactories.tileEntity().open(player, (TileEntityConnectorProbe) tile);
+                }
+            }
+            return true;
+        } else {
+            return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+        }
     }
 }

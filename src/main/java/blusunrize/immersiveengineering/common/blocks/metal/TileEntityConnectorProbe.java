@@ -8,28 +8,87 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.*;
 import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.*;
+import blusunrize.immersiveengineering.common.util.*;
+import com.cleanroommc.modularui.api.*;
+import com.cleanroommc.modularui.api.drawable.*;
+import com.cleanroommc.modularui.api.widget.*;
+import com.cleanroommc.modularui.drawable.*;
+import com.cleanroommc.modularui.factory.*;
+import com.cleanroommc.modularui.screen.*;
+import com.cleanroommc.modularui.screen.viewport.*;
+import com.cleanroommc.modularui.theme.*;
+import com.cleanroommc.modularui.utils.*;
+import com.cleanroommc.modularui.value.sync.*;
+import com.cleanroommc.modularui.widget.*;
+import com.cleanroommc.modularui.widgets.*;
+import com.cleanroommc.modularui.widgets.layout.*;
+import com.cleanroommc.modularui.widgets.slot.*;
 import net.minecraft.block.material.*;
 import net.minecraft.block.state.*;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.resources.*;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.item.*;
 import net.minecraft.nbt.*;
+import net.minecraft.tileentity.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.*;
 import net.minecraftforge.client.*;
 import net.minecraftforge.fml.relauncher.*;
+import net.minecraftforge.items.*;
 
+import javax.annotation.*;
+import java.lang.ref.*;
 import java.util.*;
 
-public class TileEntityConnectorProbe extends TileEntityConnectorRedstone {
+import static net.minecraft.util.math.MathHelper.*;
+
+public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implements IGuiHolder<PosGuiData> {
     private int redstoneChannelSending = 0;
     private int lastOutput = 0;
 
+    private boolean analyzingMode = false;
     private int lookingSlot = 0;
+    private boolean checkNullSide = false;
+    private ItemStackHandler filterStackInv = new ItemStackHandler(1) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            markDirty();
+        }
+    };
+    private boolean checkFuzzy = false;
+    private boolean checkNbt = false;
+
+    private void setAnalyzingMode(boolean analyzingMode) {
+        this.analyzingMode = analyzingMode;
+        markDirty();
+    }
+
+    public void setLookingSlot(int lookingSlot) {
+        this.lookingSlot = lookingSlot;
+        markDirty();
+    }
+
+    public void setCheckNullSide(boolean checkNullSide) {
+        this.checkNullSide = checkNullSide;
+        markDirty();
+    }
+
+    public void setCheckFuzzy(boolean checkFuzzy) {
+        this.checkFuzzy = checkFuzzy;
+        markDirty();
+    }
+
+    public void setCheckNbt(boolean checkNbt) {
+        this.checkNbt = checkNbt;
+        markDirty();
+    }
 
     @Override
     public void update() {
@@ -54,17 +113,57 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone {
     }
 
     private int getComparatorSignal() {
-        BlockPos pos = this.getPos().offset(facing);
-        IBlockState state = world.getBlockState(pos);
+        if (analyzingMode) {
+            return getVanillaComparatorSignal();
+        } else {
+            return getAnalyzingComparatorSignal();
+        }
+    }
+
+    private @Nullable TileEntity getObservingTile() {
+        BlockPos observingPos = pos.offset(facing);
+        TileEntity observingTarget = world.getTileEntity(observingPos);
+        if (observingTarget != null)
+            return observingTarget;
+        if (world.getBlockState(observingPos).isNormalCube()) {
+            return world.getTileEntity(observingPos.offset(facing));
+        }
+        return null;
+    }
+
+    private @Nullable IItemHandler getObservingInventory() {
+        TileEntity observingTarget = getObservingTile();
+        if (observingTarget != null) {
+            return observingTarget.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, checkNullSide ? null : facing.getOpposite());
+        }
+        return null;
+    }
+
+    private int getAnalyzingComparatorSignal() {
+        IItemHandler inv = getObservingInventory();
+        if (inv != null) {
+            if (inv.getSlots() > lookingSlot) {
+                ItemStack stack = inv.getStackInSlot(lookingSlot);
+                ItemStack filterStack = filterStackInv.getStackInSlot(0);
+                if (filterStack.isEmpty() || FilterUtils.compareStackToFilterstack(stack, filterStack, checkFuzzy, checkNbt))
+                    return clamp(stack.getCount() * 15 / stack.getMaxStackSize(), 0, 15);
+            }
+        }
+        return 0;
+    }
+
+    private int getVanillaComparatorSignal() {
+        BlockPos observingPos = this.getPos().offset(facing);
+        IBlockState state = world.getBlockState(observingPos);
         if (state.hasComparatorInputOverride())
-            return state.getComparatorInputOverride(world, pos);
+            return state.getComparatorInputOverride(world, observingPos);
         else if (state.isNormalCube()) {
-            pos = pos.offset(facing);
-            state = world.getBlockState(pos);
+            observingPos = observingPos.offset(facing);
+            state = world.getBlockState(observingPos);
             if (state.hasComparatorInputOverride())
-                return state.getComparatorInputOverride(world, pos);
+                return state.getComparatorInputOverride(world, observingPos);
             else if (state.getMaterial() == Material.AIR) {
-                EntityItemFrame entityitemframe = this.findItemFrame(world, facing, pos);
+                EntityItemFrame entityitemframe = this.findItemFrame(world, facing, observingPos);
                 if (entityitemframe != null)
                     return entityitemframe.getAnalogOutput();
             }
@@ -101,12 +200,24 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone {
     public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket) {
         super.writeCustomNBT(nbt, descPacket);
         nbt.setInteger("redstoneChannelSending", redstoneChannelSending);
+        nbt.setBoolean("analyzingMode", analyzingMode);
+        nbt.setInteger("lookingSlot", lookingSlot);
+        nbt.setBoolean("checkNullSide", checkNullSide);
+        nbt.setTag("filterStack", filterStackInv.getStackInSlot(0).serializeNBT());
+        nbt.setBoolean("checkFuzzy", checkFuzzy);
+        nbt.setBoolean("checkNbt", checkNbt);
     }
 
     @Override
     public void readCustomNBT(NBTTagCompound nbt, boolean descPacket) {
         super.readCustomNBT(nbt, descPacket);
         redstoneChannelSending = nbt.getInteger("redstoneChannelSending");
+        analyzingMode = nbt.getBoolean("analyzingMode");
+        lookingSlot = nbt.getInteger("lookingSlot");
+        checkNullSide = nbt.getBoolean("checkNullSide");
+        filterStackInv.setStackInSlot(0, new ItemStack(nbt.getCompoundTag("filterStack")));
+        checkFuzzy = nbt.getBoolean("checkFuzzy");
+        checkNbt = nbt.getBoolean("checkNbt");
     }
 
     @Override
@@ -170,5 +281,133 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone {
     @Override
     public boolean useNixieFont(EntityPlayer player, RayTraceResult mop) {
         return false;
+    }
+
+    private UITexture texturePart(int x, int y, int w, int h) {
+        return UITexture.builder()
+            .location(new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/redstone_probe.png"))
+            .imageSize(256, 256)
+            .uv(x, y, w, h)
+            .build();
+    }
+
+    static class FakeObservingSlot extends Widget<FakeObservingSlot> implements Interactable {
+        private final IItemHandler inv;
+        private final int index;
+        private WeakReference<TileEntityConnectorProbe> probe;
+
+        public FakeObservingSlot(IItemHandler inv, int index, TileEntityConnectorProbe probe) {
+            this.inv = inv;
+            this.index = index;
+            this.probe = new WeakReference<>(probe);
+        }
+
+        @Override
+        public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
+            RenderHelper.enableGUIStandardItemLighting();
+            GlStateManager.enableDepth();
+            GlStateManager.enableBlend();
+
+            RenderItem itemRender = context.getMC().getRenderItem();
+            itemRender.zLevel = 50;
+
+            ItemStack stack = inv.getStackInSlot(index);
+            itemRender.renderItemAndEffectIntoGUI(context.getMC().player, stack, 1, 1);
+            if (stack.getCount() > 1)
+                itemRender.renderItemOverlayIntoGUI(context.getMC().fontRenderer, stack, 1, 1, stack.getCount() + "");
+
+            itemRender.zLevel = 0;
+
+            RenderHelper.enableStandardItemLighting();
+            GlStateManager.disableLighting();
+
+            TileEntityConnectorProbe tile = probe.get();
+            if (tile != null && tile.lookingSlot == index) {
+                Gui.drawRect(1, 1, 1 + 16, 1 + 16, 0x8000ff00);
+
+            } else {
+                if (isHovering()) {
+                    Gui.drawRect(1, 1, 1 + 16, 1 + 16, 0x80ffffff);
+                }
+            }
+        }
+
+        @Override
+        public Result onMousePressed(int mouseButton) {
+            TileEntityConnectorProbe tile = probe.get();
+            if (tile != null) {
+                tile.setLookingSlot(index);
+            }
+            return Result.ACCEPT;
+        }
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData posGuiData, PanelSyncManager panelSyncManager) {
+        ModularPanel panel = new ModularPanel("redstone_probe");
+        panel.size(176, 244);
+
+        TileEntity observingTile = getObservingTile();
+        IItemHandler inv = getObservingInventory();
+        ParentWidget<?> observingTileSlots = new ParentWidget();
+        observingTileSlots.size(176, 86);
+        if (observingTile == null) {
+            observingTileSlots.child(IKey.str("no tile for observing").asWidget().align(Alignment.Center));
+        } else {
+            FakeObservingSlot[] slots = new FakeObservingSlot[inv.getSlots()];
+            for (int i = 0; i < inv.getSlots(); i++) {
+                slots[i] = new FakeObservingSlot(inv, i, this);
+                slots[i].pos(i * 18, 0);
+                observingTileSlots.child(slots[i]);
+            }
+            if (world.isRemote) {
+                TileEntityConnectorProbeContainerVisitor.fixSlotsPoses(this, slots, observingTile);
+            }
+        }
+
+        panel.child(new ToggleButton() {{
+            value(new BooleanSyncValue(() -> analyzingMode, TileEntityConnectorProbe.this::setAnalyzingMode));
+            size(18, 18);
+            pos(79, 0);
+            stateBackground(texturePart(238, 0, 18, 36));
+        }});
+
+        panel.child(new Column() {{
+            setEnabledIf(__ -> analyzingMode);
+            pos(0, 21);
+            coverChildren();
+            childPadding(10);
+            child(new Row() {{
+                coverChildren();
+                childPadding(10);
+                child(new Column() {{
+                    coverChildren();
+                    child(new Row() {{
+                        coverChildren();
+                        child(new ToggleButton() {{
+                            size(18, 18);
+                            stateBackground(texturePart(220, 39, 18, 36));
+                            value(new BooleanSyncValue(() -> checkNbt, TileEntityConnectorProbe.this::setCheckNbt));
+                        }});
+                        child(new ToggleButton() {{
+                            size(18, 18);
+                            stateBackground(texturePart(238, 39, 18, 36));
+                            value(new BooleanSyncValue(() -> checkFuzzy, TileEntityConnectorProbe.this::setCheckFuzzy));
+                        }});
+                    }});
+                    child(new ItemSlot() {{
+                        slot(new ModularSlot(filterStackInv, 0, true));
+                    }});
+                }});
+                child(new ToggleButton() {{
+                    size(18, 18);
+                    stateBackground(texturePart(238, 78, 18, 36));
+                    value(new BooleanSyncValue(() -> checkNullSide, TileEntityConnectorProbe.this::setCheckNullSide));
+                }});
+            }});
+            child(observingTileSlots);
+        }});
+
+        return panel;
     }
 }

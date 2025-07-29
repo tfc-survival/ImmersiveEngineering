@@ -116,6 +116,10 @@ repositories {
     flatDir {
         dirs 'libs_addons'
     }
+    maven {
+        name 'Cleanroom Maven'
+        url 'https://maven.cleanroommc.com'
+    }
 
 }
 
@@ -139,7 +143,7 @@ dependencies {
     compileOnly fg.deobf('abc:industrialcraft2:2.8.170_ex112')
     implementation fg.deobf('abc:jei:1.12.2_4.16.1.301')
     compileOnly fg.deobf('abc:OpenComputers:1.7.2.67')
-    implementation fg.deobf('abc:TerraFirmaCraft:1.7.24.999')
+    implementation fg.deobf('abc:TerraFirmaCraft-MC1.12.2:1.7.24.999')
     compileOnly fg.deobf('abc:Mantle:1.12-1.3.3.55')
     compileOnly fg.deobf('abc:TConstruct:1.12.2-2.13.0.183')
 
@@ -147,6 +151,10 @@ dependencies {
     //runtimeOnly fg.deobf('addon:immersiveintelligence-1.12.2:0.1.1')
     runtimeOnly fg.deobf('addon:immersivepetroleum-1.12.2:1.1.10')
     implementation fg.deobf('addon:MCTImmersiveTechnology-1.12.2:1.8.94')
+
+    compileOnly('zone.rong:mixinbooter:10.1')
+    compileOnly fg.deobf("abc:modularui:2.5.0-rc4")
+    compileOnly fg.deobf("abc:bogosorter:1.4.8")
 
 }
 
