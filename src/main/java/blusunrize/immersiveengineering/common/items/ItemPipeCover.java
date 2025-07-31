@@ -33,4 +33,10 @@ public class ItemPipeCover extends ItemIEBase {
 
         return r;
     }
+
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+        if (isInCreativeTab(tab))
+            list.add(withCover(Blocks.SEA_LANTERN));
+    }
 }
