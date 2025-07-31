@@ -1,11 +1,12 @@
 package blusunrize.immersiveengineering.common.items;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraft.block.*;
+import net.minecraft.creativetab.*;
+import net.minecraft.init.*;
+import net.minecraft.item.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.*;
+import net.minecraftforge.fml.common.registry.*;
 
 public class ItemPipeCover extends ItemIEBase {
     public ItemPipeCover() {
@@ -14,7 +15,7 @@ public class ItemPipeCover extends ItemIEBase {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        return super.getItemStackDisplayName(stack) + " (" + getCover(stack).getLocalizedName() + ")";
+        return super.getItemStackDisplayName(stack) + " (" + new ItemStack(getCover(stack), 1, stack.getItemDamage()).getDisplayName() + ")";
     }
 
     public Block getCover(ItemStack stack) {
