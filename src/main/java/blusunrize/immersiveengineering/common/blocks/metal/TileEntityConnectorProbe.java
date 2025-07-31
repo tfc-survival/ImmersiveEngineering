@@ -63,6 +63,11 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
         protected void onContentsChanged(int slot) {
             markDirty();
         }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 1;
+        }
     };
     private boolean checkFuzzy = false;
     private boolean checkNbt = false;
