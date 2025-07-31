@@ -183,6 +183,8 @@ public class ClientProxy extends CommonProxy {
             }
         });
 
+        IEContent.itemPipeCover.setTileEntityItemStackRenderer(new TEISRItemPipeCover());
+
         ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemTool, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/tool/voltmeter.obj", false)
                 .setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .375, .3125).rotate(-Math.PI * .5, 0, 1, 0))
                 .setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(-.25, .375, -.625).rotate(-Math.PI * .5, 0, 1, 0))
