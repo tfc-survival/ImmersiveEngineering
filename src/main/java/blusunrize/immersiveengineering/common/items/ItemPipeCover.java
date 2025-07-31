@@ -27,7 +27,7 @@ public class ItemPipeCover extends ItemIEBase {
     }
 
     public ItemStack withCover(Block block) {
-        ItemStack r = new ItemStack(this, 8);
+        ItemStack r = new ItemStack(this);
 
         r.setTagCompound(new NBTTagCompound());
         r.getTagCompound().setString("block", block.getRegistryName().toString());
@@ -37,7 +37,8 @@ public class ItemPipeCover extends ItemIEBase {
 
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
-        if (isInCreativeTab(tab))
+        if (isInCreativeTab(tab)) {
             list.add(withCover(Blocks.SEA_LANTERN));
+        }
     }
 }

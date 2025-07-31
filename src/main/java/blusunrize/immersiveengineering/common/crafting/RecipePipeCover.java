@@ -51,7 +51,7 @@ public class RecipePipeCover extends ShapedDamageRecipe {
                 },
                 'p', pipe()
             ),
-            IEContent.itemPipeCover.withCover(Blocks.SEA_LANTERN),
+            makeResult(Blocks.SEA_LANTERN, 0),
             1);
         setRegistryName("tfcsurvivalstuff", "pipe_cover");
     }
@@ -88,11 +88,17 @@ public class RecipePipeCover extends ShapedDamageRecipe {
         ItemStack stack = inv.getStackInSlot(4);
         Block block = Block.getBlockFromItem(stack.getItem());
         if (block != null && block != Blocks.AIR) {
-            ItemStack r = IEContent.itemPipeCover.withCover(block);
-            r.setItemDamage(stack.getItemDamage());
-            return r;
+            int damage = stack.getItemDamage();
+            return makeResult(block, damage == 0 ? block.getMetaFromState(block.getDefaultState()) : damage);
         }
 
         return ItemStack.EMPTY;
+    }
+
+    public static ItemStack makeResult(Block block, int damage) {
+        ItemStack r = IEContent.itemPipeCover.withCover(block);
+        r.setItemDamage(damage);
+        r.setCount(8);
+        return r;
     }
 }
