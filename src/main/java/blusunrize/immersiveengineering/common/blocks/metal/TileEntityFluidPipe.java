@@ -36,6 +36,7 @@ import net.minecraftforge.client.*;
 import net.minecraftforge.client.model.obj.OBJModel.*;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.model.*;
+import net.minecraftforge.common.property.*;
 import net.minecraftforge.common.util.Constants.*;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.*;
@@ -268,7 +269,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
                 Block.getBlockFromItem(pipeCover.getItem());
 
             if (b != null) {
-                IBlockState state = b.getStateFromMeta(pipeCover.getMetadata());
+                IBlockState state = refineFromExtended(b.getStateFromMeta(pipeCover.getMetadata()));
                 IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
                 if (!ModelUtils.isMissingModel(model)) {
                     BlockRenderLayer curL = MinecraftForgeClient.getRenderLayer();
@@ -285,6 +286,15 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
             }
         }
         return quads;
+    }
+
+    private IBlockState refineFromExtended(IBlockState state) {
+        if (state instanceof IExtendedBlockState) {
+            return ((IExtendedBlockState) state).getClean();
+
+        } else {
+            return state;
+        }
     }
 
     @Override
