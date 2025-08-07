@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.resources.*;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.player.*;
+import net.minecraft.inventory.*;
 import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.network.*;
@@ -340,6 +341,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
             });
         }
 
+        @SideOnly(Side.CLIENT)
         @Override
         public void draw(ModularGuiContext context, WidgetTheme widgetTheme) {
             RenderHelper.enableGUIStandardItemLighting();
@@ -369,6 +371,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
             }
         }
 
+        @SideOnly(Side.CLIENT)
         @Override
         public Result onMousePressed(int mouseButton) {
             lookingSlotSH.setIntValue(index, true, true);
@@ -378,6 +381,16 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
 
     @Override
     public ModularPanel buildUI(PosGuiData posGuiData, PanelSyncManager panelSyncManager) {
+        panelSyncManager.setContainerCustomizer(new ContainerCustomizer() {
+            @Override
+            public ItemStack slotClick(int slotId, int mouseButton, ClickType clickTypeIn, EntityPlayer player) {
+                if (slotId == 0)
+                    if (clickTypeIn == ClickType.THROW)
+                        return ItemStack.EMPTY;
+                return super.slotClick(slotId, mouseButton, clickTypeIn, player);
+            }
+        });
+
         ModularPanel panel = new ModularPanel("redstone_probe");
         panel.size(176, 245);
         panel.background(texturePart(0, 0, 176, 245));
@@ -389,6 +402,9 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
         observingTileSlots.coverChildrenHeight();
         if (observingTile == null) {
             observingTileSlots.child(IKey.str("no tile for observing").asWidget().align(Alignment.Center));
+
+        } else if (inv == null) {
+            observingTileSlots.child(IKey.str("tile have no inventory for observing").asWidget().align(Alignment.Center));
 
         } else {
             if (!world.isRemote) {
@@ -415,7 +431,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
             tooltip(t -> {
                 t.clearText();
                 t.pos(Pos.NEXT_TO_MOUSE);
-                t.add(I18n.format(("desc.immersiveengineering.info.probe.analyze.mode")));
+                t.add(IKey.lang("desc.immersiveengineering.info.probe.analyze.mode"));
             });
         }});
 
@@ -438,7 +454,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
                             tooltip(t -> {
                                 t.clearText();
                                 t.pos(Pos.NEXT_TO_MOUSE);
-                                t.add(I18n.format(("desc.immersiveengineering.info.filter.nbt")).replace("<br>", "\n"));
+                                t.add(IKey.lang("desc.immersiveengineering.info.filter.nbt"));
                             });
                         }});
                         child(new ToggleButton() {{
@@ -448,7 +464,7 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
                             tooltip(t -> {
                                 t.clearText();
                                 t.pos(Pos.NEXT_TO_MOUSE);
-                                t.add(I18n.format(("desc.immersiveengineering.info.filter.fuzzy")).replace("<br>", "\n"));
+                                t.add(IKey.lang("desc.immersiveengineering.info.filter.fuzzy"));
                             });
                         }});
                     }});
@@ -465,12 +481,12 @@ public class TileEntityConnectorProbe extends TileEntityConnectorRedstone implem
                     tooltip(0, t -> {
                         t.clearText();
                         t.pos(Pos.NEXT_TO_MOUSE);
-                        t.add(I18n.format(("desc.immersiveengineering.info.probe.analyze.placed.side")));
+                        t.add(IKey.lang("desc.immersiveengineering.info.probe.analyze.placed.side"));
                     });
                     tooltip(1, t -> {
                         t.clearText();
                         t.pos(Pos.NEXT_TO_MOUSE);
-                        t.add(I18n.format(("desc.immersiveengineering.info.probe.analyze.null.side")));
+                        t.add(IKey.lang("desc.immersiveengineering.info.probe.analyze.null.side"));
                     });
                 }});
             }});

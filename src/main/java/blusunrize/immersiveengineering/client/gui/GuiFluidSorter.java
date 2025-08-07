@@ -8,29 +8,27 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.gui.GuiSorter.ButtonSorter;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityFluidSorter;
-import blusunrize.immersiveengineering.common.gui.ContainerFluidSorter;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import blusunrize.immersiveengineering.*;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.client.*;
+import blusunrize.immersiveengineering.client.gui.GuiSorter.*;
+import blusunrize.immersiveengineering.common.blocks.wooden.*;
+import blusunrize.immersiveengineering.common.gui.*;
+import blusunrize.immersiveengineering.common.util.network.*;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.texture.*;
+import net.minecraft.client.resources.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.nbt.*;
+import net.minecraft.util.*;
+import net.minecraft.util.text.*;
+import net.minecraftforge.fluids.*;
+import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.relauncher.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
 
 public class GuiFluidSorter extends GuiIEContainerBase {
     public TileEntityFluidSorter tile;
@@ -51,7 +49,7 @@ public class GuiFluidSorter extends GuiIEContainerBase {
             if (button instanceof ButtonSorter)
                 if (mx > button.x && mx < button.x + 18 && my > button.y && my < button.y + 18) {
                     int type = ((ButtonSorter) button).type;
-                    String[] split = I18n.format(Lib.DESC_INFO + "filter.nbt").split("<br>");
+                    String[] split = I18n.format(Lib.DESC_INFO + "filter.nbt").split("\\n");
                     for (int i = 0; i < split.length; i++)
                         tooltip.add((i == 0 ? TextFormatting.WHITE : TextFormatting.GRAY) + split[i]);
                 }

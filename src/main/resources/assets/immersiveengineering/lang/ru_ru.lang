@@ -647,9 +647,12 @@ desc.immersiveengineering.info.blockSide.connectFluid.-1=Нет соединен
 desc.immersiveengineering.info.blockSide.connectFluid.0=Ввод жидкости
 desc.immersiveengineering.info.blockSide.connectFluid.1=Вывод жидкости
 
-desc.immersiveengineering.info.filter.oreDict=Фильтр: По словарю руд<br>Направляет предметы на основе<br>их имён в словаре руд
-desc.immersiveengineering.info.filter.nbt=Фильтр: по данным NBT<br>Направляет предметы на основе<br>их данных NBT
-desc.immersiveengineering.info.filter.fuzzy=Фильтр: Повреждённые<br>Направляет предметы, игнорируя<br>степень их повреждения
+desc.immersiveengineering.info.filter.oreDict=Фильтр: По словарю руд\nНаправляет предметы на основе\nих имён в словаре руд
+desc.immersiveengineering.info.filter.nbt=Фильтр: по данным NBT\nНаправляет предметы на основе\nих данных NBT
+desc.immersiveengineering.info.filter.fuzzy=Фильтр: Повреждённые\nНаправляет предметы, игнорируя\nстепень их повреждения
+desc.immersiveengineering.info.probe.analyze.placed.side=Проверять со стороны на которую поставлен
+desc.immersiveengineering.info.probe.analyze.null.side=Проверять с "внутренней" стороны
+desc.immersiveengineering.info.probe.analyze.mode=Переключить анализирующий режим
 
 desc.immersiveengineering.info.oreDict.off=Словарь руд: Отключён
 desc.immersiveengineering.info.oreDict.on=Словарь руд: Включён
