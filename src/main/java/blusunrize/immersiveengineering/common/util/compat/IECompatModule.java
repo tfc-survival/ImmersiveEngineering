@@ -8,25 +8,21 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerHelper;
-import blusunrize.immersiveengineering.common.util.compat.waila.WailaHelper;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import blusunrize.immersiveengineering.common.*;
+import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.compat.crafttweaker.*;
+import blusunrize.immersiveengineering.common.util.compat.waila.*;
+import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.relauncher.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.*;
+import java.util.Map.*;
 
 public abstract class IECompatModule {
     public static HashMap<String, Class<? extends IECompatModule>> moduleClasses = new HashMap<String, Class<? extends IECompatModule>>();
     public static Set<IECompatModule> modules = new HashSet<IECompatModule>();
 
     static {
-        moduleClasses.put("albedo", AlbedoHelper.class);
         moduleClasses.put("attaineddrops2", AttainedDropsHelper.class);
         moduleClasses.put("baubles", BaublesHelper.class);
         moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
