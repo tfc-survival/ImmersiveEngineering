@@ -26,4 +26,4 @@ libs
 gradle.properties
 *.jks
 production
-production/ImmersiveEngineering-0.12-110.jar
+production/*
