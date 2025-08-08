@@ -8,36 +8,26 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.IEEnums;
-import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.IEProperties.*;
+import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.*;
+import net.minecraft.block.properties.*;
+import net.minecraft.block.state.*;
+import net.minecraft.client.renderer.block.statemap.*;
+import net.minecraft.entity.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.item.*;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
+import net.minecraft.util.EnumFacing.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
+import net.minecraftforge.client.model.obj.OBJModel.*;
+import net.minecraftforge.fml.relauncher.*;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import javax.annotation.*;
+import java.util.*;
 
 public class IEBlockInterfaces {
     public interface IIEMetaBlock {
@@ -114,6 +104,14 @@ public class IEBlockInterfaces {
 
     public interface IColouredTile {
         int getRenderColour(int tintIndex);
+    }
+
+    public interface IDirectionalConnectable extends IImmersiveConnectable, IDirectionalTile {
+        default Vec3d regularConnectionOffset(Connection con, double offset) {
+            EnumFacing side = getFacing().getOpposite();
+            double conRadius = con.cableType.getRenderDiameter() / 2;
+            return new Vec3d(.5 + side.getXOffset() * (offset - conRadius), .5 + side.getYOffset() * (offset - conRadius), .5 + side.getZOffset() * (offset - conRadius));
+        }
     }
 
     public interface IDirectionalTile {

@@ -16,6 +16,6 @@ public class TileEntityRelaySV extends TileEntityRelayHV {
 
     @Override
     public Vec3d getConnectionOffset(Connection con) {
-        return getConnectionOffset2(con, 0);
+        return regularConnectionOffset(con, 0);
     }
 }

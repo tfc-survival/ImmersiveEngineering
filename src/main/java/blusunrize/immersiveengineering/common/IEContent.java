@@ -8,105 +8,74 @@
 
 package blusunrize.immersiveengineering.common;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.*;
 import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.energy.*;
+import blusunrize.immersiveengineering.api.energy.wires.*;
+import blusunrize.immersiveengineering.api.shader.*;
 import blusunrize.immersiveengineering.api.tool.*;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
-import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
-import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Extinguish;
-import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
-import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
-import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.api.tool.AssemblerHandler.*;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.*;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.*;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.*;
+import blusunrize.immersiveengineering.common.Config.*;
 import blusunrize.immersiveengineering.common.blocks.*;
-import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
+import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteAluminum;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteCopper;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteIron;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.ConveyorChuteSteel;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorChute.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.pipes.*;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.*;
-import blusunrize.immersiveengineering.common.datafixers.IEDataFixers;
+import blusunrize.immersiveengineering.common.datafixers.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
-import blusunrize.immersiveengineering.common.util.IEFluid;
-import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
-import blusunrize.immersiveengineering.common.util.IELootFunctions;
-import blusunrize.immersiveengineering.common.util.IEPotions;
-import blusunrize.immersiveengineering.common.util.IEVillagerHandler;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import blusunrize.immersiveengineering.common.world.IEWorldGen;
-import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
-import com.google.common.collect.ImmutableSet;
-import net.dries007.tfc.api.types.Metal;
-import net.dries007.tfc.types.DefaultMetals;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemShulkerBox;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.datasync.DataSerializers;
+import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IEFluid.*;
+import blusunrize.immersiveengineering.common.util.compat.*;
+import blusunrize.immersiveengineering.common.world.*;
+import com.google.common.collect.*;
+import net.dries007.tfc.api.types.*;
+import net.dries007.tfc.types.*;
+import net.minecraft.block.*;
+import net.minecraft.block.material.*;
+import net.minecraft.block.properties.*;
+import net.minecraft.block.state.*;
+import net.minecraft.creativetab.*;
+import net.minecraft.entity.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.init.*;
+import net.minecraft.inventory.*;
+import net.minecraft.item.*;
+import net.minecraft.item.crafting.*;
+import net.minecraft.nbt.*;
+import net.minecraft.network.datasync.*;
 import net.minecraft.potion.*;
-import net.minecraft.tileentity.BannerPattern;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraftforge.common.brewing.AbstractBrewingRecipe;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.brewing.IBrewingRecipe;
-import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IRegistryDelegate;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.*;
+import net.minecraft.world.storage.loot.*;
+import net.minecraftforge.common.brewing.*;
+import net.minecraftforge.common.util.*;
+import net.minecraftforge.event.*;
+import net.minecraftforge.event.RegistryEvent.MissingMappings.*;
+import net.minecraftforge.fluids.*;
+import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.eventhandler.*;
+import net.minecraftforge.fml.common.registry.*;
+import net.minecraftforge.fml.relauncher.*;
+import net.minecraftforge.oredict.*;
+import net.minecraftforge.registries.*;
 
-import javax.annotation.Nullable;
-import java.lang.reflect.Field;
+import javax.annotation.*;
+import java.lang.reflect.*;
 import java.util.*;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 @Mod.EventBusSubscriber
 public class IEContent {
@@ -149,6 +118,7 @@ public class IEContent {
     public static Block blockAluminumScaffoldingStair2;
     public static Block blockMetalLadder;
     public static BlockIEBase<BlockTypes_Connector> blockConnectors;
+    public static BlockIEBase<BlockTypes_Connector2> blockConnectors2;
     public static BlockIEBase<BlockTypes_MetalDevice0> blockMetalDevice0;
     public static BlockIEBase<BlockTypes_MetalDevice1> blockMetalDevice1;
     public static BlockIEBase<BlockTypes_Conveyor> blockConveyor;
@@ -267,6 +237,7 @@ public class IEContent {
         blockMetalLadder = new BlockMetalLadder();
 
         blockConnectors = new BlockConnector();
+        blockConnectors2 = new BlockConnector2();
         blockMetalDevice0 = new BlockMetalDevice0();
         blockMetalDevice1 = new BlockMetalDevice1();
         blockConveyor = new BlockConveyor();
@@ -352,11 +323,11 @@ public class IEContent {
     @SubscribeEvent
     public static void missingItems(RegistryEvent.MissingMappings<Item> event) {
         Set<String> knownMissing = ImmutableSet.of(
-                "fluidethanol",
-                "fluidconcrete",
-                "fluidbiodiesel",
-                "fluidplantoil",
-                "fluidcreosote"
+            "fluidethanol",
+            "fluidconcrete",
+            "fluidbiodiesel",
+            "fluidplantoil",
+            "fluidcreosote"
         );
         for (Mapping<Item> missing : event.getMappings())
             if (knownMissing.contains(missing.key.getPath()))
@@ -617,6 +588,9 @@ public class IEContent {
         registerTile(TileEntityConnectorRedstone.class);
         registerTile(TileEntityConnectorProbe.class);
         registerTile(TileEntityFeedthrough.class);
+        registerTile(TileEntityRelaySV.class);
+        registerTile(TileEntityTransformerSV.class);
+        registerTile(TileEntityConnectorFluid.class);
 
         registerTile(TileEntityCapacitorLV.class);
         registerTile(TileEntityCapacitorMV.class);
@@ -906,19 +880,19 @@ public class IEContent {
             String mixPredicateName = "net.minecraft.potion.PotionHelper$MixPredicate";
             Class<?> mixPredicateClass = Class.forName(mixPredicateName);
             Field output = ReflectionHelper.findField(mixPredicateClass,
-                    ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185200_c"));
+                ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185200_c"));
             Field reagent = ReflectionHelper.findField(mixPredicateClass,
-                    ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185199_b"));
+                ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185199_b"));
             Field input = ReflectionHelper.findField(mixPredicateClass,
-                    ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185198_a"));
+                ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185198_a"));
             output.setAccessible(true);
             reagent.setAccessible(true);
             input.setAccessible(true);
             for (Object mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
                 //noinspection unchecked
                 MixerPotionHelper.registerPotionRecipe(((IRegistryDelegate<PotionType>) output.get(mixPredicate)).get(),
-                        ((IRegistryDelegate<PotionType>) input.get(mixPredicate)).get(),
-                        ApiUtils.createIngredientStack(reagent.get(mixPredicate)));
+                    ((IRegistryDelegate<PotionType>) input.get(mixPredicate)).get(),
+                    ApiUtils.createIngredientStack(reagent.get(mixPredicate)));
         } catch (Exception x) {
             x.printStackTrace();
         }

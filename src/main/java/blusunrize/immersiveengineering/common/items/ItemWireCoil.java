@@ -25,7 +25,7 @@ import java.util.*;
 public class ItemWireCoil extends ItemIEBase implements IWireCoil {
     public ItemWireCoil() {
         super("wirecoil", 64, "copper", "electrum", "hv", "rope", "structural", "redstone",
-            "insulated_copper", "insulated_electrum", "shitload");
+            "insulated_copper", "insulated_electrum", "shitload", "hosepipe");
     }
 
     @Override
@@ -50,6 +50,8 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil {
                 return WireType.ELECTRUM_INSULATED;
             case 8:
                 return WireType.SHITLOAD;
+            case 9:
+                return WireType.HOSEPIPE;
         }
     }
 
@@ -61,6 +63,9 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil {
             list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.construction1"));
         } else if (damage == 3 || damage == 4) {
             list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.construction0"));
+            list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.construction1"));
+        } else if (damage == 9) {
+            list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.fluid"));
             list.add(I18n.format(Lib.DESC_FLAVOUR + "coil.construction1"));
         }
         if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("linkingPos")) {

@@ -25,7 +25,7 @@ public class TileEntityConnectorMV extends TileEntityConnectorLV {
 
     @Override
     public Vec3d getConnectionOffset(Connection con) {
-        return getConnectionOffset2(con, .0625);
+        return regularConnectionOffset(con, .0625);
     }
 
     @Override

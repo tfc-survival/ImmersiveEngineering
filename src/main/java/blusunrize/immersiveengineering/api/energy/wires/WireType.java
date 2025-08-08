@@ -34,12 +34,15 @@ import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Con
  * The WireTypes of IE. Extend this to make your own
  */
 public abstract class WireType {
+    public static final int fluidTransferRate = 20;
+
     public static final String LV_CATEGORY = "LV";
     public static final String MV_CATEGORY = "MV";
     public static final String HV_CATEGORY = "HV";
     public static final String SV_CATEGORY = "SV";
     public static final String STRUCTURE_CATEGORY = "STRUCTURE";
     public static final String REDSTONE_CATEGORY = "REDSTONE";
+    public static final String FLUID_CATEGORY = "FLUID";
     private static LinkedHashSet<WireType> values = new LinkedHashSet<WireType>();
 
     public static LinkedHashSet<WireType> getValues() {
@@ -130,6 +133,7 @@ public abstract class WireType {
     public static WireType COPPER_INSULATED;
     public static WireType ELECTRUM_INSULATED;
     public static WireType SHITLOAD;
+    public static WireType HOSEPIPE;
 
     public static void init() {
         ModContainer currentMod = Loader.instance().activeModContainer();
@@ -149,6 +153,7 @@ public abstract class WireType {
         COPPER_INSULATED = new IEBASE(6);
         ELECTRUM_INSULATED = new IEBASE(7);
         SHITLOAD = new ShitloadWireType();
+        HOSEPIPE = new FluidWireType();
         registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
             new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
             .5, IEContent.blockConnectors.getStateFromMeta(CONNECTOR_LV.getMeta()),
@@ -346,6 +351,68 @@ public abstract class WireType {
         @Override
         public boolean isEnergyWire() {
             return true;
+        }
+    }
+
+    private static class FluidWireType extends WireType {
+        {
+            WireApi.registerWireType(this);
+        }
+
+        @Override
+        public String getUniqueName() {
+            return "HOSEPIPE";
+        }
+
+        @Nullable
+        @Override
+        public String getCategory() {
+            return FLUID_CATEGORY;
+        }
+
+        @Override
+        public double getLossRatio() {
+            return 1;
+        }
+
+        @Override
+        public int getTransferRate() {
+            return 0;
+        }
+
+        @Override
+        public int getColour(Connection connection) {
+            return 0xaa_00696B;
+        }
+
+        @Override
+        public double getSlack() {
+            return 1.005;
+        }
+
+        @Override
+        public TextureAtlasSprite getIcon(Connection connection) {
+            return WireType.iconDefaultWire;
+        }
+
+        @Override
+        public int getMaxLength() {
+            return 32;
+        }
+
+        @Override
+        public ItemStack getWireCoil() {
+            return new ItemStack(ieWireCoil, 1, 9);
+        }
+
+        @Override
+        public double getRenderDiameter() {
+            return 0.1;
+        }
+
+        @Override
+        public boolean isEnergyWire() {
+            return false;
         }
     }
 }

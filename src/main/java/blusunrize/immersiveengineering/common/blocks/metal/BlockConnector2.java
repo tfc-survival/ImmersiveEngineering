@@ -28,6 +28,8 @@ public class BlockConnector2 extends BlockConnectorBase<BlockTypes_Connector2> {
                 return new TileEntityRelaySV();
             case TRANSFORMER_SV:
                 return new TileEntityTransformerSV();
+            case CONNECTOR_FLUID:
+                return new TileEntityConnectorFluid();
         }
         return null;
     }

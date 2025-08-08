@@ -8,7 +8,8 @@ import java.util.*;
 
 public enum BlockTypes_Connector2 implements IStringSerializable, BlockIEBase.IBlockEnum {
     RELAY_SV,
-    TRANSFORMER_SV;
+    TRANSFORMER_SV,
+    CONNECTOR_FLUID;
 
     @Override
     public String getName() {

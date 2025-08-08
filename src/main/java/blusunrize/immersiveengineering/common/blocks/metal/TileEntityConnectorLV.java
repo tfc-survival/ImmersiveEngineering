@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.function.*;
 
 //@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
-public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IIEInternalFluxHandler, IBlockBounds//, ic2.api.energy.tile.IEnergySink
+public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements ITickable, IDirectionalConnectable, IIEInternalFluxHandler, IBlockBounds//, ic2.api.energy.tile.IEnergySink
 {
     boolean inICNet = false;
     public EnumFacing facing = EnumFacing.DOWN;
@@ -186,13 +186,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
     @Override
     public Vec3d getConnectionOffset(Connection con) {
-        return getConnectionOffset2(con, 0);
-    }
-
-    protected Vec3d getConnectionOffset2(Connection con, double offset) {
-        EnumFacing side = facing.getOpposite();
-        double conRadius = con.cableType.getRenderDiameter() / 2;
-        return new Vec3d(.5 + side.getXOffset() * (offset - conRadius), .5 + side.getYOffset() * (offset - conRadius), .5 + side.getZOffset() * (offset - conRadius));
+        return regularConnectionOffset(con, 0);
     }
 
     @SideOnly(Side.CLIENT)

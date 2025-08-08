@@ -16,6 +16,7 @@ import net.minecraft.world.*;
 import net.minecraftforge.common.property.*;
 import org.apache.commons.lang3.*;
 
+import javax.annotation.*;
 import java.util.*;
 
 public abstract class BlockConnectorBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIETileProvider<E> {
@@ -28,7 +29,20 @@ public abstract class BlockConnectorBase<E extends Enum<E> & BlockIEBase.IBlockE
                 additionalProperties
             )
         );
+        setHardness(3.0F);
+        setResistance(15.0F);
+        lightOpacity = 0;
+        setAllNotNormalBlock();
     }
+
+    @Override
+    public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public abstract TileEntity createBasicTE(World worldIn, E type);
 
     @Override
     public boolean useCustomStateMapper() {
