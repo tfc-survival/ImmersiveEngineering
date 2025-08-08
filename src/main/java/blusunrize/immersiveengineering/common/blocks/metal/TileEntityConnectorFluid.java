@@ -11,6 +11,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.*;
 
 import javax.annotation.*;
@@ -20,8 +21,14 @@ import static blusunrize.immersiveengineering.api.energy.wires.WireType.*;
 
 public class TileEntityConnectorFluid extends TileEntityImmersiveConnectable implements ITickable, IDirectionalConnectable, IHammerInteraction, IBlockBounds, IBlockOverlayText {
 
+    public static final int fluidTransferRate = 20;
+    public static final int activeSleepCooldown = 20;
+    public static final int inactiveSleepCooldown = 20 * 30;
+
     private EnumFacing facing = EnumFacing.DOWN;
     private boolean outputMode = false;
+    private boolean placedOnTank = false;
+    private int sleepTick = 0;
 
     @Override
     public void writeCustomNBT(@Nonnull NBTTagCompound nbt, boolean descPacket) {
@@ -64,9 +71,26 @@ public class TileEntityConnectorFluid extends TileEntityImmersiveConnectable imp
     @Override
     public void setFacing(EnumFacing facing) {
         this.facing = facing;
+        if (hasWorld()) {
+            checkTank();
+        }
+    }
+
+    private void checkTank() {
+        placedOnTank = getTank() != null;
+    }
+
+    @Nullable
+    private IFluidHandler getTank() {
+        TileEntity maybeTile = world.getTileEntity(pos.offset(facing));
+        if (maybeTile != null) {
+            return maybeTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
+        }
+        return null;
     }
 
     @Override
+
     public int getFacingLimitation() {
         return 0;
     }
@@ -92,6 +116,10 @@ public class TileEntityConnectorFluid extends TileEntityImmersiveConnectable imp
         markDirty();
         this.markContainingBlockForUpdate(null);
         world.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
+        boolean inputMode = !outputMode;
+        if (inputMode) {
+            sleepTick = activeSleepCooldown;
+        }
         return true;
     }
 
@@ -121,7 +149,35 @@ public class TileEntityConnectorFluid extends TileEntityImmersiveConnectable imp
     public void update() {
         if (hasWorld() && !world.isRemote) {
             boolean inputMode = !outputMode;
-            if (inputMode) {
+            sleepTick--;
+            if (sleepTick <= 0) {
+                if (inputMode) {
+                    if (placedOnTank) {
+                        sleepTick = activeSleepCooldown;
+                        tryMoveFluid();
+
+                    } else {
+                        sleepTick = inactiveSleepCooldown;
+                        checkTank();
+                    }
+                } else {
+                    sleepTick = inactiveSleepCooldown;
+                    checkTank();
+                }
+            }
+        }
+    }
+
+    private void tryMoveFluid() {
+        IFluidHandler from = getTank();
+        if (from == null) {
+            placedOnTank = false;
+        } else {
+            FluidStack canBeDrain = from.drain(fluidTransferRate * activeSleepCooldown, false);
+            if (canBeDrain == null) {
+                sleepTick = inactiveSleepCooldown;
+            } else {
+                int leftToTransfer = canBeDrain.amount;
                 Set<Connection> connections = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
                 if (connections != null) {
                     for (Connection c : connections) {
@@ -129,12 +185,19 @@ public class TileEntityConnectorFluid extends TileEntityImmersiveConnectable imp
                             TileEntity tile = world.getTileEntity(c.end);
                             if (tile instanceof TileEntityConnectorFluid) {
                                 TileEntityConnectorFluid output = (TileEntityConnectorFluid) tile;
-                                if (output.outputMode) {
-                                    TileEntity tankTile = world.getTileEntity(c.end.offset(output.facing));
-                                    if (tankTile != null) {
-                                        IFluidHandler tank = tankTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, output.facing.getOpposite());
-                                        if (tank != null) {
-                                            System.out.println("test " + tankTile + " " + tankTile.getPos());
+                                int canBeFilled = output.insertFluid(canBeDrain, false);
+                                if (canBeFilled > 0) {
+                                    FluidStack drained = from.drain(canBeFilled, true);
+                                    output.insertFluid(drained, true);
+                                    leftToTransfer -= drained.amount;
+                                    if (leftToTransfer == 0) {
+                                        return;
+                                    } else if (leftToTransfer < 0) {
+                                        System.out.println("wtf, moved more that possible fluid. moved: " + drained.amount + ", expected:" + canBeDrain.amount);
+                                    } else {
+                                        canBeDrain = from.drain(leftToTransfer, false);
+                                        if (canBeDrain == null) {
+                                            return;
                                         }
                                     }
                                 }
@@ -144,6 +207,24 @@ public class TileEntityConnectorFluid extends TileEntityImmersiveConnectable imp
                 }
             }
         }
+    }
+
+    private int insertFluid(FluidStack fluidStack, boolean doIt) {
+        if (outputMode && placedOnTank) {
+            IFluidHandler to = getTank();
+            if (to == null) {
+                placedOnTank = false;
+            } else {
+                int canBeFilled = to.fill(fluidStack, false);
+                if (canBeFilled > 0) {
+                    if (doIt) {
+                        to.fill(fluidStack, true);
+                    }
+                    return canBeFilled;
+                }
+            }
+        }
+        return 0;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import net.minecraft.block.*;
 import net.minecraft.block.state.*;
 import net.minecraft.tileentity.*;
@@ -38,11 +39,11 @@ public class BlockConnector2 extends BlockConnectorBase<BlockTypes_Connector2> {
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
         super.neighborChanged(state, world, pos, blockIn, fromPos);
         TileEntity te = world.getTileEntity(pos);
-        if (te instanceof TileEntityRelaySV) {
-            TileEntityRelaySV connector = (TileEntityRelaySV) te;
-            if (world.isAirBlock(pos.offset(connector.facing))) {
-                this.dropBlockAsItem(connector.getWorld(), pos, world.getBlockState(pos), 0);
-                connector.getWorld().setBlockToAir(pos);
+        if (te instanceof IDirectionalTile) {
+            IDirectionalTile connector = (IDirectionalTile) te;
+            if (world.isAirBlock(pos.offset(connector.getFacing()))) {
+                this.dropBlockAsItem(te.getWorld(), pos, world.getBlockState(pos), 0);
+                te.getWorld().setBlockToAir(pos);
             }
         }
     }

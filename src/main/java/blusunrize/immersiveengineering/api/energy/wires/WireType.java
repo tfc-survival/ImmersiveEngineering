@@ -34,8 +34,6 @@ import static blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Con
  * The WireTypes of IE. Extend this to make your own
  */
 public abstract class WireType {
-    public static final int fluidTransferRate = 20;
-
     public static final String LV_CATEGORY = "LV";
     public static final String MV_CATEGORY = "MV";
     public static final String HV_CATEGORY = "HV";
